@@ -1,0 +1,16 @@
+= Training Project: Task Management
+
+Приложение для управления задачами
+
+== Необходимое ПО
+
+. Node.js (https://nodejs.org/en/)
+. Docker (https://docs.docker.com/engine/install/ubuntu/)
+
+== Инструкция по запуску:
+. `npm install` (если не было выполнено ранее, для установки зависимостей)
+. `npm start`
+
+=== Инструменты
+
+React, Typescript

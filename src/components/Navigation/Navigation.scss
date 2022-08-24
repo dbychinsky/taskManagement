@@ -1,0 +1,33 @@
+@import "./../../paramters";
+
+.navigation {
+    box-sizing: border-box;
+    width: 20%;
+    margin: 0;
+    padding: 0;
+
+    background: $color-grey;
+    list-style: none;
+
+    li {
+        display: block;
+
+        a {
+            display: block;
+            box-sizing: border-box;
+            padding: 30px 30px 30px 30px;
+
+            text-decoration: none;
+            text-transform: uppercase;
+            color: black;
+
+            &:hover {
+                background: $color-white;
+            }
+
+            &.active {
+                background: $color-white;
+            }
+        }
+    }
+}

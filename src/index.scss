@@ -1,0 +1,23 @@
+//style for body, App, index
+
+@import "./paramters";
+@import "./components/Form/Form";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap');
+
+body {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+}
+
+.content {
+    padding: 30px 0 0 30px;
+    width: 80%;
+}
+
+.main {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+}
+

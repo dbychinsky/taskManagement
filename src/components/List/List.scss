@@ -1,0 +1,51 @@
+@import "../../paramters";
+
+.list {
+    $indents: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    .listItem {
+        box-sizing: border-box;
+        width: 300px;
+        height: 300px;
+        margin: $indents $indents 0 0;
+        padding: $indents;
+        position: relative;
+
+        border-radius: 3px;
+        border: 1px solid $color-grey;
+
+        > div {
+            margin-bottom: ($indents/2);
+            display: flex;
+            align-items: baseline;
+
+            &:last-child {
+                position: absolute;
+                bottom: ($indents/2);
+            }
+        }
+
+        .title {
+            &:not(:empty) {
+                width: 40%;
+                font-size: $font-small;
+                flex-grow: 1;
+            }
+        }
+
+        .value {
+            flex-grow: 2;
+            font-size: $font-base;
+            width: 65%;
+
+            &:first-child {
+
+            }
+        }
+    }
+}
