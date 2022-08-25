@@ -4,11 +4,9 @@ import {Task} from "../model/Task";
 import Button from "../components/Button/Button";
 import {buildUpdateTaskPath, PROJECT_FORM, TASK_FORM} from "../Paths";
 import TaskList from "../components/Task/TaskList";
-import {taskServer} from "../server/task/TaskServer";
 import {Employee} from "../model/Employee";
 import {Project} from "../model/Project";
-import {employeeServer} from "../server/employee/EmployeeServer";
-import {projectServer} from "../server/project/ProjectServer";
+import {server} from "../App";
 
 const TaskPage = () => {
     const navigate = useNavigate();
@@ -17,15 +15,15 @@ const TaskPage = () => {
     const [projects, setProjects] = useState<Project[]>([]);
 
     useEffect(() => {
-        setTasks(taskServer.getTasks());
+        setTasks(server.getTasks());
     }, []);
 
     useEffect(() => {
-        setEmployees(employeeServer.getEmployees());
+        setEmployees(server.getEmployees());
     }, []);
 
     useEffect(() => {
-        setProjects(projectServer.getProjects());
+        setProjects(server.getProjects());
     }, []);
 
     const addTask = () => {
@@ -33,8 +31,8 @@ const TaskPage = () => {
     }
 
     const deleteTask = (id: string) => {
-        taskServer.deleteTask(id);
-        setTasks(taskServer.getTasks());
+        server.deleteTask(id);
+        setTasks(server.getTasks());
     }
 
     const updateTask = (id: string) => {

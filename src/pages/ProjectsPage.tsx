@@ -3,8 +3,8 @@ import {Project} from "../model/Project";
 import {useNavigate} from "react-router-dom";
 import {buildUpdateProjectPath, PROJECT_FORM} from "../Paths";
 import Button from "../components/Button/Button";
-import {projectServer} from "../server/project/ProjectServer";
 import {ProjectList} from "../components/Project/ProjectList";
+import {server} from "../App";
 
 
 const ProjectsPage = () => {
@@ -12,7 +12,7 @@ const ProjectsPage = () => {
     const [projects, setProjects] = useState<Project[]>([]);
 
     useEffect(() => {
-        setProjects(projectServer.getProjects());
+        setProjects(server.getProjects());
     }, []);
 
 
@@ -21,8 +21,8 @@ const ProjectsPage = () => {
     }
 
     const deleteProject = (id: string) => {
-        projectServer.deleteProject(id);
-        setProjects(projectServer.getProjects());
+        server.deleteProject(id);
+        setProjects(server.getProjects());
     }
 
     const updateProject = (id: string) => {
@@ -35,7 +35,7 @@ const ProjectsPage = () => {
             <div className="actionBar">
                 <Button onClick={addProject} text={"Добавить"}/>
             </div>
-            
+
             <ProjectList project={projects} deleteProject={deleteProject} updateProject={updateProject}/>
 
         </div>

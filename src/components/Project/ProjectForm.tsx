@@ -2,9 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {Project} from "../../model/Project";
 import {useNavigate, useParams} from "react-router-dom";
 import Label from "../Label/Label";
-import {projectServer} from "../../server/project/ProjectServer";
+import {server} from "../../App";
 import Button from "../Button/Button";
-import Input from "../Input/Input";
+import InputField from "../InputField/InputField";
 
 const ProjectForm = () => {
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ const ProjectForm = () => {
 
     // Установка в state данных из хранилища
     useEffect(() => {
-        const project = projectServer.getProjects().find((projects: Project) => projects.id === id);
+        const project = server.getProjects().find((projects: Project) => projects.id === id);
         if (typeof id === "undefined") {
             return setNewProjects(initialNewProject);
         } else {
@@ -34,7 +34,7 @@ const ProjectForm = () => {
     }
 
     const onPushStorage = () => {
-        projectServer.saveProject(newProject);
+        server.saveProject(newProject);
         navigate(-1);
     }
 
@@ -46,12 +46,12 @@ const ProjectForm = () => {
         <form onSubmit={submitHandler}>
             <div className="formRow">
                 <Label text="Имя проекта"/>
-                <Input type="text" value={newProject.name} onChange={changeHandler('name')} name="name"/>
+                <InputField type="text" value={newProject.name} onChange={changeHandler('name')} name="name"/>
             </div>
             <div className="formRow">
                 <Label text="Описание проекта"/>
-                <Input type="text" value={newProject.description} onChange={changeHandler('description')}
-                       name="description"/>
+                <InputField type="text" value={newProject.description} onChange={changeHandler('description')}
+                            name="description"/>
             </div>
 
             <div className="actionBar">

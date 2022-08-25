@@ -9,6 +9,7 @@ import EmployeesPage from "./pages/EmployeesPage";
 import EmployeeForm from "./components/Employee/EmployeeForm";
 import TaskPage from "./pages/TaskPage";
 import TaskForm from "./components/Task/TaskForm";
+import {StubServer} from "./server/StubServer";
 
 function App() {
     return (
@@ -33,5 +34,7 @@ function App() {
         </div>
     );
 }
+
+export const server = new StubServer();
 
 export default App;

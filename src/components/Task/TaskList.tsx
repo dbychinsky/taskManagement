@@ -3,8 +3,9 @@ import {Task} from "../../model/Task";
 import List, {ListLine} from "../List/List";
 import {Employee} from "../../model/Employee";
 import Button from "../Button/Button";
-import {TaskStatusToString} from "../../model/TaskStatus";
+// import {TaskStatusToString} from "../../model/TaskStatus";
 import {Project} from "../../model/Project";
+import {TaskStatusToString} from "../../model/TaskStatus";
 
 interface ITaskProps {
     task: Task[],

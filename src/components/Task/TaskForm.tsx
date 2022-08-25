@@ -1,11 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, {ChangeEvent, useEffect, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import {Task} from "../../model/Task";
-import TaskStatus from "../../model/TaskStatus";
-import {taskServer} from "../../server/task/TaskServer";
+import TaskStatus, {taskStatuses, TaskStatusToString} from "../../model/TaskStatus";
 import Label from "../Label/Label";
-import Input from "../Input/Input";
+import InputField from "../InputField/InputField";
 import Button from "../Button/Button";
+import {server} from "../../App";
+import {Project} from "../../model/Project";
+import {Employee} from "../../model/Employee";
+import './../ComboboxField/Combobox.scss';
 
 const TaskForm = () => {
     const navigate = useNavigate();
@@ -21,10 +24,12 @@ const TaskForm = () => {
         employeeId: ''
     };
     const [newTask, setNewTask] = useState<Task>(initialNewTask);
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [employees, setEmployee] = useState<Employee[]>([]);
 
     // Установка в state данных из хранилища
     useEffect(() => {
-        const task = taskServer.getTasks().find((tasks: Task) => tasks.id === id);
+        const task = server.getTasks().find((tasks: Task) => tasks.id === id);
         if (typeof id === "undefined") {
             return setNewTask(initialNewTask);
         } else {
@@ -32,10 +37,20 @@ const TaskForm = () => {
         }
     }, [id]);
 
+    // Получение списка проектов
+    useEffect(() => {
+        setProjects(server.getProjects());
+    })
+
+    // Получение списка сотрудников
+    useEffect(() => {
+        setEmployee(server.getEmployees());
+    })
+
     // Установка в state данных из input
-    const changeHandler = (fieldName: string) => (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    const changeHandler = (fieldName: string | TaskStatus) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
         const id: string = Date.now().toString();
-        setNewTask({...newTask, id, [fieldName]: e.currentTarget.value});
+        setNewTask({...newTask, id, [fieldName]: event.currentTarget.value});
     }
 
     const submitHandler = (event: React.FormEvent) => {
@@ -43,7 +58,7 @@ const TaskForm = () => {
     }
 
     const onPushStorage = () => {
-        taskServer.saveTask(newTask);
+        server.saveTask(newTask);
         navigate(-1);
     }
 
@@ -54,13 +69,50 @@ const TaskForm = () => {
     return (
         <form onSubmit={submitHandler}>
             <div className="formRow">
-                <Label text="Наименование"/>
-                <Input type="text" value={newTask.name} onChange={changeHandler('name')} name="name"/>
+                <Label text="Статус"/>
+                <select onChange={changeHandler('status')} name="status">
+                    <option></option>
+                    {
+                        taskStatuses.map((choice, index) => {
+                            return <option key={index} value={choice}>{TaskStatusToString[choice]}</option>
+                        })
+                    }
+                </select>
             </div>
+
+            <div className="formRow">
+                <Label text="Наименование"/>
+                <InputField type="text" value={newTask.name} onChange={changeHandler('name')} name="name"/>
+            </div>
+
+            <div className="formRow">
+                <Label text="Наименование проекта"/>
+                <select onChange={changeHandler('projectId')} name="projectId">
+                    <option></option>
+                    {
+                        projects.map((project, index) => {
+                            return <option key={index} value={project.id}>{project.name}</option>
+                        })
+                    }
+                </select>
+            </div>
+
             <div className="formRow">
                 <Label text="Работа (в часах)"/>
-                <Input type="text" value={newTask.executionTime} onChange={changeHandler('executionTime')}
-                       name="description"/>
+                <InputField type="text" value={newTask.executionTime} onChange={changeHandler('executionTime')}
+                            name="description"/>
+            </div>
+
+            <div className="formRow">
+                <Label text="Исполнитель"/>
+                <select onChange={changeHandler('employeeId')} name="employeeId">
+                    <option></option>
+                    {
+                        employees.map((employee, index) => {
+                            return <option key={index} value={employee.id}>{employee.fullName}</option>
+                        })
+                    }
+                </select>
             </div>
 
             <div className="actionBar">
