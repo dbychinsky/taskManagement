@@ -2,19 +2,17 @@ import React, {useEffect, useState} from 'react';
 import {Project} from "../model/Project";
 import {useNavigate} from "react-router-dom";
 import {buildUpdateProjectPath, PROJECT_FORM} from "../Paths";
-import Button from "../components/Button/Button";
 import {ProjectList} from "../components/Project/ProjectList";
 import {server} from "../App";
-
+import Header from "../components/Header/Header";
 
 const ProjectsPage = () => {
     const navigate = useNavigate();
-    const [projects, setProjects] = useState<Project[]>([]);
+    const [projectList, setProjectList] = useState<Project[]>([]);
 
     useEffect(() => {
-        setProjects(server.getProjects());
+        setProjectList(server.getProjects());
     }, []);
-
 
     const addProject = () => {
         navigate(PROJECT_FORM);
@@ -22,7 +20,7 @@ const ProjectsPage = () => {
 
     const deleteProject = (id: string) => {
         server.deleteProject(id);
-        setProjects(server.getProjects());
+        setProjectList(server.getProjects());
     }
 
     const updateProject = (id: string) => {
@@ -31,13 +29,15 @@ const ProjectsPage = () => {
 
     return (
         <div className="projectPage">
-
-            <div className="actionBar">
-                <Button onClick={addProject} text={"Добавить"}/>
-            </div>
-
-            <ProjectList project={projects} deleteProject={deleteProject} updateProject={updateProject}/>
-
+            <Header
+                title="Список проектов"
+                onClick={addProject}
+                text="Добавить"
+                isShowButton={true}/>
+            <ProjectList
+                project={projectList}
+                deleteProject={deleteProject}
+                updateProject={updateProject}/>
         </div>
     );
 };

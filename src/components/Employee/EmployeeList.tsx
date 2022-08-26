@@ -4,38 +4,38 @@ import List, {ListLine} from "../List/List";
 import Button from "../Button/Button";
 
 interface IEmployeeProps {
-    employee: Employee[];
+    employees: Employee[];
     deleteEmployee: (id: string) => void,
     updateEmployee: (id: string) => void
 }
 
-export const EmployeeList = ({employee, updateEmployee, deleteEmployee}: IEmployeeProps) => {
+export const EmployeeList = ({employees, updateEmployee, deleteEmployee}: IEmployeeProps) => {
     const listData: ListLine<Employee>[] = [
         {
             listName: "Фамилия:",
-            getValueListLine: (employee) => employee.lastName
+            getValueListLine: (employees) => employees.lastName
         },
         {
             listName: "Имя:",
-            getValueListLine: (employee) => employee.firstName
+            getValueListLine: (employees) => employees.firstName
         },
         {
             listName: "Отчество:",
-            getValueListLine: (employee) => employee.middleName
+            getValueListLine: (employees) => employees.middleName
         },
         {
             listName: "Должность:",
-            getValueListLine: (employee) => employee.position
+            getValueListLine: (employees) => employees.position
         },
         {
             listName: "",
-            getValueListLine: (employee) =>
+            getValueListLine: (employees) =>
                 <>
-                    <Button onClick={() => updateEmployee(employee.id)} text="Изменить"/>
-                    <Button onClick={() => deleteEmployee(employee.id)} text="Удалить"/>
+                    <Button onClick={() => updateEmployee(employees.id)} text="Изменить"/>
+                    <Button onClick={() => deleteEmployee(employees.id)} text="Удалить"/>
                 </>
         }
     ]
 
-    return <List listData={listData} values={employee}/>
+    return <List listData={listData} values={employees}/>
 };

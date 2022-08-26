@@ -1,17 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import {Employee} from "../model/Employee";
-import Button from "../components/Button/Button";
 import {EmployeeList} from "../components/Employee/EmployeeList";
 import {buildUpdateEmployeePath, EMPLOYEE_FORM} from "../Paths";
 import {server} from "../App";
+import Header from "../components/Header/Header";
 
 const EmployeesPage = () => {
-    const [employees, setEmployee] = useState<Employee[]>([]);
     const navigate = useNavigate();
+    const [employeeList, setEmployeeList] = useState<Employee[]>([]);
+
 
     useEffect(() => {
-        setEmployee(server.getEmployees());
+        setEmployeeList(server.getEmployees());
     }, []);
 
     const addEmployee = () => {
@@ -20,7 +21,7 @@ const EmployeesPage = () => {
 
     const deleteEmployee = (id: string) => {
         server.deleteEmployee(id);
-        setEmployee(server.getEmployees());
+        setEmployeeList(server.getEmployees());
     }
 
     const updateEmployee = (id: string) => {
@@ -29,12 +30,15 @@ const EmployeesPage = () => {
 
     return (
         <div className="employeePage">
-
-            <div className="actionBar">
-                <Button onClick={addEmployee} text={"Добавить"}/>
-            </div>
-
-            <EmployeeList employee={employees} deleteEmployee={deleteEmployee} updateEmployee={updateEmployee}/>
+            <Header
+                title="Список сотрудников"
+                onClick={addEmployee}
+                text="Добавить"
+                isShowButton={true}/>
+            <EmployeeList
+                employees={employeeList}
+                deleteEmployee={deleteEmployee}
+                updateEmployee={updateEmployee}/>
         </div>
     );
 };

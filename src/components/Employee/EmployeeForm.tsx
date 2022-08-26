@@ -10,25 +10,29 @@ import {server} from "../../App";
 const EmployeeForm = () => {
     const navigate = useNavigate();
     const {id} = useParams();
-
     const initialNewEmployee = {id: '', firstName: '', lastName: '', middleName: '', position: '', fullName: ''};
-
-    const [employees, setEmployee] = useState<Employee>(initialNewEmployee);
+    const [employeeList, setEmployeeList] = useState<Employee>(initialNewEmployee);
 
     useEffect(() => {
         const employee = server.getEmployees().find((employee: Employee) => employee.id === id);
         if (typeof id === "undefined") {
-            return setEmployee(initialNewEmployee);
+            return setEmployeeList(initialNewEmployee);
         } else {
-            return setEmployee(employee);
+            return setEmployeeList(employee);
         }
     }, [id])
 
 
     // Установка в state данных из input
     const changeHandler = (fieldName: string) => (e: React.KeyboardEvent<HTMLInputElement>): void => {
-        const id: string = Date.now().toString();
-        setEmployee({...employees, id, [fieldName]: e.currentTarget.value})
+
+        if (employeeList.id !== '') {
+            setEmployeeList({...employeeList, [fieldName]: e.currentTarget.value});
+        } else {
+            const id: string = Date.now().toString();
+            setEmployeeList({...employeeList, id, [fieldName]: e.currentTarget.value});
+        }
+
     }
 
     const submitHandler = (event: React.FormEvent) => {
@@ -37,11 +41,11 @@ const EmployeeForm = () => {
 
     const onPushStorage = () => {
         // Добавление ФИО
-        const newEmployee: Employee = {
-            ...employees,
-            fullName: `${employees.lastName} ${employees.firstName} ${employees.middleName}`
+        const newEmployees: Employee = {
+            ...employeeList,
+            fullName: `${employeeList.lastName} ${employeeList.firstName} ${employeeList.middleName}`
         }
-        server.saveEmployee(newEmployee);
+        server.saveEmployee(newEmployees);
         navigate(-1);
     }
 
@@ -54,22 +58,22 @@ const EmployeeForm = () => {
             <form onSubmit={submitHandler}>
                 <div className="formRow">
                     <Label text="Фамилия"/>
-                    <InputField type="text" value={employees.lastName} onChange={changeHandler('lastName')}
+                    <InputField type="text" value={employeeList.lastName} onChange={changeHandler('lastName')}
                                 name="lastName"/>
                 </div>
                 <div className="formRow">
                     <Label text="Имя"/>
-                    <InputField type="text" value={employees.firstName} onChange={changeHandler('firstName')}
+                    <InputField type="text" value={employeeList.firstName} onChange={changeHandler('firstName')}
                                 name="firstName"/>
                 </div>
                 <div className="formRow">
                     <Label text="Отчество"/>
-                    <InputField type="text" value={employees.middleName} onChange={changeHandler('middleName')}
+                    <InputField type="text" value={employeeList.middleName} onChange={changeHandler('middleName')}
                                 name="middleName"/>
                 </div>
                 <div className="formRow">
                     <Label text="Позиция"/>
-                    <InputField type="text" value={employees.position} onChange={changeHandler('position')}
+                    <InputField type="text" value={employeeList.position} onChange={changeHandler('position')}
                                 name="position"/>
                 </div>
 

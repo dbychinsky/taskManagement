@@ -23,34 +23,40 @@ const TaskForm = () => {
         projectId: '',
         employeeId: ''
     };
-    const [newTask, setNewTask] = useState<Task>(initialNewTask);
-    const [projects, setProjects] = useState<Project[]>([]);
-    const [employees, setEmployee] = useState<Employee[]>([]);
+    const [tasksList, setTasksList] = useState<Task>(initialNewTask);
+    const [projectList, setProjectList] = useState<Project[]>([]);
+    const [employeeList, setEmployeeList] = useState<Employee[]>([]);
 
     // Установка в state данных из хранилища
     useEffect(() => {
         const task = server.getTasks().find((tasks: Task) => tasks.id === id);
         if (typeof id === "undefined") {
-            return setNewTask(initialNewTask);
+            return setTasksList(initialNewTask);
         } else {
-            return setNewTask(task)
+            return setTasksList(task)
         }
     }, [id]);
 
     // Получение списка проектов
     useEffect(() => {
-        setProjects(server.getProjects());
+        // setProjects(server.getProjects());
     })
 
     // Получение списка сотрудников
     useEffect(() => {
-        setEmployee(server.getEmployees());
+        // setEmployees(server.getEmployees());
     })
 
     // Установка в state данных из input
     const changeHandler = (fieldName: string | TaskStatus) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
-        const id: string = Date.now().toString();
-        setNewTask({...newTask, id, [fieldName]: event.currentTarget.value});
+
+        if (tasksList.id !== '') {
+            setTasksList({...tasksList, [fieldName]: event.currentTarget.value});
+        } else {
+            const id: string = Date.now().toString();
+            setTasksList({...tasksList, id, [fieldName]: event.currentTarget.value});
+        }
+
     }
 
     const submitHandler = (event: React.FormEvent) => {
@@ -58,7 +64,7 @@ const TaskForm = () => {
     }
 
     const onPushStorage = () => {
-        server.saveTask(newTask);
+        server.saveTask(tasksList);
         navigate(-1);
     }
 
@@ -82,7 +88,7 @@ const TaskForm = () => {
 
             <div className="formRow">
                 <Label text="Наименование"/>
-                <InputField type="text" value={newTask.name} onChange={changeHandler('name')} name="name"/>
+                <InputField type="text" value={tasksList.name} onChange={changeHandler('name')} name="name"/>
             </div>
 
             <div className="formRow">
@@ -90,7 +96,7 @@ const TaskForm = () => {
                 <select onChange={changeHandler('projectId')} name="projectId">
                     <option></option>
                     {
-                        projects.map((project, index) => {
+                        projectList.map((project, index) => {
                             return <option key={index} value={project.id}>{project.name}</option>
                         })
                     }
@@ -99,7 +105,7 @@ const TaskForm = () => {
 
             <div className="formRow">
                 <Label text="Работа (в часах)"/>
-                <InputField type="text" value={newTask.executionTime} onChange={changeHandler('executionTime')}
+                <InputField type="text" value={tasksList.executionTime} onChange={changeHandler('executionTime')}
                             name="description"/>
             </div>
 
@@ -108,7 +114,7 @@ const TaskForm = () => {
                 <select onChange={changeHandler('employeeId')} name="employeeId">
                     <option></option>
                     {
-                        employees.map((employee, index) => {
+                        employeeList.map((employee, index) => {
                             return <option key={index} value={employee.id}>{employee.fullName}</option>
                         })
                     }

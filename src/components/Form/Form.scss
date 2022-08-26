@@ -1,7 +1,7 @@
-@import "./../../paramters";
+@import "../../parameters";
 
 form {
     .formRow {
-        margin-bottom: 15px;
+        margin-bottom: ($indents-base * 3);
     }
 }

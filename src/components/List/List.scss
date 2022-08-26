@@ -1,38 +1,35 @@
-@import "../../paramters";
+@import "../../parameters";
 
 .list {
-    $indents: 10px;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     list-style: none;
     margin: 0;
     padding: 0;
 
     .listItem {
         box-sizing: border-box;
-        width: 300px;
-        height: 300px;
-        margin: $indents $indents 0 0;
-        padding: $indents;
-        position: relative;
+        margin: 0 $indents-base $indents-base 0;
+        padding: $indents-base;
+        max-width: 50%;
 
         border-radius: 3px;
         border: 1px solid $color-grey;
 
         > div {
-            margin-bottom: ($indents/2);
             display: flex;
             align-items: baseline;
+            margin-bottom: $indents-base;
 
             &:last-child {
-                position: absolute;
-                bottom: ($indents/2);
+                margin-bottom: 0;
             }
         }
 
         .title {
             &:not(:empty) {
                 width: 40%;
+                max-width: 125px;
                 font-size: $font-small;
                 flex-grow: 1;
             }
@@ -43,9 +40,7 @@
             font-size: $font-base;
             width: 65%;
 
-            &:first-child {
-
-            }
         }
     }
+
 }

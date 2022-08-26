@@ -8,7 +8,7 @@ import {Project} from "../../model/Project";
 import {TaskStatusToString} from "../../model/TaskStatus";
 
 interface ITaskProps {
-    task: Task[],
+    tasks: Task[],
     employees: Employee[],
     projects: Project[],
     deleteTask: (id: string) => void,
@@ -16,46 +16,46 @@ interface ITaskProps {
 }
 
 
-const TaskList = ({task, projects, employees, deleteTask, updateTask}: ITaskProps) => {
+const TaskList = ({tasks, projects, employees, deleteTask, updateTask}: ITaskProps) => {
     const listData: ListLine<Task>[] = [
         {
             listName: "Статус:",
-            getValueListLine: (task) => task.status && TaskStatusToString[task.status]
+            getValueListLine: (tasks) => tasks.status && TaskStatusToString[tasks.status]
         },
         {
             listName: "Наименование:",
-            getValueListLine: (task) => task.name
+            getValueListLine: (tasks) => tasks.name
         },
         {
             listName: "Наименование проекта",
-            getValueListLine: (task) => projects.find(project => project.id === task.projectId)?.name || "Проект не выбран"
+            getValueListLine: (tasks) => projects.find(project => project.id === tasks.projectId)?.name || "Проект не выбран"
         },
         {
             listName: "Работа",
-            getValueListLine: (task) => task.executionTime
+            getValueListLine: (tasks) => tasks.executionTime
         },
         {
             listName: "Дата начала",
-            getValueListLine: (task) => task.startDate
+            getValueListLine: (tasks) => tasks.startDate
         },
         {
             listName: "Дата окончания",
-            getValueListLine: (task) => task.endDate
+            getValueListLine: (tasks) => tasks.endDate
         },
         {
             listName: "Исполнитель:",
-            getValueListLine: (task) => employees.find(employee => employee.id === task.employeeId)?.fullName || "Исполнитель не назначен"
+            getValueListLine: (tasks) => employees.find(employees => employees.id === tasks.employeeId)?.fullName || "Исполнитель не назначен"
         },
         {
             listName: "",
-            getValueListLine: (task) =>
+            getValueListLine: (tasks) =>
                 <div className="actionBar">
-                    <Button onClick={() => updateTask(task.id)} text="Изменить"/>
-                    <Button onClick={() => deleteTask(task.id)} text="Удалить"/>
+                    <Button onClick={() => updateTask(tasks.id)} text="Изменить"/>
+                    <Button onClick={() => deleteTask(tasks.id)} text="Удалить"/>
                 </div>
         }
     ]
-    return <List listData={listData} values={task}/>
+    return <List listData={listData} values={tasks}/>
 };
 
 export default TaskList;
