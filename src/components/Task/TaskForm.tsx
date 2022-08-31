@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent, ChangeEventHandler, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import {Task} from "../../model/Task";
 import {TASK_STATUSES} from "../../model/TaskStatus";
@@ -10,128 +10,111 @@ import {Project} from "../../model/Project";
 import {Employee} from "../../model/Employee";
 import './../ComboboxField/Combobox.scss';
 import ComboboxField from "../ComboboxField/ComboboxField";
+import Header from "../Header/Header";
 
-const TaskForm = () => {
-    const navigate = useNavigate();
-    const {id} = useParams();
-    const task = server.getTasks().find((tasks: Task) => tasks.id === id);
-    const project = server.getProjects();
-    const employee = server.getEmployees();
-    const initialNewTask = {
-        id: '',
-        status: '',
-        name: '',
-        executionTime: 0,
-        startDate: '',
-        endDate: '',
-        projectId: '',
-        employeeId: ''
-    };
-    const [tasksList, setTasksList] = useState<Task>(task ? task : initialNewTask);
-    const [projectList, setProjectList] = useState<Project[]>(project);
-    const [employeeList, setEmployeeList] = useState<Employee[]>(employee);
 
-    // Установка в state данных из input
-    const changeHandler = (fieldName: string) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
-        if (tasksList.id !== '') {
-            setTasksList({...tasksList, [fieldName]: event.currentTarget.value});
-        } else {
-            const id: string = Date.now().toString();
-            setTasksList({...tasksList, id, [fieldName]: event.currentTarget.value});
-        }
-    };
+export interface ITaskFormProps {
+    task: Task,
+    projectList: Project[],
+    employeeList: Employee[],
+    changeHandlerTask: (fieldName: string) => ChangeEventHandler,
+    submitHandler: (event: React.FormEvent) => void,
+    onPushStorage: () => void,
+    onCancel: () => void,
+}
 
-    const submitHandler = (event: React.FormEvent) => {
-        event.preventDefault();
-    };
-
-    const onPushStorage = () => {
-        server.saveTask(tasksList);
-        navigate(-1);
-    };
-
-    const onCancel = () => {
-        navigate(-1);
-    };
+const TaskForm = (props: ITaskFormProps) => {
+    const {
+        task,
+        projectList,
+        employeeList,
+        changeHandlerTask,
+        submitHandler,
+        onPushStorage,
+        onCancel
+    } = props
 
     return (
         <div className="taskForm">
-            <form onSubmit={submitHandler}>
-                <div className="formRow">
-                    <Label text="Статус"/>
-                    <ComboboxField
-                        changeHandler={changeHandler("status")}
-                        valueList={TASK_STATUSES}
-                        defaultValue={tasksList.status}
-                    />
-                </div>
+            <Header title="Задача" isShowButton={false}/>
+            <div className="content">
+                <form onSubmit={submitHandler}>
+                    <div className="formRow">
+                        <Label text="Статус"/>
+                        <ComboboxField
+                            changeHandler={changeHandlerTask("status")}
+                            valueList={TASK_STATUSES}
+                            defaultValue={task.status}
+                        />
+                    </div>
 
-                <div className="formRow">
-                    <Label text="Наименование"/>
-                    <InputTextField
-                        type="text"
-                        value={tasksList.name}
-                        onChange={changeHandler('name')}
-                        name="name"/>
-                </div>
+                    <div className="formRow">
+                        <Label text="Наименование"/>
+                        <InputTextField
+                            type="text"
+                            value={task.name}
+                            onChange={changeHandlerTask('name')}
+                            name="name"/>
+                    </div>
 
-                <div className="formRow">
-                    <Label text="Наименование проекта"/>
-                    <ComboboxField
-                        changeHandler={changeHandler("projectId")}
-                        valueList={
-                            projectList.map((project) => {
-                                return {value: project.id, option: project.name}
-                            })
-                        }
-                        defaultValue={tasksList.projectId}
-                    />
-                </div>
+                    <div className="formRow">
+                        <Label text="Наименование проекта"/>
+                        <ComboboxField
+                            changeHandler={changeHandlerTask("projectId")}
+                            valueList={
+                                projectList.map((project) => {
+                                    return {value: project.id, option: project.name}
+                                })
+                            }
+                            defaultValue={task.projectId}
+                        />
+                    </div>
 
-                <div className="formRow">
-                    <Label text="Работа (в часах)"/>
-                    <InputTextField
-                        type="text"
-                        value={tasksList.executionTime}
-                        onChange={changeHandler('executionTime')}
-                        name="description"/>
-                </div>
+                    <div className="formRow">
+                        <Label text="Работа (в часах)"/>
+                        <InputTextField
+                            type="text"
+                            value={task.executionTime}
+                            onChange={changeHandlerTask('executionTime')}
+                            name="description"/>
+                    </div>
 
-                <div className="formRow">
-                    <Label text="Дата начала"/>
-                    <InputTextField type="text" value={tasksList.startDate}
-                                    onChange={changeHandler('startDate')}
-                                    name="startDate"/>
-                </div>
+                    <div className="formRow">
+                        <Label text="Дата начала"/>
+                        <InputTextField type="text" value={task.startDate}
+                                        onChange={changeHandlerTask('startDate')}
+                                        name="startDate"/>
+                    </div>
 
-                <div className="formRow">
-                    <Label text="Дата окончания"/>
-                    <InputTextField type="text" value={tasksList.endDate}
-                                    onChange={changeHandler('endDate')}
-                                    name="endDate"/>
-                </div>
+                    <div className="formRow">
+                        <Label text="Дата окончания"/>
+                        <InputTextField type="text" value={task.endDate}
+                                        onChange={changeHandlerTask('endDate')}
+                                        name="endDate"/>
+                    </div>
 
-                <div className="formRow">
-                    <Label text="Исполнитель"/>
+                    <div className="formRow">
+                        <Label text="Исполнитель"/>
 
-                    <ComboboxField
-                        changeHandler={changeHandler("employeeId")}
-                        valueList={
-                            employeeList.map((employee) => {
-                                return {value: employee.id, option: employee.fullName}
-                            })
-                        }
-                        defaultValue={tasksList.employeeId}
-                    />
+                        <ComboboxField
+                            changeHandler={changeHandlerTask("employeeId")}
+                            valueList={
+                                employeeList.map((employee) => {
+                                    return {value: employee.id, option: employee.fullName}
+                                })
+                            }
+                            defaultValue={task.employeeId}
+                        />
 
-                </div>
+                    </div>
 
-                <div className="actionBar">
-                    <Button onClick={onPushStorage} text="Сохранить"/>
-                    <Button onClick={onCancel} text="Отмена"/>
-                </div>
+                    <div className="actionBar">
+                        <Button onClick={onPushStorage} text="Сохранить"/>
+                        <Button onClick={onCancel} text="Отмена"/>
+                    </div>
 
-            </form>
+                </form>
+            </div>
         </div>
     );
 };

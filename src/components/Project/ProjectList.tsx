@@ -27,7 +27,6 @@ export const ProjectList = ({project, deleteProject, updateProject}: IProjectPro
                     <Button onClick={() => updateProject(project.id)} text="Изменить"/>
                     <Button onClick={() => deleteProject(project.id)} text="Удалить"/>
                 </div>
-
         }
     ]
 

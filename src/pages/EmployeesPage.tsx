@@ -5,6 +5,7 @@ import {EmployeeList} from "../components/Employee/EmployeeList";
 import {EMPLOYEE_FORM} from "../RoutersProject";
 import {server} from "../App";
 import Header from "../components/Header/Header";
+import {ProjectList} from "../components/Project/ProjectList";
 
 const EmployeesPage = () => {
     const navigate = useNavigate();
@@ -35,6 +36,7 @@ const EmployeesPage = () => {
                 onClick={addEmployee}
                 text="Добавить"
                 isShowButton={true}/>
+
             <EmployeeList
                 employees={employeeList}
                 deleteEmployee={deleteEmployee}

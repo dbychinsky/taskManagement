@@ -1,20 +1,6 @@
 @import "./../../parameters";
 
 .projectForm {
-    display: flex;
-    flex-direction: row;
 
-    form {
-        width: 30%;
-    }
 
-    //TODO
-    .TaskList {
-        width: 100%;
-
-        > .actionBar {
-            margin-bottom: $indents-base;
-            max-width: 100%;
-        }
-    }
 }

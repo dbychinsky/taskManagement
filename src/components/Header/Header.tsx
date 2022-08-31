@@ -4,8 +4,8 @@ import Button from "../Button/Button";
 
 interface IHeader {
     title: string,
-    onClick: () => void | null,
-    text: string | null;
+    onClick?: () => void,
+    text?: string | null;
     isShowButton: boolean;
 }
 

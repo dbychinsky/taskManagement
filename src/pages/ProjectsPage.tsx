@@ -34,6 +34,7 @@ const ProjectsPage = () => {
                 onClick={addProject}
                 text="Добавить"
                 isShowButton={true}/>
+
             <ProjectList
                 project={projectList}
                 deleteProject={deleteProject}

@@ -6,13 +6,11 @@ import RoutersProject from "./RoutersProject";
 
 function App() {
     return (
-        <div className="App">
-            <main className="main">
-                <Navigation/>
-                <div className="content">
-                    <RoutersProject/>
-                </div>
-            </main>
+        <div className="app">
+            <Navigation/>
+            <div className="contentWrapper">
+                <RoutersProject/>
+            </div>
         </div>
     );
 }

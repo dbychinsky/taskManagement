@@ -17,7 +17,7 @@ interface IListProps<T> {
 
 const List = <T, >({listData, values}: IListProps<T>) => {
 
-    return (
+    const listFill =
         <div className="list">
             <div className="listHeader">
                 {
@@ -25,22 +25,31 @@ const List = <T, >({listData, values}: IListProps<T>) => {
                         <div key={index}>{listName}</div>)
                 }
             </div>
-            {/*<ul className="listBody">*/}
-                {
-                    values.map((value, index) =>
-                        <div key={index} className="listItem">
-                            {
-                                listData.map(({listName, getValueListLine}, index) =>
-                                    <div key={index}>
-                                        <span className="value">{getValueListLine(value)}</span>
-                                    </div>
-                                )
-                            }
-                        </div>
-                    )
-                }
-            {/*</ul>*/}
+            {
+                values.map((value, index) =>
+                    <div key={index} className="listItem">
+                        {
+                            listData.map(({listName, getValueListLine}, index) =>
+                                <div key={index}>
+                                    <span className="value">{getValueListLine(value)}</span>
+                                </div>
+                            )
+                        }
+                    </div>
+                )
+            }
         </div>
+
+
+    const listEmpty =
+        <p className="listEmpty">Список пуст</p>
+
+
+    return (
+
+        values.length ? listFill : listEmpty
+
+
     );
 };
 

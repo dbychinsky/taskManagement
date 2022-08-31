@@ -27,6 +27,12 @@
             padding: $indents-base 0;
             border-bottom: 1px solid $color-grey;
         }
+
+        &:not(:last-child) {
+            > div {
+                border: none;
+            }
+        }
     }
 
     .actionBar {

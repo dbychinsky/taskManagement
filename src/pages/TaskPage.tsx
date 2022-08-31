@@ -45,13 +45,13 @@ const TaskPage = () => {
                     onClick={addTask}
                     text="Добавить"
                     isShowButton={true}/>
+
             <TaskList
                 tasks={taskList}
                 employees={employeeList}
                 projects={projectList}
                 deleteTask={deleteTask}
-                updateTask={updateTask}
-            />
+                updateTask={updateTask}/>
         </div>
     );
 };

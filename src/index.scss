@@ -17,13 +17,12 @@ html {
             height: 100vh;
         }
 
-        .main {
+        .app {
             display: grid;
             grid-template-columns: 1fr 5fr;
             grid-template-rows: 1fr;
             gap: 0px 0px;
             grid-template-areas:". .";
-
             height: 100vh;
         }
 
@@ -31,10 +30,40 @@ html {
             height: 100vh;
         }
 
-        .content {
+        .contentWrapper {
             padding: ($indents-base);
             height: 100vh;
             box-sizing: border-box;
+
+            .content {
+                display: flex;
+                flex-direction: row;
+                align-items: flex-start;
+
+                form {
+                    width: 30%;
+                }
+
+                //TODO
+                .taskList {
+                    width: 100%;
+                    padding: $indents-base;
+                    border: 1px solid $color-grey;
+
+                    > .actionBar {
+                        margin-bottom: $indents-base;
+                        max-width: 100%;
+                    }
+                }
+            }
+
+            .listEmpty {
+                width: 100%;
+                padding: ($indents-base*10) 0;
+
+                font-size: $font-big;
+                text-align: center;
+            }
         }
     }
 }
