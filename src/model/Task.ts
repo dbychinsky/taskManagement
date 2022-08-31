@@ -1,8 +1,8 @@
-import TaskStatus from "./TaskStatus";
+// import TaskStatus from "./TaskStatus";
 
 export class Task {
     id: string;
-    status: TaskStatus;
+    status: string;
     name: string;
     projectId: string | null;
     executionTime: number;
@@ -12,7 +12,7 @@ export class Task {
 
     constructor() {
         this.id = '';
-        this.status = TaskStatus.NOT_STARTED;
+        this.status = '';
         this.name = '';
         this.projectId = null;
         this.executionTime = 0;

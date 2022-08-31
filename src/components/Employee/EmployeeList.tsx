@@ -30,10 +30,10 @@ export const EmployeeList = ({employees, updateEmployee, deleteEmployee}: IEmplo
         {
             listName: "",
             getValueListLine: (employees) =>
-                <>
+                <div className="actionBar">
                     <Button onClick={() => updateEmployee(employees.id)} text="Изменить"/>
                     <Button onClick={() => deleteEmployee(employees.id)} text="Удалить"/>
-                </>
+                </div>
         }
     ]
 

@@ -1,31 +1,27 @@
 import React, {ChangeEventHandler} from 'react';
-import TaskStatus from "../../model/TaskStatus";
 import './Combobox.scss';
 
-interface IComboboxFieldProp<T> {
-    choices?: TaskStatus[],
+interface IComboboxFieldProp {
     changeHandler: ChangeEventHandler,
-    name: string
+    valueList: { value: string, option: string }[],
+    defaultValue: string,
+    disabled?: boolean
 }
 
-const ComboboxField = <T, >({choices, changeHandler}: IComboboxFieldProp<T>) => {
-
-    const onHandleChange = () => {
-        // changeHandler(choice);
-    }
-
+const ComboboxField = ({changeHandler, valueList, defaultValue, disabled}: IComboboxFieldProp) => {
     return (
-        <select onChange={onHandleChange}>
+        <select onChange={changeHandler} defaultValue={defaultValue} disabled={disabled}>
             <option></option>
             {
-                choices.map((choice, index) => {
-                    return <option key={index} value={choice}>{choice}</option>
+                valueList.map((elem, index) => {
+                    return <option key={index} value={elem.value}>{elem.option}</option>
                 })
             }
         </select>
 
     )
 }
+
 
 export default ComboboxField;
 

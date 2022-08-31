@@ -3,11 +3,9 @@ import {Task} from "../../model/Task";
 import List, {ListLine} from "../List/List";
 import {Employee} from "../../model/Employee";
 import Button from "../Button/Button";
-// import {TaskStatusToString} from "../../model/TaskStatus";
 import {Project} from "../../model/Project";
-import {TaskStatusToString} from "../../model/TaskStatus";
 
-interface ITaskProps {
+export interface ITaskProps {
     tasks: Task[],
     employees: Employee[],
     projects: Project[],
@@ -15,12 +13,12 @@ interface ITaskProps {
     updateTask: (id: string) => void
 }
 
-
 const TaskList = ({tasks, projects, employees, deleteTask, updateTask}: ITaskProps) => {
     const listData: ListLine<Task>[] = [
         {
             listName: "Статус:",
-            getValueListLine: (tasks) => tasks.status && TaskStatusToString[tasks.status]
+            // getValueListLine: (tasks) => tasks.status && TaskStatusToString[tasks.status]
+            getValueListLine: (tasks) => tasks.status
         },
         {
             listName: "Наименование:",

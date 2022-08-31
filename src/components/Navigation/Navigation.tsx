@@ -1,6 +1,6 @@
 import React from 'react';
 import {NavLink} from "react-router-dom";
-import {EMPLOYEES_PAGE, PROJECTS_PAGE, TASK_PAGE} from "../../Paths";
+import {EMPLOYEES_PAGE, PROJECTS_PAGE, TASK_PAGE} from "../../RoutersProject";
 import "./Navigation.scss";
 
 const Navigation = () => {

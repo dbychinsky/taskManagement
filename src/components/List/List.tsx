@@ -2,37 +2,45 @@ import React, {ReactNode} from 'react';
 import "./List.scss";
 
 export type ListLine<T> = {
-    // имя строки
+    // Имя строки
     listName: string,
     // Метод для отображения данных в строке
     getValueListLine: (value: T) => ReactNode
 }
 
 interface IListProps<T> {
-    // массив строк
+    // Массив данных
     listData: ListLine<T>[],
-    // массив данных
+    // Строка из массива
     values: T[]
 }
 
 const List = <T, >({listData, values}: IListProps<T>) => {
+
     return (
-        <ul className="list">
-            {
-                values?.map((value, index) =>
-                    <li key={index} className="listItem">
-                        {
-                            listData.map(({listName, getValueListLine}, index) =>
-                                <div key={index}>
-                                    <span className="title">{listName}</span>
-                                    <span className="value">{getValueListLine(value)}</span>
-                                </div>
-                            )
-                        }
-                    </li>
-                )
-            }
-        </ul>
+        <div className="list">
+            <div className="listHeader">
+                {
+                    listData.map(({listName}, index) =>
+                        <div key={index}>{listName}</div>)
+                }
+            </div>
+            {/*<ul className="listBody">*/}
+                {
+                    values.map((value, index) =>
+                        <div key={index} className="listItem">
+                            {
+                                listData.map(({listName, getValueListLine}, index) =>
+                                    <div key={index}>
+                                        <span className="value">{getValueListLine(value)}</span>
+                                    </div>
+                                )
+                            }
+                        </div>
+                    )
+                }
+            {/*</ul>*/}
+        </div>
     );
 };
 

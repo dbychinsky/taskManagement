@@ -1,54 +1,57 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Project} from "../../model/Project";
-import {useNavigate, useParams} from "react-router-dom";
-import Label from "../Label/Label";
+import {Link, Navigate, useNavigate, useParams} from "react-router-dom";
 import {server} from "../../App";
 import Button from "../Button/Button";
-import InputField from "../InputField/InputField";
+import InputTextField from "../InputTextField/InputTextField";
 import {Task} from "../../model/Task";
-import List, {ListLine} from "../List/List";
 import './ProjectForm.scss';
 import './../List/List.scss';
-import Header from "../Header/Header";
+import TaskList from "../Task/TaskList";
+import {PROJECT_FORM, TASK_FORM, TASK_FORM_PROJECT, TASK_FORM_PROJECT_ID, TASK_PAGE} from "../../RoutersProject";
 
 const ProjectForm = () => {
     const navigate = useNavigate();
     const {id} = useParams();
+
     const initialNewProject = {id: '', name: '', description: ''};
-    const [projectList, setProjectList] = useState<Project>(initialNewProject);
-    const [taskList, setTaskList] = useState<Task[]>([]);
+    const initialEmployeeList = server.getEmployees();
+    const initialProjectList = server.getProjects();
+    const initialTaskList = server.getTasks();
 
-    // Установка в state данных из хранилища
-    useEffect(() => {
-        const project = server.getProjects().find((projects: Project) => projects.id === id);
-        if (typeof id === "undefined") {
-            return setProjectList(initialNewProject);
-        } else {
-            return setProjectList(project);
-        }
-    }, [id]);
+    // Получаем проект для редактирования
+    const project = initialProjectList.find((projects: Project) => projects.id === id);
+    const [newProject, setNewProject] = useState<Project>(project ? project : initialNewProject);
 
-    // useEffect(() => {
-    //     setTasks(server.getTasks());
-    // });
+    // Получаем таски, принадлежащие проекту
+    const task = initialTaskList.filter((task) => task.projectId === newProject.id);
+    const [taskList, setTaskList] = useState<Task[]>(task ? task : initialTaskList);
+
+    const [projectList, setProjectList] = useState(initialProjectList);
+    const [employeeList, setEmployeeList] = useState(initialEmployeeList);
+
+    //Список для удаления
+    const [deleteTaskList, setDeleteTaskList] = useState([]);
 
     // Установка в state данных из input
     const changeHandler = (fieldName: string) => (e: React.KeyboardEvent<HTMLInputElement>): void => {
-        if (projectList.id !== '') {
-            setProjectList({...projectList, [fieldName]: e.currentTarget.value});
+        if (newProject.id !== '') {
+            setNewProject({...newProject, [fieldName]: e.currentTarget.value});
         } else {
             const id: string = Date.now().toString();
-            setProjectList({...projectList, id, [fieldName]: e.currentTarget.value});
+            setNewProject({...newProject, id, [fieldName]: e.currentTarget.value});
         }
     };
-
 
     const submitHandler = (event: React.FormEvent) => {
         event.preventDefault();
     };
 
     const onPushStorage = () => {
-        server.saveProject(projectList);
+        deleteTaskList.forEach(function (task) {
+            server.deleteTask(task.id);
+        });
+        server.saveProject(newProject);
         navigate(-1);
     };
 
@@ -56,45 +59,66 @@ const ProjectForm = () => {
         navigate(-1);
     };
 
-    const listData: ListLine<Task>[] = [
+    const deleteTaskFromProject = (id: string) => {
+        // Добавляем элемент в массив "Удаленные элементы"
+        const remoteTask = taskList.find((task: Task) => task.id === id);
+        setDeleteTaskList([...deleteTaskList, remoteTask]);
+        // Удаляем из списка задач элемент для отображения на экране 
+        const taskListNew = taskList.filter((task: Task) => task.id !== remoteTask.id);
+        setTaskList([...taskListNew])
+    };
+
+    const updateTaskFromProject = (id: string) => {
+
+        navigate(TASK_FORM_PROJECT + id);
+    };
+
+    const fieldList = [
         {
-            listName: "Наименование:",
-            getValueListLine: (tasks) => tasks.name
+            label: "Имя проекта:",
+            name: "name",
+            value: newProject.name,
+            required: true
+
+        },
+        {
+            label: "Описание проекта:",
+            name: "description",
+            value: newProject.description,
         }
     ];
 
     return (
         <div className="projectForm">
-            <Header
-                title="Редактирование проекта"
-                onClick={null}
-                text={null}
-                isShowButton={false}/>
-            <section>
-                <form onSubmit={submitHandler}>
-                    <div className="formRow">
-                        <Label text="Имя проекта"/>
-                        <InputField type="text" value={projectList.name} onChange={changeHandler('name')} name="name"/>
-                    </div>
-                    <div className="formRow">
-                        <Label text="Описание проекта"/>
-                        <InputField type="text" value={projectList.description} onChange={changeHandler('description')}
-                                    name="description"/>
-                    </div>
-
-                    <div className="actionBar">
-                        <Button onClick={onPushStorage} text="Сохранить"/>
-                        <Button onClick={onCancel} text="Отмена"/>
-                    </div>
-
-                </form>
-
-                <div className="listTask">
-                    <h2>Список задач</h2>
-                    <List listData={listData} values={taskList}/>
+            <form onSubmit={submitHandler}>
+                {
+                    fieldList.map(({label, name, value, required}, index) =>
+                        <div className="formRow" key={index}>
+                            <label>{label}</label>
+                            <InputTextField
+                                type="text"
+                                value={value}
+                                onChange={changeHandler(name)}
+                                name={name}/>
+                        </div>
+                    )
+                }
+                <div className="actionBar">
+                    <Button onClick={onPushStorage} text="Сохранить"/>
+                    <Button onClick={onCancel} text="Отмена"/>
                 </div>
-            </section>
+            </form>
 
+            <div className="TaskList">
+                <div className="actionBar">
+                    <Link className="button" to={TASK_FORM_PROJECT}>Добавить</Link>
+                </div>
+                <TaskList tasks={taskList}
+                          employees={employeeList}
+                          projects={projectList}
+                          deleteTask={deleteTaskFromProject}
+                          updateTask={updateTaskFromProject}/>
+            </div>
         </div>
     );
 };

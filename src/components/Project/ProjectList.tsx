@@ -2,7 +2,6 @@ import React from 'react';
 import {Project} from "../../model/Project";
 import List, {ListLine} from "../List/List";
 import Button from "../Button/Button";
-import {Task} from "../../model/Task";
 
 interface IProjectProps {
     project: Project[],

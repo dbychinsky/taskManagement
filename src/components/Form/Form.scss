@@ -1,6 +1,8 @@
 @import "../../parameters";
 
 form {
+    max-width: 300px;
+
     .formRow {
         margin-bottom: ($indents-base * 3);
     }

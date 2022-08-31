@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import {Task} from "../model/Task";
-import {buildUpdateTaskPath, TASK_FORM} from "../Paths";
+import {TASK_FORM} from "../RoutersProject";
 import TaskList from "../components/Task/TaskList";
 import {Employee} from "../model/Employee";
 import {Project} from "../model/Project";
@@ -28,16 +28,16 @@ const TaskPage = () => {
 
     const addTask = () => {
         navigate(TASK_FORM);
-    }
+    };
 
     const deleteTask = (id: string) => {
         server.deleteTask(id);
         setTaskList(server.getTasks());
-    }
+    };
 
     const updateTask = (id: string) => {
-        navigate(buildUpdateTaskPath(id!));
-    }
+        navigate(id);
+    };
 
     return (
         <div className="taskPage">
@@ -50,7 +50,8 @@ const TaskPage = () => {
                 employees={employeeList}
                 projects={projectList}
                 deleteTask={deleteTask}
-                updateTask={updateTask}/>
+                updateTask={updateTask}
+            />
         </div>
     );
 };

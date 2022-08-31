@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Project} from "../model/Project";
 import {useNavigate} from "react-router-dom";
-import {buildUpdateProjectPath, PROJECT_FORM} from "../Paths";
+import {PROJECT_FORM, PROJECT_ID} from "../RoutersProject";
 import {ProjectList} from "../components/Project/ProjectList";
 import {server} from "../App";
 import Header from "../components/Header/Header";
@@ -16,16 +16,16 @@ const ProjectsPage = () => {
 
     const addProject = () => {
         navigate(PROJECT_FORM);
-    }
+    };
 
     const deleteProject = (id: string) => {
         server.deleteProject(id);
         setProjectList(server.getProjects());
-    }
+    };
 
     const updateProject = (id: string) => {
-        navigate(buildUpdateProjectPath(id!));
-    }
+        navigate(id);
+    };
 
     return (
         <div className="projectPage">
