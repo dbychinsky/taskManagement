@@ -1,11 +1,12 @@
 import React, {ChangeEventHandler} from 'react';
-import InputTextField from "../InputTextField/InputTextField";
+import InputTextField from "../Fields/InputTextField/InputTextField";
 import Button from "../Button/Button";
 import {Project} from "../../model/Project";
 import TaskList from "../Task/TaskList";
 import {Task} from "../../model/Task";
 import {Employee} from "../../model/Employee";
 import Header from "../Header/Header";
+import FormRow from "../Form/FormRow/FormRow";
 
 interface IProjectFormProps {
     projectList: Project[],
@@ -38,16 +39,20 @@ export const ProjectForm = (props: IProjectFormProps) => {
 
     const fieldList = [
         {
-            label: "Имя проекта:",
-            name: "name",
-            value: newProject.name,
-            required: true
-
+            label: "Наименование:",
+            field: <InputTextField
+                type="text"
+                value={newProject.name}
+                onChange={changeHandler("name")}
+                name={"name"}/>
         },
         {
-            label: "Описание проекта:",
-            name: "description",
-            value: newProject.description,
+            label: "Описание:",
+            field: <InputTextField
+                type="text"
+                value={newProject.description}
+                onChange={changeHandler("description")}
+                name={"description"}/>
         }
     ];
 
@@ -55,17 +60,11 @@ export const ProjectForm = (props: IProjectFormProps) => {
         <div className="projectForm">
             <Header title="Проект" isShowButton={false}/>
             <div className="content">
+
                 <form onSubmit={submitHandler}>
                     {
-                        fieldList.map(({label, name, value, required}, index) =>
-                            <div className="formRow" key={index}>
-                                <label>{label}</label>
-                                <InputTextField
-                                    type="text"
-                                    value={value}
-                                    onChange={changeHandler(name)}
-                                    name={name}/>
-                            </div>
+                        fieldList.map(({label, field}, index) =>
+                            <FormRow labelText={label} children={field} key={index}/>
                         )
                     }
                     <div className="actionBar">
@@ -73,6 +72,7 @@ export const ProjectForm = (props: IProjectFormProps) => {
                         <Button onClick={onCancel} text="Отмена"/>
                     </div>
                 </form>
+
                 <div className="taskList">
 
                     <Button onClick={addTask} text="Добавить задачу"/>
@@ -80,8 +80,8 @@ export const ProjectForm = (props: IProjectFormProps) => {
                     <TaskList tasks={taskList}
                               employees={employeeList}
                               projects={projectList}
-                              deleteTask={deleteTask}
-                              updateTask={updateTask}/>
+                              remove={deleteTask}
+                              update={updateTask}/>
                 </div>
             </div>
         </div>

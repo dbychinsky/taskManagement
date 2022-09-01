@@ -5,11 +5,11 @@ import Button from "../Button/Button";
 
 interface IEmployeeProps {
     employees: Employee[];
-    deleteEmployee: (id: string) => void,
-    updateEmployee: (id: string) => void
+    update: (id: string) => void,
+    remove: (id: string) => void
 }
 
-export const EmployeeList = ({employees, updateEmployee, deleteEmployee}: IEmployeeProps) => {
+export const EmployeeList = ({employees, update, remove}: IEmployeeProps) => {
     const listData: ListLine<Employee>[] = [
         {
             listName: "Фамилия:",
@@ -31,8 +31,8 @@ export const EmployeeList = ({employees, updateEmployee, deleteEmployee}: IEmplo
             listName: "",
             getValueListLine: (employees) =>
                 <div className="actionBar">
-                    <Button onClick={() => updateEmployee(employees.id)} text="Изменить"/>
-                    <Button onClick={() => deleteEmployee(employees.id)} text="Удалить"/>
+                    <Button onClick={() => update(employees.id)} text="Изменить"/>
+                    <Button onClick={() => remove(employees.id)} text="Удалить"/>
                 </div>
         }
     ]

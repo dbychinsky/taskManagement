@@ -12,7 +12,7 @@
 
         > div {
             display: table-cell;
-            padding: $indents-base 0;
+            padding: $indents-base;
 
             border-bottom: 1px solid $color-main;
         }
@@ -24,11 +24,13 @@
 
         > div {
             display: table-cell;
-            padding: $indents-base 0;
+            padding: $indents-base;
             border-bottom: 1px solid $color-grey;
+
+
         }
 
-        &:not(:last-child) {
+        &:last-child {
             > div {
                 border: none;
             }

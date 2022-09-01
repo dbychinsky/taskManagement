@@ -1,38 +1,45 @@
-import React, {ChangeEvent, ChangeEventHandler, ReactNode, useState} from 'react';
-import {useNavigate, useParams} from "react-router-dom";
+import React, {ChangeEventHandler} from 'react';
 import {Task} from "../../model/Task";
 import {TASK_STATUSES} from "../../model/TaskStatus";
 import Label from "../Label/Label";
 import InputTextField from "../Fields/InputTextField/InputTextField";
 import Button from "../Button/Button";
-import {server} from "../../App";
 import {Project} from "../../model/Project";
 import {Employee} from "../../model/Employee";
 import '../Fields/ComboboxField/Combobox.scss';
 import ComboboxField from "../Fields/ComboboxField/ComboboxField";
-import Header from "../Header/Header";
 import FormRow from "../Form/FormRow/FormRow";
 
-interface ITaskFormProps {
-    task: Task,
+interface ITaskFormProjectProps {
+    taskForProject: Task,
     projectList: Project[],
     employeeList: Employee[],
     changeHandlerTask: (fieldName: string) => ChangeEventHandler,
     submitHandler: (event: React.FormEvent) => void,
-    onPushStorage: () => void,
-    onCancel: () => void,
+    showPage: (value: boolean) => void,
+    sendToStateTaskList: () => void
 }
 
-const TaskForm = (props: ITaskFormProps) => {
+const TaskFormProject = (props: ITaskFormProjectProps) => {
+
     const {
-        task,
+        taskForProject,
         projectList,
         employeeList,
         changeHandlerTask,
         submitHandler,
-        onPushStorage,
-        onCancel
+        showPage,
+        sendToStateTaskList
     } = props
+
+    const onPushToState = (value: boolean) => {
+        showPage(value);
+        sendToStateTaskList();
+    };
+
+    const onCancel = (value: boolean) => {
+        showPage(value);
+    };
 
     const fieldList = [
         {
@@ -40,13 +47,13 @@ const TaskForm = (props: ITaskFormProps) => {
             field: <ComboboxField
                 changeHandler={changeHandlerTask("status")}
                 valueList={TASK_STATUSES}
-                defaultValue={task.status}/>
+                defaultValue={taskForProject.status}/>
         },
         {
             label: "Наименование:",
             field: <InputTextField
                 type="text"
-                value={task.name}
+                value={taskForProject.name}
                 onChange={changeHandlerTask('name')}
                 name="name"/>
         },
@@ -59,13 +66,14 @@ const TaskForm = (props: ITaskFormProps) => {
                         return {value: project.id, option: project.name}
                     })
                 }
-                defaultValue={task.projectId}/>
+                defaultValue={taskForProject.projectId}
+                disabled={true}/>
         },
         {
             label: "Работа:",
             field: <InputTextField
-                type="number"
-                value={task.executionTime}
+                type="text"
+                value={taskForProject.executionTime}
                 onChange={changeHandlerTask('executionTime')}
                 name="description"/>
         },
@@ -74,7 +82,7 @@ const TaskForm = (props: ITaskFormProps) => {
             label: "Дата начала:",
             field: <InputTextField
                 type="text"
-                value={task.startDate}
+                value={taskForProject.startDate}
                 onChange={changeHandlerTask('startDate')}
                 name="startDate"/>
         },
@@ -82,7 +90,7 @@ const TaskForm = (props: ITaskFormProps) => {
             label: "Дата окончания:",
             field: <InputTextField
                 type="text"
-                value={task.endDate}
+                value={taskForProject.endDate}
                 onChange={changeHandlerTask('endDate')}
                 name="endDate"/>
         },
@@ -95,29 +103,25 @@ const TaskForm = (props: ITaskFormProps) => {
                         return {value: employee.id, option: employee.fullName}
                     })
                 }
-                defaultValue={task.employeeId}/>
+                defaultValue={taskForProject.employeeId}/>
         }
     ]
 
     return (
-        <div className="taskForm">
-            <Header title="Задача" isShowButton={false}/>
-            <div className="content">
-                <form onSubmit={submitHandler}>
-                    {
-                        fieldList.map(({label, field}, index) =>
-                            <FormRow labelText={label} children={field} key={index}/>
-                        )
-                    }
-                    <div className="actionBar">
-                        <Button onClick={onPushStorage} text="Сохранить"/>
-                        <Button onClick={onCancel} text="Отмена"/>
-                    </div>
+        <form onSubmit={submitHandler}>
+            {
+                fieldList.map(({label, field}, index) =>
+                    <FormRow labelText={label} children={field} key={index}/>
+                )
+            }
 
-                </form>
+            <div className="actionBar">
+                <Button onClick={() => onPushToState(false)} text="Сохранить"/>
+                <Button onClick={() => onCancel(false)} text="Отмена"/>
             </div>
-        </div>
+
+        </form>
     );
 };
 
-export default TaskForm;
+export default TaskFormProject;

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Project} from "../model/Project";
 import {useNavigate} from "react-router-dom";
-import {PROJECT_FORM, PROJECT_ID} from "../RoutersProject";
+import {PROJECT_FORM} from "../RoutersProject";
 import {ProjectList} from "../components/Project/ProjectList";
 import {server} from "../App";
 import Header from "../components/Header/Header";
@@ -14,16 +14,16 @@ const ProjectsPage = () => {
         setProjectList(server.getProjects());
     }, []);
 
-    const addProject = () => {
+    const add = () => {
         navigate(PROJECT_FORM);
     };
 
-    const deleteProject = (id: string) => {
+    const remove = (id: string) => {
         server.deleteProject(id);
         setProjectList(server.getProjects());
     };
 
-    const updateProject = (id: string) => {
+    const update = (id: string) => {
         navigate(id);
     };
 
@@ -31,14 +31,14 @@ const ProjectsPage = () => {
         <div className="projectPage">
             <Header
                 title="Список проектов"
-                onClick={addProject}
+                onClick={add}
                 text="Добавить"
                 isShowButton={true}/>
 
             <ProjectList
                 project={projectList}
-                deleteProject={deleteProject}
-                updateProject={updateProject}/>
+                remove={remove}
+                update={update}/>
         </div>
     );
 };

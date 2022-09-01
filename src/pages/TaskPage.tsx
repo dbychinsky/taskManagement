@@ -26,23 +26,23 @@ const TaskPage = () => {
         setProjectList(server.getProjects());
     }, []);
 
-    const addTask = () => {
+    const add = () => {
         navigate(TASK_FORM);
     };
 
-    const deleteTask = (id: string) => {
+    const remove = (id: string) => {
         server.deleteTask(id);
         setTaskList(server.getTasks());
     };
 
-    const updateTask = (id: string) => {
+    const update = (id: string) => {
         navigate(id);
     };
 
     return (
         <div className="taskPage">
             <Header title="Список задач"
-                    onClick={addTask}
+                    onClick={add}
                     text="Добавить"
                     isShowButton={true}/>
 
@@ -50,8 +50,8 @@ const TaskPage = () => {
                 tasks={taskList}
                 employees={employeeList}
                 projects={projectList}
-                deleteTask={deleteTask}
-                updateTask={updateTask}/>
+                remove={remove}
+                update={update}/>
         </div>
     );
 };

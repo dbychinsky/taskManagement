@@ -9,11 +9,11 @@ export interface ITaskProps {
     tasks: Task[],
     employees: Employee[],
     projects: Project[],
-    deleteTask: (id: string) => void,
-    updateTask: (id: string) => void
+    remove: (id: string) => void,
+    update: (id: string) => void
 }
 
-const TaskList = ({tasks, projects, employees, deleteTask, updateTask}: ITaskProps) => {
+const TaskList = ({tasks, projects, employees, remove, update}: ITaskProps) => {
     const listData: ListLine<Task>[] = [
         {
             listName: "Статус:",
@@ -25,19 +25,19 @@ const TaskList = ({tasks, projects, employees, deleteTask, updateTask}: ITaskPro
             getValueListLine: (tasks) => tasks.name
         },
         {
-            listName: "Наименование проекта",
+            listName: "Наименование проекта:",
             getValueListLine: (tasks) => projects.find(project => project.id === tasks.projectId)?.name || "Проект не выбран"
         },
         {
-            listName: "Работа",
+            listName: "Работа:",
             getValueListLine: (tasks) => tasks.executionTime
         },
         {
-            listName: "Дата начала",
+            listName: "Дата начала:",
             getValueListLine: (tasks) => tasks.startDate
         },
         {
-            listName: "Дата окончания",
+            listName: "Дата окончания:",
             getValueListLine: (tasks) => tasks.endDate
         },
         {
@@ -48,8 +48,8 @@ const TaskList = ({tasks, projects, employees, deleteTask, updateTask}: ITaskPro
             listName: "",
             getValueListLine: (tasks) =>
                 <div className="actionBar">
-                    <Button onClick={() => updateTask(tasks.id)} text="Изменить"/>
-                    <Button onClick={() => deleteTask(tasks.id)} text="Удалить"/>
+                    <Button onClick={() => update(tasks.id)} text="Изменить"/>
+                    <Button onClick={() => remove(tasks.id)} text="Удалить"/>
                 </div>
         }
     ]

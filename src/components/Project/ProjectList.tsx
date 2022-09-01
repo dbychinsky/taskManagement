@@ -5,11 +5,11 @@ import Button from "../Button/Button";
 
 interface IProjectProps {
     project: Project[],
-    deleteProject: (id: string) => void,
-    updateProject: (id: string) => void
+    remove: (id: string) => void,
+    update: (id: string) => void
 }
 
-export const ProjectList = ({project, deleteProject, updateProject}: IProjectProps) => {
+export const ProjectList = ({project, remove, update}: IProjectProps) => {
     const listData: ListLine<Project>[] = [
         {
             listName: "Наименование:",
@@ -24,8 +24,8 @@ export const ProjectList = ({project, deleteProject, updateProject}: IProjectPro
             getValueListLine: (project) =>
 
                 <div className="actionBar">
-                    <Button onClick={() => updateProject(project.id)} text="Изменить"/>
-                    <Button onClick={() => deleteProject(project.id)} text="Удалить"/>
+                    <Button onClick={() => update(project.id)} text="Изменить"/>
+                    <Button onClick={() => remove(project.id)} text="Удалить"/>
                 </div>
         }
     ]

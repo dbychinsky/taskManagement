@@ -1,8 +1,9 @@
 import React, {ChangeEventHandler, useState} from 'react';
 import Button from "../Button/Button";
-import InputTextField from "../InputTextField/InputTextField";
+import InputTextField from "../Fields/InputTextField/InputTextField";
 import {Employee} from "../../model/Employee";
 import Header from "../Header/Header";
+import FormRow from "../Form/FormRow/FormRow";
 
 interface IEmployeeFormProps {
     newEmployee: Employee,
@@ -24,25 +25,36 @@ const EmployeeForm = (props: IEmployeeFormProps) => {
 
     const fieldList = [
         {
+            label: "Фамилия:",
+            field: <InputTextField
+                type="text"
+                value={newEmployee.lastName}
+                onChange={changeHandler("lastName")}
+                name={"lastName"}/>
+        },
+        {
             label: "Имя:",
-            name: "firstName",
-            value: newEmployee.firstName
-
+            field: <InputTextField
+                type="text"
+                value={newEmployee.firstName}
+                onChange={changeHandler("firstName")}
+                name={"firstName"}/>
         },
         {
             label: "Отчество:",
-            name: "middleName",
-            value: newEmployee.middleName
+            field: <InputTextField
+                type="text"
+                value={newEmployee.middleName}
+                onChange={changeHandler("middleName")}
+                name={"middleName"}/>
         },
         {
-            label: "Фамилия:",
-            name: "lastName",
-            value: newEmployee.lastName
-        },
-        {
-            label: "Описание проекта:",
-            name: "position",
-            value: newEmployee.position
+            label: "Должность:",
+            field: <InputTextField
+                type="text"
+                value={newEmployee.position}
+                onChange={changeHandler("position")}
+                name={"position"}/>
         }
     ];
     return (
@@ -51,15 +63,8 @@ const EmployeeForm = (props: IEmployeeFormProps) => {
             <div className="content">
                 <form onSubmit={submitHandler}>
                     {
-                        fieldList.map(({label, name, value}, index) =>
-                            <div className="formRow" key={index}>
-                                <label>{label}</label>
-                                <InputTextField
-                                    type="text"
-                                    value={value}
-                                    onChange={changeHandler(name)}
-                                    name={name}/>
-                            </div>
+                        fieldList.map(({label, field}, index) =>
+                            <FormRow labelText={label} children={field} key={index}/>
                         )
                     }
                     <div className="actionBar">

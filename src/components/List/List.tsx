@@ -40,16 +40,11 @@ const List = <T, >({listData, values}: IListProps<T>) => {
             }
         </div>
 
-
     const listEmpty =
         <p className="listEmpty">Список пуст</p>
 
-
     return (
-
         values.length ? listFill : listEmpty
-
-
     );
 };
 
