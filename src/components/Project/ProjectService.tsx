@@ -5,8 +5,9 @@ import {server} from "../../App";
 import {Task} from "../../model/Task";
 import './ProjectForm.scss';
 import './../List/List.scss';
-import TaskFormProject from "../Task/TaskFormProject";
+import TaskUpdateFromProject from "../Task/TaskUpdateFromProject";
 import {ProjectForm} from './ProjectForm';
+import {TaskStatus} from "../../util/convertToStrTaskStatus";
 
 const ProjectService = () => {
 
@@ -20,7 +21,7 @@ const ProjectService = () => {
     const initialNewProject = {id: '', name: '', description: ''};
     const initialNewTask = {
         id: '',
-        status: '',
+        status: TaskStatus.NotStarted,
         name: '',
         executionTime: 0,
         startDate: '',
@@ -56,22 +57,22 @@ const ProjectService = () => {
     };
 
     // Установка в состояние данных из полей формы страницы Project
-    const changeHandlerForProject = (fieldName: string) => (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    const changeHandlerForProject = (e: React.ChangeEvent<HTMLInputElement>): void => {
         if (newProject.id !== '') {
-            setNewProject({...newProject, [fieldName]: e.currentTarget.value});
+            setNewProject({...newProject, [e.currentTarget.name]: e.currentTarget.value});
         } else {
             const id: string = Date.now().toString();
-            setNewProject({...newProject, id, [fieldName]: e.currentTarget.value});
+            setNewProject({...newProject, id, [e.currentTarget.name]: e.currentTarget.value});
         }
     };
 
     // Установка в состояние данных из полей формы страницы Task
-    const changeHandlerForTask = (fieldName: string) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+    const changeHandlerForTask =  (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
         if (taskForProject.id !== '') {
-            setTaskForProject({...taskForProject, [fieldName]: event.currentTarget.value});
+            setTaskForProject({...taskForProject, [e.currentTarget.name]: e.currentTarget.value});
         } else {
             const id: string = Date.now().toString();
-            setTaskForProject({...taskForProject, id, [fieldName]: event.currentTarget.value});
+            setTaskForProject({...taskForProject, id, [e.currentTarget.name]: e.currentTarget.value});
         }
     };
 
@@ -144,7 +145,7 @@ const ProjectService = () => {
             newProject={newProject}
             onPushStorage={onPushStorage}
             onCancel={onCancel}
-            changeHandler={changeHandlerForProject}
+            changeHandlerForProject={changeHandlerForProject}
             submitHandler={submitHandler}
             taskList={taskList}
             employeeList={employeeList}
@@ -154,7 +155,7 @@ const ProjectService = () => {
         />
 
     const taskEditFromProject =
-        <TaskFormProject
+        <TaskUpdateFromProject
             taskForProject={taskForProject}
             projectList={projectList}
             employeeList={employeeList}

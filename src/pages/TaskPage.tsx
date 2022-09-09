@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import {Task} from "../model/Task";
-import {TASK_FORM} from "../RoutersProject";
-import TaskList from "../components/Task/TaskList";
+import TaskView from "../components/Task/TaskView";
 import {Employee} from "../model/Employee";
 import {Project} from "../model/Project";
 import {server} from "../App";
 import Header from "../components/Header/Header";
+import {TaskFormPath} from "../RoutersProject";
 
 const TaskPage = () => {
     const navigate = useNavigate();
@@ -27,7 +27,7 @@ const TaskPage = () => {
     }, []);
 
     const add = () => {
-        navigate(TASK_FORM);
+        navigate(TaskFormPath);
     };
 
     const remove = (id: string) => {
@@ -46,7 +46,7 @@ const TaskPage = () => {
                     text="Добавить"
                     isShowButton={true}/>
 
-            <TaskList
+            <TaskView
                 tasks={taskList}
                 employees={employeeList}
                 projects={projectList}

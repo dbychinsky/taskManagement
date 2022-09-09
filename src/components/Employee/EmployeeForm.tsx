@@ -1,77 +1,114 @@
-import React, {ChangeEventHandler, useState} from 'react';
-import Button from "../Button/Button";
+import React, {useEffect, useState} from 'react';
+import Header from "../Header/Header";
 import InputTextField from "../Fields/InputTextField/InputTextField";
 import {Employee} from "../../model/Employee";
-import Header from "../Header/Header";
-import FormRow from "../Form/FormRow/FormRow";
+import Form from "../Form/Form";
+import {ErrorFieldState, validation} from "../../util/validation/validateService";
 
-interface IEmployeeFormProps {
-    newEmployee: Employee,
-    changeHandler: (fieldName: string) => ChangeEventHandler,
-    submitHandler: (event: React.FormEvent) => void,
+interface IProjectFormProps {
+    employee: Employee,
     onPushStorage: () => void,
     onCancel: () => void,
+    changeHandlerEmployee: (e: React.ChangeEvent<HTMLInputElement>) => void,
+}
+
+export type FieldListForm = {
+    label: string,
+    field: JSX.Element,
+    message: string
 }
 
 
-const EmployeeForm = (props: IEmployeeFormProps) => {
+const EmployeeForm = (props: IProjectFormProps) => {
     const {
-        newEmployee,
-        changeHandler,
-        submitHandler,
+        employee,
         onPushStorage,
-        onCancel
+        onCancel,
+        changeHandlerEmployee
     } = props
 
-    const fieldList = [
+    const fieldList: FieldListForm[] = [
         {
             label: "Фамилия:",
             field: <InputTextField
                 type="text"
-                value={newEmployee.lastName}
-                onChange={changeHandler("lastName")}
-                name={"lastName"}/>
+                value={employee.lastName}
+                changeHandler={changeHandlerEmployee}
+                name={"lastName"}
+                required={true}/>,
+            message: ''
         },
         {
             label: "Имя:",
             field: <InputTextField
                 type="text"
-                value={newEmployee.firstName}
-                onChange={changeHandler("firstName")}
-                name={"firstName"}/>
+                value={employee.firstName}
+                changeHandler={changeHandlerEmployee}
+                name={"firstName"}
+                required={true}/>,
+            message: ''
+
         },
         {
             label: "Отчество:",
             field: <InputTextField
                 type="text"
-                value={newEmployee.middleName}
-                onChange={changeHandler("middleName")}
-                name={"middleName"}/>
+                value={employee.middleName}
+                changeHandler={changeHandlerEmployee}
+                name={"middleName"}
+                required={true}/>,
+            message: ''
         },
         {
             label: "Должность:",
             field: <InputTextField
                 type="text"
-                value={newEmployee.position}
-                onChange={changeHandler("position")}
-                name={"position"}/>
+                value={employee.position}
+                changeHandler={changeHandlerEmployee}
+                name={"position"}
+                required={false}/>,
+            message: ''
         }
     ];
+
+    const fieldFieldStateError: ErrorFieldState[] =
+        [
+            {name: "lastName", isValid: false},
+            {name: "firstName", isValid: false},
+            {name: "middleName", isValid: false}
+        ];
+
+
+    const [fieldListForm, setFieldListForm] = useState<FieldListForm[]>(fieldList);
+
+
+    useEffect(() => {
+        setFieldListForm(fieldList);
+    }, [changeHandlerEmployee])
+
+
+    const validationField = () => {
+        setFieldListForm(validation(fieldFieldStateError, fieldList));
+    }
+
+    const isValidForm = (fieldFieldStateError: ErrorFieldState[]): boolean => {
+        return typeof (fieldFieldStateError.find(element => element.isValid == false)) == 'undefined'
+    }
+
+    const onSubmitForm = () => {
+        validationField();
+        if (isValidForm(fieldFieldStateError)) {
+            onPushStorage();
+        } else {
+            console.log('ne go')
+        }
+    }
+
     return (
-        <div className="employeeForm">
+        <div className="EmployeeForm">
             <Header title="Сотрудник" isShowButton={false}/>
             <div className="content">
-                <form onSubmit={submitHandler}>
-                    {
-                        fieldList.map(({label, field}, index) =>
-                            <FormRow labelText={label} children={field} key={index}/>
-                        )
-                    }
-                    <div className="actionBar">
-                        <Button onClick={onPushStorage} text="Сохранить"/>
-                        <Button onClick={onCancel} text="Отмена"/>
-                    </div>
-                </form>
+                <Form fieldListForm={fieldListForm} onSubmitForm={onSubmitForm} onCancel={onCancel}/>
             </div>
         </div>
     );

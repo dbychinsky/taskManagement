@@ -1,50 +1,55 @@
 import React, {useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import {server} from "../../App";
-import {Employee} from "../../model/Employee";
 import EmployeeForm from "./EmployeeForm";
+import {Task} from "../../model/Task";
+import {Employee} from "../../model/Employee";
 
-export const EmployeeService = () => {
+const EmployeeService = () => {
+
     const navigate = useNavigate();
     const {id} = useParams();
-    const initialNewEmployee = {id: '', firstName: '', lastName: '', middleName: '', position: '', fullName: ''};
-    const employee = server.getEmployees().find((employee: Employee) => employee.id === id);
-    const [newEmployee, setNewEmployee] = useState<Employee>(employee ? employee : initialNewEmployee);
+    const initialNewEmployee = {id: '', lastName: '', firstName: '', middleName: '', position: '', fullName: ''};
+    const initialEmployeeList = server.getEmployees();
+    const initialEmployee = server.getEmployees().find((employee: Employee) => employee.id === id);
+    const [employee, setEmployee] = useState<Employee>(initialEmployee ? initialEmployee : initialNewEmployee);
 
-    // Установка в состояние данных из полей формы страницы Employee
-    const changeHandlerTask = (fieldName: string) => (e: React.KeyboardEvent<HTMLInputElement>): void => {
-        if (newEmployee.id !== '') {
-            setNewEmployee({...newEmployee, [fieldName]: e.currentTarget.value});
+
+    // Установка в состояние данных из полей формы страницы Task
+    const changeHandlerEmployee = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+        if (employee.id !== '') {
+            setEmployee({...employee, [e.currentTarget.name]: e.currentTarget.value});
         } else {
             const id: string = Date.now().toString();
-            setNewEmployee({...newEmployee, id, [fieldName]: e.currentTarget.value});
+            setEmployee({...employee, id, [e.currentTarget.name]: e.currentTarget.value});
         }
-    }
-
-    const submitHandler = (event: React.FormEvent) => {
-        event.preventDefault();
-    }
+        console.log(employee)
+    };
 
     const onPushStorage = () => {
         // Добавление ФИО
+
         const newEmployees: Employee = {
-            ...newEmployee,
-            fullName: `${newEmployee.lastName} ${newEmployee.firstName} ${newEmployee.middleName}`
+            ...employee,
+            fullName: `${employee.lastName} ${employee.firstName} ${employee.middleName}`
         }
         server.saveEmployee(newEmployees);
         navigate(-1);
     }
 
+    // Отмена
     const onCancel = () => {
         navigate(-1);
-    }
+    };
 
-    return <EmployeeForm
-        newEmployee={newEmployee}
-        changeHandler={changeHandlerTask}
-        onPushStorage={onPushStorage}
-        submitHandler={submitHandler}
-        onCancel={onCancel}
-    />
-
+    return (
+        <EmployeeForm
+            employee={employee}
+            onPushStorage={onPushStorage}
+            onCancel={onCancel}
+            changeHandlerEmployee={changeHandlerEmployee}
+        />
+    );
 };
+
+export default EmployeeService;

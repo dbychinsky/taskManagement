@@ -5,6 +5,7 @@ import {server} from "../../App";
 import {Task} from "../../model/Task";
 import {Project} from "../../model/Project";
 import TaskForm from "./TaskForm";
+import {TaskStatus} from "../../util/convertToStrTaskStatus";
 
 const TaskService = () => {
     const navigate = useNavigate();
@@ -13,7 +14,7 @@ const TaskService = () => {
     const initialEmployeeList = server.getEmployees();
     const initialNewTask = {
         id: '',
-        status: '',
+        status: TaskStatus.NotStarted,
         name: '',
         executionTime: 0,
         startDate: '',
@@ -29,12 +30,14 @@ const TaskService = () => {
     const [employeeList, setEmployeeList] = useState<Employee[]>(initialEmployeeList);
 
     // Установка в состояние данных из полей формы страницы Task
-    const changeHandlerTask = (fieldName: string) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+    // const changeHandlerTask = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+    const changeHandlerTask = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+
         if (task.id !== '') {
-            setTasks({...task, [fieldName]: event.currentTarget.value});
+            setTasks({...task, [e.currentTarget.name]: e.currentTarget.value});
         } else {
             const id: string = Date.now().toString();
-            setTasks({...task, id, [fieldName]: event.currentTarget.value});
+            setTasks({...task, id, [e.currentTarget.name]: e.currentTarget.value});
         }
     };
 

@@ -4,11 +4,10 @@
 
 == Необходимое ПО
 
-. Node.js (https://nodejs.org/en/)
-. Docker (https://docs.docker.com/engine/install/ubuntu/)
+. Node.js, latest current version includes npm (https://nodejs.org/en/download/current/)
 
 == Инструкция по запуску:
-. `npm install` (если не было выполнено ранее, для установки зависимостей)
+. `npm install` (для установки зависимостей)
 . `npm start`
 
 === Инструменты

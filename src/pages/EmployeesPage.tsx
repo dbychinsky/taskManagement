@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import {Employee} from "../model/Employee";
-import {EmployeeList} from "../components/Employee/EmployeeList";
-import {EMPLOYEE_FORM} from "../RoutersProject";
+import {EmployeeView} from "../components/Employee/EmployeeView";
 import {server} from "../App";
 import Header from "../components/Header/Header";
+import {EmployeesFormPath} from "../RoutersProject";
 
 const EmployeesPage = () => {
     const navigate = useNavigate();
@@ -15,7 +15,7 @@ const EmployeesPage = () => {
     }, []);
 
     const add = () => {
-        navigate(EMPLOYEE_FORM)
+        navigate(EmployeesFormPath)
     };
 
     const remove = (id: string) => {
@@ -35,7 +35,7 @@ const EmployeesPage = () => {
                 text="Добавить"
                 isShowButton={true}/>
 
-            <EmployeeList
+            <EmployeeView
                 employees={employeeList}
                 remove={remove}
                 update={update}/>

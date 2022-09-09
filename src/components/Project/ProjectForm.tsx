@@ -2,7 +2,7 @@ import React, {ChangeEventHandler} from 'react';
 import InputTextField from "../Fields/InputTextField/InputTextField";
 import Button from "../Button/Button";
 import {Project} from "../../model/Project";
-import TaskList from "../Task/TaskList";
+import TaskView from "../Task/TaskView";
 import {Task} from "../../model/Task";
 import {Employee} from "../../model/Employee";
 import Header from "../Header/Header";
@@ -15,7 +15,7 @@ interface IProjectFormProps {
     employeeList: Employee[],
     onPushStorage: () => void,
     onCancel: () => void,
-    changeHandler: (fieldName: string) => ChangeEventHandler,
+    changeHandlerForProject: (e: React.ChangeEvent<HTMLInputElement>) => void,
     submitHandler: (event: React.FormEvent) => void,
     updateTask: (id: string) => void,
     deleteTask: (id: string) => void,
@@ -30,7 +30,7 @@ export const ProjectForm = (props: IProjectFormProps) => {
         newProject,
         onPushStorage,
         onCancel,
-        changeHandler,
+        changeHandlerForProject,
         submitHandler,
         updateTask,
         deleteTask,
@@ -43,7 +43,7 @@ export const ProjectForm = (props: IProjectFormProps) => {
             field: <InputTextField
                 type="text"
                 value={newProject.name}
-                onChange={changeHandler("name")}
+                changeHandler={changeHandlerForProject}
                 name={"name"}/>
         },
         {
@@ -51,7 +51,7 @@ export const ProjectForm = (props: IProjectFormProps) => {
             field: <InputTextField
                 type="text"
                 value={newProject.description}
-                onChange={changeHandler("description")}
+                changeHandler={changeHandlerForProject}
                 name={"description"}/>
         }
     ];
@@ -77,7 +77,7 @@ export const ProjectForm = (props: IProjectFormProps) => {
 
                     <Button onClick={addTask} text="Добавить задачу"/>
 
-                    <TaskList tasks={taskList}
+                    <TaskView tasks={taskList}
                               employees={employeeList}
                               projects={projectList}
                               remove={deleteTask}

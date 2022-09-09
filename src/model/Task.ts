@@ -1,18 +1,18 @@
-// import TaskStatus from "./TaskStatus";
+import {TaskStatus} from "../util/convertToStrTaskStatus";
 
 export class Task {
     id: string;
-    status: string;
+    status: TaskStatus;
     name: string;
     projectId: string | null;
     executionTime: number;
     startDate: string;
-    endDate:  string;
+    endDate: string;
     employeeId: string | null;
 
     constructor() {
         this.id = '';
-        this.status = '';
+        this.status = TaskStatus.NotStarted;
         this.name = '';
         this.projectId = null;
         this.executionTime = 0;

@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Project} from "../model/Project";
 import {useNavigate} from "react-router-dom";
-import {PROJECT_FORM} from "../RoutersProject";
-import {ProjectList} from "../components/Project/ProjectList";
+import {ProjectFormPath} from "../RoutersProject";
+import {ProjectView} from "../components/Project/ProjectView";
 import {server} from "../App";
 import Header from "../components/Header/Header";
 
@@ -15,7 +15,7 @@ const ProjectsPage = () => {
     }, []);
 
     const add = () => {
-        navigate(PROJECT_FORM);
+        navigate(ProjectFormPath);
     };
 
     const remove = (id: string) => {
@@ -35,7 +35,7 @@ const ProjectsPage = () => {
                 text="Добавить"
                 isShowButton={true}/>
 
-            <ProjectList
+            <ProjectView
                 project={projectList}
                 remove={remove}
                 update={update}/>

@@ -3,7 +3,7 @@ import './Combobox.scss';
 
 interface IComboboxFieldProp {
     changeHandler: ChangeEventHandler,
-    valueList: { value: string, option: string }[],
+    valueList: { statusId: string, statusText: string }[],
     defaultValue: string,
     disabled?: boolean
 }
@@ -14,14 +14,12 @@ const ComboboxField = ({changeHandler, valueList, defaultValue, disabled}: IComb
             <option></option>
             {
                 valueList.map((elem, index) => {
-                    return <option key={index} value={elem.value}>{elem.option}</option>
+                    return <option key={index} value={elem.statusId}>{elem.statusText}</option>
                 })
             }
         </select>
-
     )
 }
-
 
 export default ComboboxField;
 
