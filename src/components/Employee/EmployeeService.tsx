@@ -23,8 +23,7 @@ const EmployeeService = () => {
             const id: string = Date.now().toString();
             setEmployee({...employee, id, [e.currentTarget.name]: e.currentTarget.value});
         }
-        console.log(employee)
-    };
+     };
 
     const onPushStorage = () => {
         // Добавление ФИО

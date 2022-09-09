@@ -11,7 +11,6 @@ interface IComboboxFieldProp {
 const ComboboxField = ({changeHandler, valueList, defaultValue, disabled}: IComboboxFieldProp) => {
     return (
         <select onChange={changeHandler} defaultValue={defaultValue} disabled={disabled}>
-            <option></option>
             {
                 valueList.map((elem, index) => {
                     return <option key={index} value={elem.statusId}>{elem.statusText}</option>

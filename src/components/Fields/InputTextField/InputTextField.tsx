@@ -7,8 +7,7 @@ interface IInputFieldProps {
     changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void,
     name: string,
     placeholder?: string,
-    required?: boolean,
-    feedback?: string
+    required?: boolean
 }
 
 const InputTextField: FC<IInputFieldProps> = (
@@ -18,8 +17,7 @@ const InputTextField: FC<IInputFieldProps> = (
         changeHandler,
         name,
         placeholder = "Введите значение",
-        required,
-        feedback
+        required
     }) => {
     return (
         <input

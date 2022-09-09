@@ -1,15 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import FormRow from "./FormRow/FormRow";
 import Button from "../Button/Button";
-import {FieldListForm} from "../Employee/EmployeeForm";
+import {isValidEmptyField, isValidEmptyFieldText} from "../../Validate";
+
+export type FieldListForm = {
+    label: string,
+    field: JSX.Element,
+    message: string
+}
 
 interface IForm {
     fieldListForm: FieldListForm[],
-    onSubmitForm: () => void,
-    onCancel: () => void
+    onSubmitForm: (value?:boolean) => void,
+    onCancel: (value?:boolean) => void
 }
 
+
 const Form = ({fieldListForm, onSubmitForm, onCancel}: IForm) => {
+
+
     const submitHandler = (event: React.FormEvent) => {
         event.preventDefault();
     }

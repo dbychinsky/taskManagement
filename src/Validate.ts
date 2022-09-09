@@ -1,3 +1,10 @@
+// Параметры валидации
+export const MaxLength = 20;
+
+// Тексты ошибок
+export const isValidStringLengthText: string = `Максимально доустимая длинна текста ${MaxLength}`
+export const isValidEmptyFieldText: string = `Поле обязательно к заполнению`
+
 // МАСКИ
 // Положительные числа
 export const numberPositive = /^[1-9]\d*$/
@@ -6,15 +13,16 @@ export const lettersPositive = /^[а-яa-zА-ЯA-Z][а-яa-zA-ZА-Я\s]*$/
 // Формат даты
 export const datePositive = /^\d{4}-\d{2}-\d{2}$/
 
+// МЕТОДЫ
+// Проверка на максимальную длинну
+export const isValidStringLength = (
+    text: string,
+    maxLength = Infinity,
+): boolean => {
+    return text.length <= maxLength;
+};
 
-// Метод проверки на буквы и дефис
-
-const text = ' только буквы и дефис'
-
-export const getErrorOnlyLetters = (fieldName: string) => `${fieldName} ${text}`
-
-export const onlyLettersAndHyphenValidator = (fieldName: string, value: string) => {
-    if (!value.match(lettersPositive)) {
-        return getErrorOnlyLetters(fieldName)
-    }
-}
+// Проверка на пустоту
+export const isValidEmptyField = (text: string): boolean => {
+    return text !== '';
+};

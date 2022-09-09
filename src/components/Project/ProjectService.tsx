@@ -129,7 +129,6 @@ const ProjectService = () => {
             server.saveTask(task);
         });
         navigate(-1);
-
     };
 
     // Добавление к таскам идентификатора проекта

@@ -2,20 +2,19 @@ import React, {useEffect, useState} from 'react';
 import Header from "../Header/Header";
 import InputTextField from "../Fields/InputTextField/InputTextField";
 import {Employee} from "../../model/Employee";
-import Form from "../Form/Form";
-import {ErrorFieldState, validation} from "../../util/validation/validateService";
+import {isValidEmptyField, isValidEmptyFieldText} from "../../Validate";
+import Form, {FieldListForm} from "../Form/Form";
+
+export type ErrorFieldState = {
+    name: string,
+    isValid: boolean
+}
 
 interface IProjectFormProps {
     employee: Employee,
     onPushStorage: () => void,
     onCancel: () => void,
     changeHandlerEmployee: (e: React.ChangeEvent<HTMLInputElement>) => void,
-}
-
-export type FieldListForm = {
-    label: string,
-    field: JSX.Element,
-    message: string
 }
 
 
@@ -27,7 +26,7 @@ const EmployeeForm = (props: IProjectFormProps) => {
         changeHandlerEmployee
     } = props
 
-    const fieldList: FieldListForm[] = [
+    const fieldList = [
         {
             label: "Фамилия:",
             field: <InputTextField
@@ -71,36 +70,67 @@ const EmployeeForm = (props: IProjectFormProps) => {
         }
     ];
 
-    const fieldFieldStateError: ErrorFieldState[] =
+    const fieldFieldStateError =
         [
             {name: "lastName", isValid: false},
             {name: "firstName", isValid: false},
             {name: "middleName", isValid: false}
         ];
 
-
     const [fieldListForm, setFieldListForm] = useState<FieldListForm[]>(fieldList);
-
 
     useEffect(() => {
         setFieldListForm(fieldList);
-    }, [changeHandlerEmployee])
 
+        // validationField();
+    }, [employee])
 
     const validationField = () => {
-        setFieldListForm(validation(fieldFieldStateError, fieldList));
-    }
+
+        const changeFieldListErrors = (name: string, isValid: boolean) => {
+            fieldFieldStateError.forEach((element) => {
+                if (element.name === name) {
+                    element.isValid = isValid;
+                }
+            });
+        }
+
+        setFieldListForm(fieldList.map((fields) => {
+
+                let fieldTemp = fields.field.props;
+
+                if (fields.field.props.required) {
+                    if (isValidEmptyField(fields.field.props.value)) {
+                        fields.message = ''
+                        console.log('Поле валидно.', fields.message);
+                        changeFieldListErrors(fieldTemp.name, true);
+
+
+                    } else {
+                        fields.message = isValidEmptyFieldText;
+                        console.log('Поле не валидно.', fields.message);
+                        changeFieldListErrors(fieldTemp.name, false);
+
+                    }
+                }
+                return fields
+            }
+        ))
+
+    };
 
     const isValidForm = (fieldFieldStateError: ErrorFieldState[]): boolean => {
         return typeof (fieldFieldStateError.find(element => element.isValid == false)) == 'undefined'
     }
 
     const onSubmitForm = () => {
+
         validationField();
+
         if (isValidForm(fieldFieldStateError)) {
             onPushStorage();
         } else {
-            console.log('ne go')
+            console.log('form is not valid')
         }
     }
 
@@ -108,7 +138,9 @@ const EmployeeForm = (props: IProjectFormProps) => {
         <div className="EmployeeForm">
             <Header title="Сотрудник" isShowButton={false}/>
             <div className="content">
-                <Form fieldListForm={fieldListForm} onSubmitForm={onSubmitForm} onCancel={onCancel}/>
+                <Form fieldListForm={fieldListForm}
+                      onSubmitForm={onSubmitForm}
+                      onCancel={onCancel}/>
             </div>
         </div>
     );

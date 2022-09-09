@@ -1,4 +1,4 @@
-import React, {ChangeEventHandler} from 'react';
+import React, {ChangeEventHandler, useEffect, useState} from 'react';
 import {Task} from "../../model/Task";
 import {TaskStatuses} from "../../model/TaskStatus";
 import Label from "../Label/Label";
@@ -9,6 +9,9 @@ import {Employee} from "../../model/Employee";
 import '../Fields/ComboboxField/Combobox.scss';
 import ComboboxField from "../Fields/ComboboxField/ComboboxField";
 import FormRow from "../Form/FormRow/FormRow";
+import Form, {FieldListForm} from "../Form/Form";
+import {isValidEmptyField, isValidEmptyFieldText} from "../../Validate";
+import {ErrorFieldState} from "../Employee/EmployeeForm";
 
 interface ITaskFormProjectProps {
     taskForProject: Task,
@@ -31,22 +34,14 @@ const TaskUpdateFromProject = (props: ITaskFormProjectProps) => {
         sendToStateTaskList
     } = props
 
-    const onPushToState = (value: boolean) => {
-        showPage(value);
-        sendToStateTaskList();
-    };
-
-    const onCancel = (value: boolean) => {
-        showPage(value);
-    };
-
     const fieldList = [
         {
             label: "Статус:",
             field: <ComboboxField
                 changeHandler={changeHandlerTask}
                 valueList={TaskStatuses}
-                defaultValue={taskForProject.status}/>
+                defaultValue={taskForProject.status}/>,
+            message: ''
         },
         {
             label: "Наименование:",
@@ -54,7 +49,9 @@ const TaskUpdateFromProject = (props: ITaskFormProjectProps) => {
                 type="text"
                 value={taskForProject.name}
                 changeHandler={changeHandlerTask}
-                name="name"/>
+                name="name"
+                required={true}/>,
+            message: ''
         },
         {
             label: "Наименование проекта:",
@@ -66,7 +63,8 @@ const TaskUpdateFromProject = (props: ITaskFormProjectProps) => {
                     })
                 }
                 defaultValue={taskForProject.projectId}
-                disabled={true}/>
+                disabled={true}/>,
+            message: ''
         },
         {
             label: "Работа:",
@@ -74,7 +72,9 @@ const TaskUpdateFromProject = (props: ITaskFormProjectProps) => {
                 type="text"
                 value={taskForProject.executionTime}
                 changeHandler={changeHandlerTask}
-                name="description"/>
+                name="description"
+                required={true}/>,
+            message: ''
         },
 
         {
@@ -83,7 +83,8 @@ const TaskUpdateFromProject = (props: ITaskFormProjectProps) => {
                 type="text"
                 value={taskForProject.startDate}
                 changeHandler={changeHandlerTask}
-                name="startDate"/>
+                name="startDate"/>,
+            message: ''
         },
         {
             label: "Дата окончания:",
@@ -91,7 +92,8 @@ const TaskUpdateFromProject = (props: ITaskFormProjectProps) => {
                 type="text"
                 value={taskForProject.endDate}
                 changeHandler={changeHandlerTask}
-                name="endDate"/>
+                name="endDate"/>,
+            message: ''
         },
         {
             label: "Исполнитель:",
@@ -102,15 +104,80 @@ const TaskUpdateFromProject = (props: ITaskFormProjectProps) => {
                         return {statusId: employee.id, statusText: employee.fullName}
                     })
                 }
-                defaultValue={taskForProject.employeeId}/>
+                defaultValue={taskForProject.employeeId}/>,
+            message: ''
         }
-    ]
+    ];
+
+    const fieldFieldStateError =
+        [
+            {name: "name", isValid: false},
+            {name: "description", isValid: false}
+        ];
+
+    const [fieldListForm, setFieldListForm] = useState<FieldListForm[]>(fieldList);
+
+    useEffect(() => {
+        setFieldListForm(fieldList);
+    }, [taskForProject]);
+
+    const validationField = () => {
+
+        const changeFieldListErrors = (name: string, isValid: boolean) => {
+            fieldFieldStateError.forEach((element) => {
+                if (element.name === name) {
+                    element.isValid = isValid;
+                }
+            });
+        }
+
+        setFieldListForm(fieldList.map((fields) => {
+
+                let fieldTemp = fields.field.props;
+
+                if (fields.field.props.required) {
+                    if (isValidEmptyField(fields.field.props.value)) {
+                        fields.message = ''
+                        console.log('Поле валидно.', fields.message);
+                        changeFieldListErrors(fieldTemp.name, true);
+
+
+                    } else {
+                        fields.message = isValidEmptyFieldText;
+                        console.log('Поле не валидно.', fields.message);
+                        changeFieldListErrors(fieldTemp.name, false);
+
+                    }
+                }
+                return fields
+            }
+        ))
+    };
+
+    const isValidForm = (fieldFieldStateError: ErrorFieldState[]): boolean => {
+        return typeof (fieldFieldStateError.find(element => element.isValid == false)) == 'undefined'
+    }
+
+    const onPushToState = (value: boolean) => {
+        validationField();
+        if (isValidForm(fieldFieldStateError)) {
+            showPage(value);
+            sendToStateTaskList();
+        } else {
+            console.log('form is not valid')
+        }
+    };
+
+    const onCancel = (value: boolean) => {
+        showPage(value);
+    };
+
 
     return (
         <form onSubmit={submitHandler}>
             {
-                fieldList.map(({label, field}, index) =>
-                    <FormRow labelText={label} children={field} key={index}/>
+                fieldListForm.map(({label, field, message}, index) =>
+                    <FormRow labelText={label} children={field} message={message} key={index}/>
                 )
             }
 
@@ -120,6 +187,7 @@ const TaskUpdateFromProject = (props: ITaskFormProjectProps) => {
             </div>
 
         </form>
+
     );
 };
 
