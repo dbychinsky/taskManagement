@@ -2,7 +2,12 @@ import React, {useEffect, useState} from 'react';
 import Header from "../Header/Header";
 import InputTextField from "../Fields/InputTextField/InputTextField";
 import {Employee} from "../../model/Employee";
-import {isValidEmptyField, isValidEmptyFieldText} from "../../Validate";
+import {
+    isValidEmptyField,
+    isValidEmptyFieldText,
+    isValidLetterPositive,
+    isValidLetterPositiveText, isValidNumberPositive, isValidNumberPositiveText
+} from "../../Validate";
 import Form, {FieldListForm} from "../Form/Form";
 
 export type ErrorFieldState = {
@@ -34,7 +39,8 @@ const EmployeeForm = (props: IProjectFormProps) => {
                 value={employee.lastName}
                 changeHandler={changeHandlerEmployee}
                 name={"lastName"}
-                required={true}/>,
+                required={true}
+                isValidLetterPositive={true}/>,
             message: ''
         },
         {
@@ -44,7 +50,8 @@ const EmployeeForm = (props: IProjectFormProps) => {
                 value={employee.firstName}
                 changeHandler={changeHandlerEmployee}
                 name={"firstName"}
-                required={true}/>,
+                required={true}
+                isValidLetterPositive={true}/>,
             message: ''
 
         },
@@ -55,7 +62,8 @@ const EmployeeForm = (props: IProjectFormProps) => {
                 value={employee.middleName}
                 changeHandler={changeHandlerEmployee}
                 name={"middleName"}
-                required={true}/>,
+                required={true}
+                isValidLetterPositive={true}/>,
             message: ''
         },
         {
@@ -65,7 +73,8 @@ const EmployeeForm = (props: IProjectFormProps) => {
                 value={employee.position}
                 changeHandler={changeHandlerEmployee}
                 name={"position"}
-                required={false}/>,
+                required={true}
+                isValidLetterPositive={true}/>,
             message: ''
         }
     ];
@@ -96,27 +105,41 @@ const EmployeeForm = (props: IProjectFormProps) => {
         }
 
         setFieldListForm(fieldList.map((fields) => {
-
                 let fieldTemp = fields.field.props;
-
+                // Нуждается ли поле в проверке (обязательный аттрибут)
                 if (fields.field.props.required) {
+                    // Проверка на то, что поле заполнено
                     if (isValidEmptyField(fields.field.props.value)) {
                         fields.message = ''
-                        console.log('Поле валидно.', fields.message);
                         changeFieldListErrors(fieldTemp.name, true);
-
-
+                        // Проверка на положительные числа (кроме нуля)
+                        if (fields.field.props.isValidNumberPositive) {
+                            if (isValidNumberPositive(fields.field.props.value)) {
+                                fields.message = ''
+                                changeFieldListErrors(fieldTemp.name, true);
+                            } else {
+                                fields.message = isValidNumberPositiveText;
+                                changeFieldListErrors(fieldTemp.name, false);
+                            }
+                        }
+                        // Проверка на то, что в поле только буквы
+                        if (fields.field.props.isValidLetterPositive) {
+                            if (isValidLetterPositive(fields.field.props.value)) {
+                                fields.message = ''
+                                changeFieldListErrors(fieldTemp.name, true);
+                            } else {
+                                fields.message = isValidLetterPositiveText;
+                                changeFieldListErrors(fieldTemp.name, false);
+                            }
+                        }
                     } else {
                         fields.message = isValidEmptyFieldText;
-                        console.log('Поле не валидно.', fields.message);
                         changeFieldListErrors(fieldTemp.name, false);
-
                     }
                 }
                 return fields
             }
         ))
-
     };
 
     const isValidForm = (fieldFieldStateError: ErrorFieldState[]): boolean => {

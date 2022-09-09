@@ -5,7 +5,7 @@ export class Task {
     status: TaskStatus;
     name: string;
     projectId: string | null;
-    executionTime: number;
+    executionTime: number | null;
     startDate: string;
     endDate: string;
     employeeId: string | null;
@@ -14,10 +14,10 @@ export class Task {
         this.id = '';
         this.status = TaskStatus.NotStarted;
         this.name = '';
-        this.projectId = null;
-        this.executionTime = 0;
-        this.startDate = null;
-        this.endDate = null;
-        this.employeeId = null;
+        this.projectId = '';
+        this.executionTime = null;
+        this.startDate = '';
+        this.endDate = '';
+        this.employeeId = '';
     }
 }

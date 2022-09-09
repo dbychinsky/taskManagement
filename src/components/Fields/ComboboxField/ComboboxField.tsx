@@ -5,7 +5,8 @@ interface IComboboxFieldProp {
     changeHandler: ChangeEventHandler,
     valueList: { statusId: string, statusText: string }[],
     defaultValue: string,
-    disabled?: boolean
+    disabled?: boolean,
+    required?: boolean
 }
 
 const ComboboxField = ({changeHandler, valueList, defaultValue, disabled}: IComboboxFieldProp) => {

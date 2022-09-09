@@ -8,7 +8,12 @@ import {Employee} from "../../model/Employee";
 import Header from "../Header/Header";
 import FormRow from "../Form/FormRow/FormRow";
 import Form, {FieldListForm} from "../Form/Form";
-import {isValidEmptyField, isValidEmptyFieldText} from "../../Validate";
+import {
+    isValidEmptyField,
+    isValidEmptyFieldText, isValidLetterPositive, isValidLetterPositiveText,
+    isValidNumberPositive,
+    isValidNumberPositiveText
+} from "../../Validate";
 import {ErrorFieldState} from "../Employee/EmployeeForm";
 
 interface IProjectFormProps {
@@ -48,7 +53,8 @@ export const ProjectForm = (props: IProjectFormProps) => {
                 value={newProject.name}
                 changeHandler={changeHandlerForProject}
                 name="name"
-                required={true}/>,
+                required={true}
+                isValidLetterPositive={true}/>,
             message: ''
         },
         {
@@ -58,7 +64,8 @@ export const ProjectForm = (props: IProjectFormProps) => {
                 value={newProject.description}
                 changeHandler={changeHandlerForProject}
                 name={"description"}
-                required={true}/>,
+                required={true}
+                isValidLetterPositive={true}/>,
             message: ''
         }
     ];
@@ -86,27 +93,41 @@ export const ProjectForm = (props: IProjectFormProps) => {
         }
 
         setFieldListForm(fieldList.map((fields) => {
-
                 let fieldTemp = fields.field.props;
-
+                // Нуждается ли поле в проверке (обязательный аттрибут)
                 if (fields.field.props.required) {
+                    // Проверка на то, что поле заполнено
                     if (isValidEmptyField(fields.field.props.value)) {
                         fields.message = ''
-                        console.log('Поле валидно.', fields.message);
                         changeFieldListErrors(fieldTemp.name, true);
-
-
+                        // Проверка на положительные числа (кроме нуля)
+                        if (fields.field.props.isValidNumberPositive) {
+                            if (isValidNumberPositive(fields.field.props.value)) {
+                                fields.message = ''
+                                changeFieldListErrors(fieldTemp.name, true);
+                            } else {
+                                fields.message = isValidNumberPositiveText;
+                                changeFieldListErrors(fieldTemp.name, false);
+                            }
+                        }
+                        // Проверка на то, что в поле только буквы
+                        if (fields.field.props.isValidLetterPositive) {
+                            if (isValidLetterPositive(fields.field.props.value)) {
+                                fields.message = ''
+                                changeFieldListErrors(fieldTemp.name, true);
+                            } else {
+                                fields.message = isValidLetterPositiveText;
+                                changeFieldListErrors(fieldTemp.name, false);
+                            }
+                        }
                     } else {
                         fields.message = isValidEmptyFieldText;
-                        console.log('Поле не валидно.', fields.message);
                         changeFieldListErrors(fieldTemp.name, false);
-
                     }
                 }
                 return fields
             }
         ))
-
     };
 
     const isValidForm = (fieldFieldStateError: ErrorFieldState[]): boolean => {

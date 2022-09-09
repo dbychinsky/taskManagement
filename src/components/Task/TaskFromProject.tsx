@@ -1,42 +1,43 @@
-import React, {useEffect, useState} from 'react';
+import React, {ChangeEventHandler, useEffect, useState} from 'react';
 import {Task} from "../../model/Task";
 import {TaskStatuses} from "../../model/TaskStatus";
+import Label from "../Label/Label";
 import InputTextField from "../Fields/InputTextField/InputTextField";
+import Button from "../Button/Button";
 import {Project} from "../../model/Project";
 import {Employee} from "../../model/Employee";
 import '../Fields/ComboboxField/Combobox.scss';
 import ComboboxField from "../Fields/ComboboxField/ComboboxField";
-import Header from "../Header/Header";
+import FormRow from "../Form/FormRow/FormRow";
 import Form, {FieldListForm} from "../Form/Form";
 import {
     isValidEmptyField,
-    isValidEmptyFieldText,
-    isValidLetterPositive, isValidLetterPositiveText,
+    isValidEmptyFieldText, isValidLetterPositive, isValidLetterPositiveText,
     isValidNumberPositive,
     isValidNumberPositiveText
 } from "../../Validate";
 import {ErrorFieldState} from "../Employee/EmployeeForm";
 import InputNumberField from "../Fields/InputNumberField/InputNumberField";
 
-interface ITaskFormProps {
-    task: Task,
+interface ITaskFormProjectProps {
+    taskForProject: Task,
     projectList: Project[],
     employeeList: Employee[],
     changeHandlerTask: (e: React.ChangeEvent<HTMLInputElement>) => void,
     submitHandler: (event: React.FormEvent) => void,
-    onPushStorage: () => void,
-    onCancel: () => void,
+    showPage: (value: boolean) => void,
+    sendToStateTaskList: () => void
 }
 
-const TaskForm = (props: ITaskFormProps) => {
+const TaskFromProject = (props: ITaskFormProjectProps) => {
     const {
-        task,
+        taskForProject,
         projectList,
         employeeList,
         changeHandlerTask,
         submitHandler,
-        onPushStorage,
-        onCancel
+        showPage,
+        sendToStateTaskList
     } = props
 
     const fieldList = [
@@ -45,15 +46,14 @@ const TaskForm = (props: ITaskFormProps) => {
             field: <ComboboxField
                 changeHandler={changeHandlerTask}
                 valueList={TaskStatuses}
-                defaultValue={task.status}
-            />,
+                defaultValue={taskForProject.status}/>,
             message: ''
         },
         {
             label: "Наименование:",
             field: <InputTextField
                 type="text"
-                value={task.name}
+                value={taskForProject.name}
                 changeHandler={changeHandlerTask}
                 name="name"
                 required={true}
@@ -69,16 +69,17 @@ const TaskForm = (props: ITaskFormProps) => {
                         return {statusId: project.id, statusText: project.name}
                     })
                 }
-                defaultValue={task.projectId}/>,
+                defaultValue={taskForProject.projectId}
+                disabled={true}/>,
             message: ''
         },
         {
             label: "Работа:",
             field: <InputNumberField
                 type="text"
-                value={task.executionTime}
+                value={taskForProject.executionTime}
                 changeHandler={changeHandlerTask}
-                name="executionTime"
+                name="description"
                 required={true}
                 isValidNumberPositive={true}/>,
             message: ''
@@ -88,22 +89,20 @@ const TaskForm = (props: ITaskFormProps) => {
             label: "Дата начала:",
             field: <InputTextField
                 type="text"
-                value={task.startDate}
+                value={taskForProject.startDate}
                 changeHandler={changeHandlerTask}
                 name="startDate"
-                required={false}
-                isValidLetterPositive={true}/>,
+                required={false}/>,
             message: ''
         },
         {
             label: "Дата окончания:",
             field: <InputTextField
                 type="text"
-                value={task.endDate}
+                value={taskForProject.endDate}
                 changeHandler={changeHandlerTask}
                 name="endDate"
-                required={false}
-                isValidLetterPositive={true}/>,
+                required={false}/>,
             message: ''
         },
         {
@@ -115,7 +114,7 @@ const TaskForm = (props: ITaskFormProps) => {
                         return {statusId: employee.id, statusText: employee.fullName}
                     })
                 }
-                defaultValue={task.employeeId}/>,
+                defaultValue={taskForProject.employeeId}/>,
             message: ''
         }
     ];
@@ -123,14 +122,14 @@ const TaskForm = (props: ITaskFormProps) => {
     const fieldFieldStateError =
         [
             {name: "name", isValid: false},
-            {name: "executionTime", isValid: false}
+            {name: "description", isValid: false}
         ];
 
     const [fieldListForm, setFieldListForm] = useState<FieldListForm[]>(fieldList);
 
     useEffect(() => {
         setFieldListForm(fieldList);
-    }, [task]);
+    }, [taskForProject]);
 
     const validationField = () => {
 
@@ -184,25 +183,37 @@ const TaskForm = (props: ITaskFormProps) => {
         return typeof (fieldFieldStateError.find(element => element.isValid == false)) == 'undefined'
     }
 
-    const onSubmitForm = () => {
+    const onPushToState = (value: boolean) => {
         validationField();
         if (isValidForm(fieldFieldStateError)) {
-            onPushStorage();
+            showPage(value);
+            sendToStateTaskList();
         } else {
             console.log('form is not valid')
         }
-    }
+    };
+
+    const onCancel = (value: boolean) => {
+        showPage(value);
+    };
+
 
     return (
-        <div className="taskForm">
-            <Header title="Задача" isShowButton={false}/>
-            <div className="content">
-                <Form fieldListForm={fieldListForm}
-                      onSubmitForm={onSubmitForm}
-                      onCancel={onCancel}/>
+        <form onSubmit={submitHandler}>
+            {
+                fieldListForm.map(({label, field, message}, index) =>
+                    <FormRow labelText={label} children={field} message={message} key={index}/>
+                )
+            }
+
+            <div className="actionBar">
+                <Button onClick={() => onPushToState(false)} text="Сохранить"/>
+                <Button onClick={() => onCancel(false)} text="Отмена"/>
             </div>
-        </div>
+
+        </form>
+
     );
 };
 
-export default TaskForm;
+export default TaskFromProject;

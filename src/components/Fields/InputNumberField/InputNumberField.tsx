@@ -1,32 +1,34 @@
 import React, {FC} from "react";
-import "./InputTextField.scss"
+import "./InputNumberField.scss"
 import {IInputFieldProps} from "../IInputFIeld";
 
-interface IInputTextField extends IInputFieldProps {
+interface IInputNumberField extends IInputFieldProps {
     type: "text",
-    isValidLetterPositive?: boolean
+    isValidNumberPositive?: boolean
 }
 
-const InputTextField: FC<IInputTextField> = (
+const InputNumberField: FC<IInputNumberField> = (
     {
         type,
         value,
         changeHandler,
         name,
         placeholder = "Введите значение",
-        required
+        required,
+        isValidNumberPositive
     }) => {
     return (
         <input
-            className="inputTextField"
+            className="inputNumberField"
             type={type}
             defaultValue={value}
             onChange={changeHandler}
             name={name}
             placeholder={placeholder}
             maxLength={50}
+            min="1"
         />
     )
 }
 
-export default InputTextField;
+export default InputNumberField;

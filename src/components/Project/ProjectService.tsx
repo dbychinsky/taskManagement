@@ -5,7 +5,7 @@ import {server} from "../../App";
 import {Task} from "../../model/Task";
 import './ProjectForm.scss';
 import './../List/List.scss';
-import TaskUpdateFromProject from "../Task/TaskUpdateFromProject";
+import TaskFromProject from "../Task/TaskFromProject";
 import {ProjectForm} from './ProjectForm';
 import {TaskStatus} from "../../util/convertToStrTaskStatus";
 
@@ -154,7 +154,7 @@ const ProjectService = () => {
         />
 
     const taskEditFromProject =
-        <TaskUpdateFromProject
+        <TaskFromProject
             taskForProject={taskForProject}
             projectList={projectList}
             employeeList={employeeList}

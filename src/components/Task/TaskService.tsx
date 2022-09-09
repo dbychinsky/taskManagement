@@ -1,4 +1,4 @@
-import React, {ChangeEvent, ChangeEventHandler, useState} from 'react';
+import React, {useState} from 'react';
 import {Employee} from "../../model/Employee";
 import {useNavigate, useParams} from "react-router-dom";
 import {server} from "../../App";
@@ -12,11 +12,11 @@ const TaskService = () => {
     const {id} = useParams();
     const initialProjectList = server.getProjects();
     const initialEmployeeList = server.getEmployees();
-    const initialNewTask = {
+    const initialNewTask: Task = {
         id: '',
         status: TaskStatus.NotStarted,
         name: '',
-        executionTime: 0,
+        executionTime: null,
         startDate: '',
         endDate: '',
         projectId: '',
@@ -26,19 +26,19 @@ const TaskService = () => {
     // Получаем таску для редактирования
     const initialTask = server.getTasks().find((tasks: Task) => tasks.id === id);
     const [task, setTasks] = useState<Task>(initialTask ? initialTask : initialNewTask);
+
     const [projectList, setProjectList] = useState<Project[]>(initialProjectList);
     const [employeeList, setEmployeeList] = useState<Employee[]>(initialEmployeeList);
 
     // Установка в состояние данных из полей формы страницы Task
-    // const changeHandlerTask = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
     const changeHandlerTask = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
-
         if (task.id !== '') {
             setTasks({...task, [e.currentTarget.name]: e.currentTarget.value});
         } else {
             const id: string = Date.now().toString();
             setTasks({...task, id, [e.currentTarget.name]: e.currentTarget.value});
         }
+        console.log(task)
     };
 
     const submitHandler = (event: React.FormEvent) => {
