@@ -4,7 +4,7 @@ import {Employee} from "../model/Employee";
 import {EmployeeView} from "../components/Employee/EmployeeView";
 import {server} from "../App";
 import Header from "../components/Header/Header";
-import {EmployeesFormPath} from "../RoutersProject";
+import {EMPLOYEES_FORM_PATH} from "../RoutersProject";
 
 const EmployeesPage = () => {
     const navigate = useNavigate();
@@ -15,7 +15,7 @@ const EmployeesPage = () => {
     }, []);
 
     const add = () => {
-        navigate(EmployeesFormPath)
+        navigate(EMPLOYEES_FORM_PATH)
     };
 
     const remove = (id: string) => {

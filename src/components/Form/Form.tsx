@@ -1,37 +1,51 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import FormRow from "./FormRow/FormRow";
 import Button from "../Button/Button";
-import {isValidEmptyField, isValidEmptyFieldText} from "../../Validate";
+import {validate} from "../../util/validate";
+import {FieldList} from "../Task/TaskForm";
 
-export type FieldListForm = {
-    label: string,
-    field: JSX.Element,
-    message: string
-}
+export type ErrorList =
+    {
+        name: string,
+        isValid: boolean,
+        errorMessage: string
+    }
 
 interface IForm {
-    fieldListForm: FieldListForm[],
-    onSubmitForm: (value?:boolean) => void,
-    onCancel: (value?:boolean) => void
+    fieldList: FieldList[],
+    onPushStorage: (value?: boolean) => void,
+    onCancel: (value?: boolean) => void
 }
 
+const Form = ({fieldList, onPushStorage, onCancel}: IForm) => {
 
-const Form = ({fieldListForm, onSubmitForm, onCancel}: IForm) => {
+    // Формируем список ошибок на основе списка полей формы
+    const [errorList, setErrorList] = useState<ErrorList[]>(
+        fieldList.map(elem => {
+            return {name: elem.field.props.name, isValid: true, errorMessage: ''}
+        }));
 
 
-    const submitHandler = (event: React.FormEvent) => {
-        event.preventDefault();
+    const submitForm = () => {
+        setErrorList(validate.validateField(fieldList, errorList));
+        setErrorList(errorList => [...errorList]);
+        if (validate.isValidForm(errorList)) {
+            onPushStorage();
+        } else console.log('Форма не валидна');
     }
 
     return (
-        <form onSubmit={submitHandler}>
+        <form>
             {
-                fieldListForm.map(({label, field, message}, index) =>
-                    <FormRow labelText={label} children={field} message={message} key={index}/>
+                fieldList.map(({label, field,}, index) =>
+                    <FormRow labelText={label}
+                             children={field}
+                             errorMessage={errorList.find(elem => elem.name === field.props.name).errorMessage}
+                             key={index}/>
                 )
             }
             <div className="actionBar">
-                <Button onClick={onSubmitForm} text="Сохранить"/>
+                <Button onClick={submitForm} text="Сохранить"/>
                 <Button onClick={onCancel} text="Отмена"/>
             </div>
         </form>

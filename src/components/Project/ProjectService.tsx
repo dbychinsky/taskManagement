@@ -19,13 +19,13 @@ const ProjectService = () => {
     const initialTaskList = server.getTasks();
 
     const initialNewProject = {id: '', name: '', description: ''};
-    const initialNewTask = {
+    const initialNewTask:Task = {
         id: '',
-        status: TaskStatus.NotStarted,
+        status: TaskStatus.NOT_STARTED,
         name: '',
         executionTime: 0,
-        startDate: '',
-        endDate: '',
+        startDate: null,
+        endDate: null,
         projectId: id,
         employeeId: ''
     };

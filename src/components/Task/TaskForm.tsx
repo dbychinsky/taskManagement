@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Task} from "../../model/Task";
 import {TaskStatuses} from "../../model/TaskStatus";
 import InputTextField from "../Fields/InputTextField/InputTextField";
@@ -7,22 +7,20 @@ import {Employee} from "../../model/Employee";
 import '../Fields/ComboboxField/Combobox.scss';
 import ComboboxField from "../Fields/ComboboxField/ComboboxField";
 import Header from "../Header/Header";
-import Form, {FieldListForm} from "../Form/Form";
-import {
-    isValidEmptyField,
-    isValidEmptyFieldText,
-    isValidLetterPositive, isValidLetterPositiveText,
-    isValidNumberPositive,
-    isValidNumberPositiveText
-} from "../../Validate";
-import {ErrorFieldState} from "../Employee/EmployeeForm";
+import Form from "../Form/Form";
 import InputNumberField from "../Fields/InputNumberField/InputNumberField";
+import {ConvertDate} from "../../util/convertDate";
+
+export type FieldList = {
+    label: string,
+    field: JSX.Element
+}
 
 interface ITaskFormProps {
     task: Task,
     projectList: Project[],
     employeeList: Employee[],
-    changeHandlerTask: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    changeHandlerTask: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void,
     submitHandler: (event: React.FormEvent) => void,
     onPushStorage: () => void,
     onCancel: () => void,
@@ -34,7 +32,6 @@ const TaskForm = (props: ITaskFormProps) => {
         projectList,
         employeeList,
         changeHandlerTask,
-        submitHandler,
         onPushStorage,
         onCancel
     } = props
@@ -46,8 +43,8 @@ const TaskForm = (props: ITaskFormProps) => {
                 changeHandler={changeHandlerTask}
                 valueList={TaskStatuses}
                 defaultValue={task.status}
-            />,
-            message: ''
+                name="status"
+            />
         },
         {
             label: "Наименование:",
@@ -57,8 +54,8 @@ const TaskForm = (props: ITaskFormProps) => {
                 changeHandler={changeHandlerTask}
                 name="name"
                 required={true}
-                isValidLetterPositive={true}/>,
-            message: ''
+                isValidLetterPositive={true}
+            />
         },
         {
             label: "Наименование проекта:",
@@ -69,8 +66,9 @@ const TaskForm = (props: ITaskFormProps) => {
                         return {statusId: project.id, statusText: project.name}
                     })
                 }
-                defaultValue={task.projectId}/>,
-            message: ''
+                defaultValue={task.projectId}
+                name="projectId"
+            />
         },
         {
             label: "Работа:",
@@ -80,31 +78,27 @@ const TaskForm = (props: ITaskFormProps) => {
                 changeHandler={changeHandlerTask}
                 name="executionTime"
                 required={true}
-                isValidNumberPositive={true}/>,
-            message: ''
+                isValidNumberPositive={true}
+            />
         },
 
         {
             label: "Дата начала:",
             field: <InputTextField
                 type="text"
-                value={task.startDate}
+                value={ConvertDate.getStrFromDate(task.startDate)}
                 changeHandler={changeHandlerTask}
                 name="startDate"
-                required={false}
-                isValidLetterPositive={true}/>,
-            message: ''
+            />
         },
         {
             label: "Дата окончания:",
             field: <InputTextField
                 type="text"
-                value={task.endDate}
+                value={ConvertDate.getStrFromDate(task.endDate)}
                 changeHandler={changeHandlerTask}
                 name="endDate"
-                required={false}
-                isValidLetterPositive={true}/>,
-            message: ''
+            />
         },
         {
             label: "Исполнитель:",
@@ -115,90 +109,18 @@ const TaskForm = (props: ITaskFormProps) => {
                         return {statusId: employee.id, statusText: employee.fullName}
                     })
                 }
-                defaultValue={task.employeeId}/>,
-            message: ''
+                defaultValue={task.employeeId}
+                name="employeeId"
+            />
         }
     ];
-
-    const fieldFieldStateError =
-        [
-            {name: "name", isValid: false},
-            {name: "executionTime", isValid: false}
-        ];
-
-    const [fieldListForm, setFieldListForm] = useState<FieldListForm[]>(fieldList);
-
-    useEffect(() => {
-        setFieldListForm(fieldList);
-    }, [task]);
-
-    const validationField = () => {
-
-        const changeFieldListErrors = (name: string, isValid: boolean) => {
-            fieldFieldStateError.forEach((element) => {
-                if (element.name === name) {
-                    element.isValid = isValid;
-                }
-            });
-        }
-
-        setFieldListForm(fieldList.map((fields) => {
-                let fieldTemp = fields.field.props;
-                // Нуждается ли поле в проверке (обязательный аттрибут)
-                if (fields.field.props.required) {
-                    // Проверка на то, что поле заполнено
-                    if (isValidEmptyField(fields.field.props.value)) {
-                        fields.message = ''
-                        changeFieldListErrors(fieldTemp.name, true);
-                        // Проверка на положительные числа (кроме нуля)
-                        if (fields.field.props.isValidNumberPositive) {
-                            if (isValidNumberPositive(fields.field.props.value)) {
-                                fields.message = ''
-                                changeFieldListErrors(fieldTemp.name, true);
-                            } else {
-                                fields.message = isValidNumberPositiveText;
-                                changeFieldListErrors(fieldTemp.name, false);
-                            }
-                        }
-                        // Проверка на то, что в поле только буквы
-                        if (fields.field.props.isValidLetterPositive) {
-                            if (isValidLetterPositive(fields.field.props.value)) {
-                                fields.message = ''
-                                changeFieldListErrors(fieldTemp.name, true);
-                            } else {
-                                fields.message = isValidLetterPositiveText;
-                                changeFieldListErrors(fieldTemp.name, false);
-                            }
-                        }
-                    } else {
-                        fields.message = isValidEmptyFieldText;
-                        changeFieldListErrors(fieldTemp.name, false);
-                    }
-                }
-                return fields
-            }
-        ))
-    };
-
-    const isValidForm = (fieldFieldStateError: ErrorFieldState[]): boolean => {
-        return typeof (fieldFieldStateError.find(element => element.isValid == false)) == 'undefined'
-    }
-
-    const onSubmitForm = () => {
-        validationField();
-        if (isValidForm(fieldFieldStateError)) {
-            onPushStorage();
-        } else {
-            console.log('form is not valid')
-        }
-    }
 
     return (
         <div className="taskForm">
             <Header title="Задача" isShowButton={false}/>
             <div className="content">
-                <Form fieldListForm={fieldListForm}
-                      onSubmitForm={onSubmitForm}
+                <Form fieldList={fieldList}
+                      onPushStorage={onPushStorage}
                       onCancel={onCancel}/>
             </div>
         </div>

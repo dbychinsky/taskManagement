@@ -6,7 +6,7 @@ import {Employee} from "../model/Employee";
 import {Project} from "../model/Project";
 import {server} from "../App";
 import Header from "../components/Header/Header";
-import {TaskFormPath} from "../RoutersProject";
+import {TASK_FORM_PATH} from "../RoutersProject";
 
 const TaskPage = () => {
     const navigate = useNavigate();
@@ -27,7 +27,7 @@ const TaskPage = () => {
     }, []);
 
     const add = () => {
-        navigate(TaskFormPath);
+        navigate(TASK_FORM_PATH);
     };
 
     const remove = (id: string) => {

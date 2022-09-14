@@ -6,5 +6,5 @@ export interface IInputFieldProps {
     changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void,
     name: string,
     placeholder?: string,
-    required: boolean,
+    required?: boolean,
 }

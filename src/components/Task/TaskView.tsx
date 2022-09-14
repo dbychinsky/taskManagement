@@ -5,6 +5,7 @@ import {Employee} from "../../model/Employee";
 import Button from "../Button/Button";
 import {Project} from "../../model/Project";
 import {getTaskStatusToString} from "../../util/convertToStrTaskStatus";
+import {ConvertDate} from "../../util/convertDate";
 
 export interface ITaskProps {
     tasks: Task[],
@@ -34,11 +35,11 @@ const TaskView = ({tasks, projects, employees, remove, update}: ITaskProps) => {
         },
         {
             listName: "Дата начала:",
-            getValueListLine: (tasks) => tasks.startDate
+            getValueListLine: (tasks) => ConvertDate.getStrFromDate(tasks.startDate)
         },
         {
             listName: "Дата окончания:",
-            getValueListLine: (tasks) => tasks.endDate
+            getValueListLine: (tasks) => ConvertDate.getStrFromDate(tasks.endDate)
         },
         {
             listName: "Исполнитель:",

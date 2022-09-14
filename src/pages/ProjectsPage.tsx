@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Project} from "../model/Project";
 import {useNavigate} from "react-router-dom";
-import {ProjectFormPath} from "../RoutersProject";
+import {PROJECT_FORM_PATH} from "../RoutersProject";
 import {ProjectView} from "../components/Project/ProjectView";
 import {server} from "../App";
 import Header from "../components/Header/Header";
@@ -15,7 +15,7 @@ const ProjectsPage = () => {
     }, []);
 
     const add = () => {
-        navigate(ProjectFormPath);
+        navigate(PROJECT_FORM_PATH);
     };
 
     const remove = (id: string) => {

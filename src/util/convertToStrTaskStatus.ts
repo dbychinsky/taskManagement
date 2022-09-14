@@ -3,10 +3,10 @@
 import {TaskStatuses} from "../model/TaskStatus";
 
 export enum TaskStatus {
-    NotStarted = "NotStarted",
-    InProgress = "InProgress",
-    Completed = "Completed",
-    Postponed = "Postponed"
+    NOT_STARTED = "NOT_STARTED",
+    IN_PROGRESS = "IN_PROGRESS",
+    COMPLETE = "COMPLETE",
+    POSTPONED = "POSTPONED"
 }
 
 // Строковое значение статуса

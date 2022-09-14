@@ -1,19 +1,19 @@
 import React from 'react';
 import {NavLink} from "react-router-dom";
 import "./Navigation.scss";
-import {EmployeesPagePath, ProjectPagePath, TaskPagePath} from "../../RoutersProject";
+import {EMPLOYEES_PAGE_PATH, PROJECT_PAGE_PATH, TASK_PAGE_PATH} from "../../RoutersProject";
 
 const Navigation = () => {
     return (
         <ul className="navigation">
             <li>
-                <NavLink to={ProjectPagePath} className="link">Проекты</NavLink>
+                <NavLink to={PROJECT_PAGE_PATH} className="link">Проекты</NavLink>
             </li>
             <li>
-                <NavLink to={TaskPagePath} className="link">Задачи</NavLink>
+                <NavLink to={TASK_PAGE_PATH} className="link">Задачи</NavLink>
             </li>
             <li>
-                <NavLink to={EmployeesPagePath} className="link">Сотрудники</NavLink>
+                <NavLink to={EMPLOYEES_PAGE_PATH} className="link">Сотрудники</NavLink>
             </li>
         </ul>
     );

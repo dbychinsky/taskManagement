@@ -6,18 +6,18 @@ export class Task {
     name: string;
     projectId: string | null;
     executionTime: number | null;
-    startDate: string;
-    endDate: string;
+    startDate: Date;
+    endDate: Date;
     employeeId: string | null;
 
     constructor() {
         this.id = '';
-        this.status = TaskStatus.NotStarted;
+        this.status = TaskStatus.NOT_STARTED;
         this.name = '';
         this.projectId = '';
         this.executionTime = null;
-        this.startDate = '';
-        this.endDate = '';
+        this.startDate = null;
+        this.endDate = null;
         this.employeeId = '';
     }
 }

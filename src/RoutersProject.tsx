@@ -8,38 +8,38 @@ import React from "react";
 import TaskService from "./components/Task/TaskService";
 import EmployeeService from "./components/Employee/EmployeeService";
 
-export const RootPath = "/";
-export const ProjectPagePath = 'projectsPage/';
-export const ProjectFormPath = 'projectForm/';
-export const ProjectIdPath = ':id';
-export const TaskPagePath = 'taskPage/';
-export const TaskFormPath = 'taskForm/';
-export const TaskIdPath = ':id';
-export const EmployeesPagePath = 'employeesPage/';
-export const EmployeesFormPath = 'employeeForm/';
-export const EmployeesIdPath = ':id/';
+export const ROOT_PATH = "/";
+export const PROJECT_PAGE_PATH = 'projectsPage/';
+export const PROJECT_FORM_PATH = 'projectForm/';
+export const PROJECT_ID_PATH = ':id';
+export const TASK_PAGE_PATH = 'taskPage/';
+export const TASK_FORM_PATH = 'taskForm/';
+export const TASK_ID_PATH = ':id';
+export const EMPLOYEES_PAGE_PATH = 'employeesPage/';
+export const EMPLOYEES_FORM_PATH = 'employeeForm/';
+export const EMPLOYEES_ID_PATH = ':id/';
 
 const RoutersProject = () => {
     return (
         <Routes>
-            <Route path={RootPath} element={<MainPage/>}/>
+            <Route path={ROOT_PATH} element={<MainPage/>}/>
 
-            <Route path={ProjectPagePath}>
+            <Route path={PROJECT_PAGE_PATH}>
                 <Route index element={<ProjectsPage/>}/>
-                <Route path={ProjectFormPath} element={<ProjectService/>}/>
-                <Route path={ProjectIdPath} element={<ProjectService/>}/>
+                <Route path={PROJECT_FORM_PATH} element={<ProjectService/>}/>
+                <Route path={PROJECT_ID_PATH} element={<ProjectService/>}/>
             </Route>
 
-            <Route path={TaskPagePath}>
+            <Route path={TASK_PAGE_PATH}>
                 <Route index element={<TaskPage/>}/>
-                <Route path={TaskFormPath} element={<TaskService/>}/>
-                <Route path={TaskIdPath} element={<TaskService/>}/>
+                <Route path={TASK_FORM_PATH} element={<TaskService/>}/>
+                <Route path={TASK_ID_PATH} element={<TaskService/>}/>
             </Route>
 
-            <Route path={EmployeesPagePath}>
+            <Route path={EMPLOYEES_PAGE_PATH}>
                 <Route index element={<EmployeesPage/>}/>
-                <Route path={EmployeesFormPath} element={<EmployeeService/>}/>
-                <Route path={EmployeesIdPath} element={<EmployeeService/>}/>
+                <Route path={EMPLOYEES_FORM_PATH} element={<EmployeeService/>}/>
+                <Route path={EMPLOYEES_ID_PATH} element={<EmployeeService/>}/>
             </Route>
 
         </Routes>

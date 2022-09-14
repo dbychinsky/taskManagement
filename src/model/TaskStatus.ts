@@ -1,10 +1,10 @@
 import {TaskStatus} from "../util/convertToStrTaskStatus";
 
 export const TaskStatuses = [
-    {statusId: TaskStatus.Completed, statusText: 'Завершена'},
-    {statusId: TaskStatus.Postponed, statusText: 'Отложена'},
-    {statusId: TaskStatus.InProgress, statusText: 'В процессе'},
-    {statusId: TaskStatus.NotStarted, statusText: 'Не начата'}
+    {statusId: TaskStatus.COMPLETE, statusText: 'Завершена'},
+    {statusId: TaskStatus.POSTPONED, statusText: 'Отложена'},
+    {statusId: TaskStatus.IN_PROGRESS, statusText: 'В процессе'},
+    {statusId: TaskStatus.NOT_STARTED, statusText: 'Не начата'}
 ];
 
 
