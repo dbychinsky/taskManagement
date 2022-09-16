@@ -7,4 +7,6 @@ export interface IInputFieldProps {
     name: string,
     placeholder?: string,
     required?: boolean,
+    isValidDatePositive?: boolean,
+    maxLength: number
 }

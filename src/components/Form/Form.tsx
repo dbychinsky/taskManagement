@@ -1,41 +1,27 @@
-import React, {useState} from 'react';
+import React, {ChangeEvent} from 'react';
 import FormRow from "./FormRow/FormRow";
 import Button from "../Button/Button";
-import {validate} from "../../util/validate";
-import {FieldList} from "../Task/TaskForm";
+import {ErrorList, FieldList} from "../../support/type";
 
-export type ErrorList =
+interface IForm {
+    fieldList: FieldList[],
+    errorList: ErrorList[],
+    feedBackForm: FormFeedback[],
+    onSubmitForm: (value?: boolean) => void,
+    onCancel: (value?: boolean) => void
+}
+
+export type FormFeedback =
     {
-        name: string,
         isValid: boolean,
         errorMessage: string
     }
 
-interface IForm {
-    fieldList: FieldList[],
-    onPushStorage: (value?: boolean) => void,
-    onCancel: (value?: boolean) => void
-}
-
-const Form = ({fieldList, onPushStorage, onCancel}: IForm) => {
-
-    // Формируем список ошибок на основе списка полей формы
-    const [errorList, setErrorList] = useState<ErrorList[]>(
-        fieldList.map(elem => {
-            return {name: elem.field.props.name, isValid: true, errorMessage: ''}
-        }));
-
-
-    const submitForm = () => {
-        setErrorList(validate.validateField(fieldList, errorList));
-        setErrorList(errorList => [...errorList]);
-        if (validate.isValidForm(errorList)) {
-            onPushStorage();
-        } else console.log('Форма не валидна');
-    }
+const Form = ({fieldList, errorList, feedBackForm, onSubmitForm, onCancel}: IForm) => {
 
     return (
         <form>
+            <p>{feedBackForm.map((elem) => elem.errorMessage)}</p>
             {
                 fieldList.map(({label, field,}, index) =>
                     <FormRow labelText={label}
@@ -45,7 +31,7 @@ const Form = ({fieldList, onPushStorage, onCancel}: IForm) => {
                 )
             }
             <div className="actionBar">
-                <Button onClick={submitForm} text="Сохранить"/>
+                <Button onClick={onSubmitForm} text="Сохранить"/>
                 <Button onClick={onCancel} text="Отмена"/>
             </div>
         </form>

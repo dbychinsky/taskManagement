@@ -1,4 +1,9 @@
-import {TaskStatus} from "../util/convertToStrTaskStatus";
+export enum TaskStatus {
+    NOT_STARTED = "NOT_STARTED",
+    IN_PROGRESS = "IN_PROGRESS",
+    COMPLETE = "COMPLETE",
+    POSTPONED = "POSTPONED"
+}
 
 export class Task {
     id: string;
@@ -6,8 +11,8 @@ export class Task {
     name: string;
     projectId: string | null;
     executionTime: number | null;
-    startDate: Date;
-    endDate: Date;
+    startDate: Date | null;
+    endDate: Date | null;
     employeeId: string | null;
 
     constructor() {

@@ -4,7 +4,7 @@ import {IInputFieldProps} from "../IInputFIeld";
 
 interface IInputTextField extends IInputFieldProps {
     type: "text",
-    isValidLetterPositive?: boolean
+    isValidLetterPositive?: boolean,
 }
 
 const InputTextField: FC<IInputTextField> = (
@@ -13,8 +13,8 @@ const InputTextField: FC<IInputTextField> = (
         value,
         changeHandler,
         name,
-        placeholder = "Введите значение",
-        required
+        maxLength,
+        placeholder = "Введите значение"
     }) => {
     return (
         <input
@@ -24,7 +24,7 @@ const InputTextField: FC<IInputTextField> = (
             onChange={changeHandler}
             name={name}
             placeholder={placeholder}
-            maxLength={50}
+            maxLength={maxLength}
         />
     )
 }

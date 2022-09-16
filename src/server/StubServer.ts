@@ -2,6 +2,7 @@ import {Project} from "../model/Project";
 import {IServer} from "./IServer";
 import {Employee} from "../model/Employee";
 import {Task} from "../model/Task";
+import {ConvertDate} from "../support/util/convertDate";
 
 export class StubServer implements IServer {
 
@@ -42,7 +43,13 @@ export class StubServer implements IServer {
         if (result === null) {
             return []
         }
-        return result;
+        // данные приходят в виде строки, конвертим обратно в дату
+        return result.map((elem: any) => {
+            return Object.assign(new Task(), elem, {
+                startDate: ConvertDate.getDateFromStr(elem.startDate),
+                endDate: ConvertDate.getDateFromStr(elem.endDate),
+            })
+        });
     }
 
     deleteTask(id: string): void {
