@@ -1,6 +1,6 @@
 import React from 'react';
 import './Header.scss';
-import Button from "../Button/Button";
+import Button from "../button/Button";
 
 interface IHeader {
     title: string,

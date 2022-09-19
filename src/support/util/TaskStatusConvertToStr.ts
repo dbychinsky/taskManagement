@@ -1,6 +1,6 @@
 // Перечисление статусов
 
-import {TaskStatuses} from "../../pages/Task/TaskStatus";
+import {TaskStatuses} from "../../pages/task/TaskStatus";
 
 // Строковое значение статуса
 export const getTaskStatusToString = (taskStatus: string) => {

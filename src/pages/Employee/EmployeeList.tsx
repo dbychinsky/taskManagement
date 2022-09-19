@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import {Employee} from "../../model/Employee";
-import {server} from "../../App";
-import Header from "../../components/Header/Header";
-import {EMPLOYEES_FORM_PATH} from "../../RoutersProject";
-import List, {ListLine} from "../../components/List/List";
-import Button from "../../components/Button/Button";
+import {server} from "../../app";
+import Header from "../../components/header/Header";
+import {EMPLOYEES_FORM_PATH} from "../../routersProject";
+import List, {ListData} from "../../components/list/List";
+import Button from "../../components/button/Button";
 
 const EmployeeList = () => {
     const navigate = useNavigate();
@@ -28,29 +28,29 @@ const EmployeeList = () => {
         navigate(id);
     };
 
-    const listData: ListLine<Employee>[] = [
+    const listData: ListData<Employee>[] = [
         {
-            listName: "Фамилия:",
-            getValueListLine: (employees) => employees.lastName
+            label: "Фамилия:",
+            getValueList: (employee) => employee.lastName
         },
         {
-            listName: "Имя:",
-            getValueListLine: (employees) => employees.firstName
+            label: "Имя:",
+            getValueList: (employee) => employee.firstName
         },
         {
-            listName: "Отчество:",
-            getValueListLine: (employees) => employees.middleName
+            label: "Отчество:",
+            getValueList: (employee) => employee.middleName
         },
         {
-            listName: "Должность:",
-            getValueListLine: (employees) => employees.position
+            label: "Должность:",
+            getValueList: (employee) => employee.position
         },
         {
-            listName: "",
-            getValueListLine: (employees) =>
+            label: "",
+            getValueList: (employee) =>
                 <div className="actionBar">
-                    <Button onClick={() => update(employees.id)} text="Изменить"/>
-                    <Button onClick={() => remove(employees.id)} text="Удалить"/>
+                    <Button onClick={() => update(employee.id)} text="Изменить"/>
+                    <Button onClick={() => remove(employee.id)} text="Удалить"/>
                 </div>
         }
     ];

@@ -1,5 +1,5 @@
 import React from 'react';
-import InputTextField from "../InputTextField/InputTextField";
+import InputTextField from "../inputTextField/InputTextField";
 
 
 interface IInputDateField {

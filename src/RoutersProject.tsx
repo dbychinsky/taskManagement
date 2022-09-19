@@ -1,12 +1,12 @@
 import {Route, Routes} from "react-router-dom";
 import MainPage from "./pages/MainPage";
-import ProjectsList from "./pages/Project/ProjectsList";
-import ProjectService from "./pages/Project/ProjectService";
-import TaskPage from "./pages/Task/TaskPage";
-import EmployeeList from "./pages/Employee/EmployeeList";
+import ProjectList from "./pages/project/ProjectList";
+import ProjectEdit from "./pages/project/ProjectEdit";
+import TaskList from "./pages/task/TaskList";
+import EmployeeList from "./pages/employee/EmployeeList";
 import React from "react";
-import TaskService from "./pages/Task/TaskService";
-import EmployeeEdit from "./pages/Employee/EmployeeEdit";
+import TaskEdit from "./pages/task/TaskEdit";
+import EmployeeEdit from "./pages/employee/EmployeeEdit";
 
 export const ROOT_PATH = "/";
 export const PROJECT_PAGE_PATH = 'projectsPage/';
@@ -25,15 +25,15 @@ const RoutersProject = () => {
             <Route path={ROOT_PATH} element={<MainPage/>}/>
 
             <Route path={PROJECT_PAGE_PATH}>
-                <Route index element={<ProjectsList/>}/>
-                <Route path={PROJECT_FORM_PATH} element={<ProjectService/>}/>
-                <Route path={PROJECT_ID_PATH} element={<ProjectService/>}/>
+                <Route index element={<ProjectList/>}/>
+                <Route path={PROJECT_FORM_PATH} element={<ProjectEdit/>}/>
+                <Route path={PROJECT_ID_PATH} element={<ProjectEdit/>}/>
             </Route>
 
             <Route path={TASK_PAGE_PATH}>
-                <Route index element={<TaskPage/>}/>
-                <Route path={TASK_FORM_PATH} element={<TaskService/>}/>
-                <Route path={TASK_ID_PATH} element={<TaskService/>}/>
+                <Route index element={<TaskList/>}/>
+                <Route path={TASK_FORM_PATH} element={<TaskEdit/>}/>
+                <Route path={TASK_ID_PATH} element={<TaskEdit/>}/>
             </Route>
 
             <Route path={EMPLOYEES_PAGE_PATH}>

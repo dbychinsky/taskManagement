@@ -1,5 +1,5 @@
 import React, {FC, useState} from 'react';
-import Label from "../../Label/Label";
+import Label from "../../label/Label";
 
 type FormRow = {
     labelText: string,

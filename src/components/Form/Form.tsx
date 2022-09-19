@@ -1,6 +1,6 @@
 import React, {ChangeEvent} from 'react';
-import FormRow from "./FormRow/FormRow";
-import Button from "../Button/Button";
+import FormRow from "./formRow/FormRow";
+import Button from "../button/Button";
 import {ErrorList, FieldList} from "../../support/type";
 
 interface IForm {
@@ -21,7 +21,7 @@ const Form = ({fieldList, errorList, feedBackForm, onSubmitForm, onCancel}: IFor
 
     return (
         <form>
-            <p>{feedBackForm.map((elem) => elem.errorMessage)}</p>
+            <div className="feedbackForm">{feedBackForm.map((elem) => elem.errorMessage)}</div>
             {
                 fieldList.map(({label, field,}, index) =>
                     <FormRow labelText={label}

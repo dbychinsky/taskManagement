@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
-import {server} from "../../App";
+import {server} from "../../app";
 import {Employee} from "../../model/Employee";
-import InputTextField from "../../components/Fields/InputTextField/InputTextField";
+import InputTextField from "../../components/fields/inputTextField/InputTextField";
 import {ErrorList} from "../../support/type";
-import Form, {FormFeedback} from "../../components/Form/Form";
-import Header from "../../components/Header/Header";
+import Form, {FormFeedback} from "../../components/form/Form";
+import Header from "../../components/header/Header";
 import {validate} from "../../support/util/validate";
 
 const EmployeeEdit = () => {
@@ -23,7 +23,7 @@ const EmployeeEdit = () => {
             field: <InputTextField
                 type="text"
                 value={employee.lastName}
-                changeHandler={changeHandlerEmployee}
+                changeHandler={sendToStateEmployeeList}
                 name={"lastName"}
                 maxLength={MAX_LENGTH}
                 required={true}
@@ -34,7 +34,7 @@ const EmployeeEdit = () => {
             field: <InputTextField
                 type="text"
                 value={employee.firstName}
-                changeHandler={changeHandlerEmployee}
+                changeHandler={sendToStateEmployeeList}
                 name={"firstName"}
                 maxLength={MAX_LENGTH}
                 required={true}
@@ -46,7 +46,7 @@ const EmployeeEdit = () => {
             field: <InputTextField
                 type="text"
                 value={employee.middleName}
-                changeHandler={changeHandlerEmployee}
+                changeHandler={sendToStateEmployeeList}
                 name={"middleName"}
                 maxLength={MAX_LENGTH}
                 required={true}
@@ -57,7 +57,7 @@ const EmployeeEdit = () => {
             field: <InputTextField
                 type="text"
                 value={employee.position}
-                changeHandler={changeHandlerEmployee}
+                changeHandler={sendToStateEmployeeList}
                 name={"position"}
                 maxLength={MAX_LENGTH}
                 required={true}
@@ -76,8 +76,8 @@ const EmployeeEdit = () => {
         errorMessage: ''
     }]);
 
-    // Установка в состояние данных из полей формы страницы Task
-    function changeHandlerEmployee(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void {
+    // Установка в состояние данных из полей формы страницы task
+    function sendToStateEmployeeList(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void {
         if (!employee.id) {
             const id: string = Date.now().toString();
             employee.id = id
@@ -90,7 +90,7 @@ const EmployeeEdit = () => {
         navigate(-1);
     };
 
-    const onSave = () => {
+    const save = () => {
         // Валидация полей формы
         const isValidFormField = validate.validateField(fieldList, errorList)
         setErrorList(isValidFormField => [...isValidFormField]);
@@ -104,7 +104,7 @@ const EmployeeEdit = () => {
             server.saveEmployee(newEmployees);
             navigate(-1);
 
-        } else console.log('Форма не валидна');
+        }
     }
 
     return (
@@ -114,7 +114,7 @@ const EmployeeEdit = () => {
                 <Form fieldList={fieldList}
                       feedBackForm={feedBackFormList}
                       errorList={errorList}
-                      onSubmitForm={onSave}
+                      onSubmitForm={save}
                       onCancel={onCancel}/>
             </div>
         </div>

@@ -1,7 +1,6 @@
 import {ConvertDate} from "./convertDate";
 import {ErrorList, FieldList} from "../type";
-import {FormFeedback} from "../../components/Form/Form";
-import list from "../../components/List/List";
+import {FormFeedback} from "../../components/form/Form";
 
 
 //---------------------------------------------------------------------------------------------------------------
@@ -154,12 +153,12 @@ class Validate {
         if (ConvertDate.getDateFromStr(startDate).getTime() <= ConvertDate.getDateFromStr(endDate).getTime()) {
             feedBackFormList.map((elem) => {
                 elem.isValid = true;
-                elem.errorMessage = 'yes'
+                elem.errorMessage = ''
             });
         } else {
             feedBackFormList.map((elem) => {
                 elem.isValid = false;
-                elem.errorMessage = 'no'
+                elem.errorMessage = validationErrorsText.IS_VALID_DATE_RANGE_TEXT;
             })
         }
         return feedBackFormList

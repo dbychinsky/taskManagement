@@ -1,7 +1,7 @@
 import React from 'react';
-import Navigation from "./components/Navigation/Navigation";
+import Navigation from "./components/navigation/Navigation";
 import {StubServer} from "./server/StubServer";
-import RoutersProject from "./RoutersProject";
+import RoutersProject from "./routersProject";
 
 function App() {
     return (
