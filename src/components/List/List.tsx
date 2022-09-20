@@ -1,7 +1,15 @@
 import React, {ReactNode} from 'react';
 import "./List.scss";
 
+/**
+ * Компонент List, принимает массив данных для рендера,
+ * Мапит заголовок списка listHeader, далее мапит данные
+ * в виде строк listItem.
+ */
+
 export type ListData<T> = {
+    // название поля
+    name: string
     // Название (Заголовок)
     label: string,
     // Метод для отображения данных в строке (Значение)
@@ -16,14 +24,13 @@ interface IListProps<T> {
 }
 
 const List = <T, >({listData, values}: IListProps<T>) => {
-    console.log(values)
     const listFill =
         <div className="list">
             {/*Заголовок списка*/}
             <div className="listHeader">
                 {
-                    listData.map(({label}, index) =>
-                        <div key={index}>{label}</div>)
+                    listData.map(({name, label}, index) =>
+                        <div key={index} className={name}>{label}</div>)
                 }
             </div>
             {/*Значения списка*/}
@@ -33,8 +40,8 @@ const List = <T, >({listData, values}: IListProps<T>) => {
                     <div key={index} className="listItem">
                         {
                             // Его значения
-                            listData.map(({label, getValueList}, index) =>
-                                <div key={index}>
+                            listData.map(({label, name, getValueList}, index) =>
+                                <div key={index} className={name}>
                                     <span className="value">{getValueList(value)}</span>
                                 </div>
                             )

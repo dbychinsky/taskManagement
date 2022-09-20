@@ -2,12 +2,17 @@ import React, {FC} from "react";
 import "./InputTextField.scss"
 import {IInputFieldProps} from "../IInputFIeld";
 
-interface IInputTextField extends IInputFieldProps {
+/**
+ * Компонент Input(String)
+ */
+
+
+interface IInputTextFieldProps extends IInputFieldProps {
     type: "text",
     isValidLetterPositive?: boolean,
 }
 
-const InputTextField: FC<IInputTextField> = (
+const InputTextField: FC<IInputTextFieldProps> = (
     {
         type,
         value,

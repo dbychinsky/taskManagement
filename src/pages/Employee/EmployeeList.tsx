@@ -30,22 +30,27 @@ const EmployeeList = () => {
 
     const listData: ListData<Employee>[] = [
         {
+            name: "lastName",
             label: "Фамилия:",
             getValueList: (employee) => employee.lastName
         },
         {
+            name: "firstName",
             label: "Имя:",
             getValueList: (employee) => employee.firstName
         },
         {
+            name: "middleName",
             label: "Отчество:",
             getValueList: (employee) => employee.middleName
         },
         {
+            name: "position",
             label: "Должность:",
             getValueList: (employee) => employee.position
         },
         {
+            name: "actionBar",
             label: "",
             getValueList: (employee) =>
                 <div className="actionBar">

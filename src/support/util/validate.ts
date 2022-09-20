@@ -1,9 +1,12 @@
 import {ConvertDate} from "./convertDate";
-import {ErrorList, FieldList} from "../type";
+import {ErrorList, FieldList} from "../typeListForAllApp";
 import {FormFeedback} from "../../components/form/Form";
 
+/**
+ * Валидация
+ */
 
-//---------------------------------------------------------------------------------------------------------------
+
 // Допускаются только буквы
 const LETTER_RegEx = /^[а-яa-zА-ЯA-Z][а-яa-zA-ZА-Я\\s]*$/;
 // Допускаются только цифры
@@ -26,7 +29,6 @@ const enum validationErrorsText {
 }
 
 class Validate {
-
     // Поле заполнено
     private isValidEmptyField = (data: string): ResultValidation => {
         if (data === '' || data === undefined) {

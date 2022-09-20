@@ -1,6 +1,9 @@
 import React from 'react';
 import InputTextField from "../inputTextField/InputTextField";
 
+/**
+ * Компонент DateRange
+ */
 
 interface IInputDateField {
     valueStartDate: string,

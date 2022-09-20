@@ -1,6 +1,10 @@
 import React, {FC} from "react";
 import "./Button.scss"
 
+/**
+ * Компонент Button
+ */
+
 interface IButtonProps {
     // Функция срабатывающая при клике на кнопку, если не указана, будет пустой функцией
     onClick: (e?: any) => void;

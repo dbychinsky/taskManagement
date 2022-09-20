@@ -3,6 +3,10 @@ import {NavLink} from "react-router-dom";
 import "./Navigation.scss";
 import {EMPLOYEES_PAGE_PATH, PROJECT_PAGE_PATH, TASK_PAGE_PATH} from "../../routersProject";
 
+/**
+ * Компонент Navigation, список страниц в проекте
+ */
+
 const Navigation = () => {
     return (
         <ul className="navigation">

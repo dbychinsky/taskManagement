@@ -9,7 +9,7 @@ import Header from "../../components/header/Header";
 import Form, {FormFeedback} from "../../components/form/Form";
 import InputNumberField from "../../components/fields/inputNumberField/InputNumberField";
 import {validate} from "../../support/util/validate";
-import {ErrorList} from "../../support/type";
+import {ErrorList, FieldList} from "../../support/typeListForAllApp";
 import {Task, TaskStatus} from "../../model/Task";
 import {ConvertDate} from "../../support/util/convertDate";
 
@@ -46,8 +46,9 @@ const TaskEditForm = (props: ITaskFormProps) => {
     const MAX_LENGTH: number = 50;
 
     const [taskFormData, setTaskFormData] = useState(taskSerialize(task));
-    const fieldList = [
+    const fieldList: FieldList[] = [
         {
+            name: "status",
             label: "Статус:",
             field: <ComboboxField
                 changeHandler={sendToStateTaskList}
@@ -58,6 +59,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
             />
         },
         {
+            name: "name",
             label: "Наименование:",
             field: <InputTextField
                 type="text"
@@ -70,6 +72,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
             />
         },
         {
+            name: "project",
             label: "Наименование проекта:",
             field: <ComboboxField
                 changeHandler={sendToStateTaskList}
@@ -80,11 +83,12 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 }
                 value={taskFormData.projectId}
                 name="projectId"
-                disabled={sourceTaskForProject? true : false}
+                disabled={sourceTaskForProject ? true : false}
                 required={true}
             />
         },
         {
+            name: "executionTime",
             label: "Работа:",
             field: <InputNumberField
                 type="text"
@@ -99,6 +103,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
         },
 
         {
+            name: "startDate",
             label: "Дата начала:",
             field: <InputTextField
                 type="text"
@@ -111,6 +116,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
             />
         },
         {
+            name: "endDate",
             label: "Дата окончания:",
             field: <InputTextField
                 type="text"
@@ -123,6 +129,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
             />
         },
         {
+            name: "employee",
             label: "Исполнитель:",
             field: <ComboboxField
                 changeHandler={sendToStateTaskList}
@@ -173,7 +180,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
         })
     }
 
-    const onSubmitForm = () => {
+    const submitForm = () => {
         // Валидация полей формы
 
         const isValidFormField = validate.validateField(fieldList, errorList)
@@ -198,7 +205,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 <Form fieldList={fieldList}
                       feedBackForm={feedBackFormList}
                       errorList={errorList}
-                      onSubmitForm={onSubmitForm}
+                      onSubmitForm={submitForm}
                       onCancel={onCancel}/>
             </div>
         </div>

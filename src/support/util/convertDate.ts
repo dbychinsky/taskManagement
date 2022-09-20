@@ -1,6 +1,7 @@
-// Конвертация даты
+/**
+ * Конвертация даты
+ */
 export class ConvertDate {
-
     // Получаем строку из даты
     static getStrFromDate = (date?: Date): string => {
         if (date !== null) {

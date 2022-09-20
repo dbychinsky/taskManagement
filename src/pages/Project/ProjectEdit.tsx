@@ -11,7 +11,7 @@ import Button from "../../components/button/Button";
 import TaskListView from "../task/TaskListView";
 import InputTextField from "../../components/fields/inputTextField/InputTextField";
 import {validate} from "../../support/util/validate";
-import {ErrorList} from "../../support/type";
+import {ErrorList, FieldList} from "../../support/typeListForAllApp";
 
 const ProjectEdit = () => {
 
@@ -47,8 +47,9 @@ const ProjectEdit = () => {
     //Список удаленных тасок. Временное хранилище перед отправкой на сервер
     const [deleteTaskList, setDeleteTaskList] = useState([]);
 
-    const fieldList = [
+    const fieldList: FieldList[] = [
         {
+            name: "name",
             label: "Наименование:",
             field: <InputTextField
                 type="text"
@@ -60,6 +61,7 @@ const ProjectEdit = () => {
             />
         },
         {
+            name: "description",
             label: "Описание:",
             field: <InputTextField
                 type="text"
@@ -112,11 +114,11 @@ const ProjectEdit = () => {
     }
 
     // Отмена
-    const onCancel = () => {
+    const cancel = () => {
         navigate(-1);
     };
 
-    const onCancelFormTask = () => {
+    const cancelFormTask = () => {
         setTaskEditForm(false);
     };
 
@@ -182,7 +184,7 @@ const ProjectEdit = () => {
                       feedBackForm={feedBackFormList}
                       errorList={errorList}
                       onSubmitForm={save}
-                      onCancel={onCancel}/>
+                      onCancel={cancel}/>
 
                 <div className="taskList">
                     <Button onClick={add} text="Добавить задачу"/>
@@ -201,7 +203,7 @@ const ProjectEdit = () => {
             employeeList={employeeList}
             projectList={projectList}
             onPushStorage={sendToStateTaskList}
-            onCancel={onCancelFormTask}
+            onCancel={cancelFormTask}
             sourceTaskForProject={true}
         />
 

@@ -2,12 +2,16 @@ import React, {FC} from "react";
 import "./InputNumberField.scss"
 import {IInputFieldProps} from "../IInputFIeld";
 
-interface IInputNumberField extends IInputFieldProps {
+/**
+ * Компонент Input(Number)
+ */
+
+interface IInputNumberFieldProps extends IInputFieldProps {
     type: "text",
     isValidNumberPositive?: boolean
 }
 
-const InputNumberField: FC<IInputNumberField> = (
+const InputNumberField: FC<IInputNumberFieldProps> = (
     {
         type,
         value,

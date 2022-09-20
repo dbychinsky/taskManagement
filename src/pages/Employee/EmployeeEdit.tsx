@@ -3,7 +3,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {server} from "../../app";
 import {Employee} from "../../model/Employee";
 import InputTextField from "../../components/fields/inputTextField/InputTextField";
-import {ErrorList} from "../../support/type";
+import {ErrorList, FieldList} from "../../support/typeListForAllApp";
 import Form, {FormFeedback} from "../../components/form/Form";
 import Header from "../../components/header/Header";
 import {validate} from "../../support/util/validate";
@@ -17,8 +17,9 @@ const EmployeeEdit = () => {
     const [employee, setEmployee] = useState<Employee>(initialEmployee ? initialEmployee : new Employee());
 
     const MAX_LENGTH: number = 50;
-    const fieldList = [
+    const fieldList: FieldList[] = [
         {
+            name: "lastName",
             label: "Фамилия:",
             field: <InputTextField
                 type="text"
@@ -30,6 +31,7 @@ const EmployeeEdit = () => {
             />
         },
         {
+            name: "firstName",
             label: "Имя:",
             field: <InputTextField
                 type="text"
@@ -42,6 +44,7 @@ const EmployeeEdit = () => {
 
         },
         {
+            name: "middleName",
             label: "Отчество:",
             field: <InputTextField
                 type="text"
@@ -53,6 +56,7 @@ const EmployeeEdit = () => {
             />
         },
         {
+            name: "position",
             label: "Должность:",
             field: <InputTextField
                 type="text"
@@ -86,7 +90,7 @@ const EmployeeEdit = () => {
     };
 
     // Отмена
-    const onCancel = () => {
+    const cancel = () => {
         navigate(-1);
     };
 
@@ -115,7 +119,7 @@ const EmployeeEdit = () => {
                       feedBackForm={feedBackFormList}
                       errorList={errorList}
                       onSubmitForm={save}
-                      onCancel={onCancel}/>
+                      onCancel={cancel}/>
             </div>
         </div>
     );

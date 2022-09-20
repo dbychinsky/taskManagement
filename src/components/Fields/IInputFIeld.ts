@@ -1,6 +1,9 @@
 import React from "react";
 
-// Общий интерфейс для работы с полями
+/**
+ * Общий интерфейс для работы с input
+ */
+
 export interface IInputFieldProps {
     value?: string | number,
     changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void,

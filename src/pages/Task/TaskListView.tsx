@@ -18,34 +18,42 @@ export interface ITaskProps {
 const TaskListView = ({taskList, projects, employees, remove, update}: ITaskProps) => {
     const listData: ListData<Task>[] = [
         {
+            name: "status",
             label: "Статус:",
             getValueList: (task) => getTaskStatusToString(task.status)
         },
         {
+            name: "name",
             label: "Наименование:",
             getValueList: (task) => task.name
         },
         {
+            name: "project",
             label: "Наименование проекта:",
             getValueList: (task) => projects.find(project => project.id === task.projectId)?.name || "Проект не выбран"
         },
         {
+            name: "executionTime",
             label: "Работа:",
             getValueList: (task) => task.executionTime
         },
         {
+            name: "startDate",
             label: "Дата начала:",
             getValueList: (task) => ConvertDate.getStrFromDate(task.startDate)
         },
         {
+            name: "endDate",
             label: "Дата окончания:",
             getValueList: (task) => ConvertDate.getStrFromDate(task.endDate)
         },
         {
+            name: "employee",
             label: "Исполнитель:",
             getValueList: (task) => employees.find(employees => employees.id === task.employeeId)?.fullName || "Исполнитель не назначен"
         },
         {
+            name: "actionBar",
             label: "",
             getValueList: (task) =>
                 <div className="actionBar">

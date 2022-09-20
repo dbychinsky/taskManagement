@@ -1,9 +1,18 @@
-import React, {ChangeEvent} from 'react';
+import React, {ChangeEvent, FC} from 'react';
 import FormRow from "./formRow/FormRow";
 import Button from "../button/Button";
-import {ErrorList, FieldList} from "../../support/type";
+import {ErrorList, FieldList} from "../../support/typeListForAllApp";
 
-interface IForm {
+/**
+ * Компонент Form, принимает label, field, errorMessage
+ */
+
+export type FormFeedback = {
+    isValid: boolean,
+    errorMessage: string
+}
+
+interface IFormProps {
     fieldList: FieldList[],
     errorList: ErrorList[],
     feedBackForm: FormFeedback[],
@@ -11,20 +20,21 @@ interface IForm {
     onCancel: (value?: boolean) => void
 }
 
-export type FormFeedback =
+const Form: FC<IFormProps> = (
     {
-        isValid: boolean,
-        errorMessage: string
-    }
-
-const Form = ({fieldList, errorList, feedBackForm, onSubmitForm, onCancel}: IForm) => {
-
+        fieldList,
+        errorList,
+        feedBackForm,
+        onSubmitForm,
+        onCancel
+    }) => {
     return (
         <form>
             <div className="feedbackForm">{feedBackForm.map((elem) => elem.errorMessage)}</div>
             {
-                fieldList.map(({label, field,}, index) =>
-                    <FormRow labelText={label}
+                fieldList.map(({name, label, field,}, index) =>
+                    <FormRow nameField={name}
+                             labelText={label}
                              children={field}
                              errorMessage={errorList.find(elem => elem.name === field.props.name).errorMessage}
                              key={index}/>

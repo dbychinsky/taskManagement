@@ -1,15 +1,25 @@
-import React from 'react';
+import React, {FC} from 'react';
 import './Header.scss';
 import Button from "../button/Button";
 
-interface IHeader {
+/**
+ * Компонент Header
+ */
+
+interface IHeaderProps {
     title: string,
     onClick?: () => void,
     text?: string | null;
     isShowButton: boolean;
 }
 
-const Header = ({title, onClick, text, isShowButton}: IHeader) => {
+const Header: FC<IHeaderProps> = (
+    {
+        title,
+        onClick,
+        text,
+        isShowButton
+    }) => {
     return (
         <header className="headerPage">
             <h1>{title}</h1>

@@ -1,7 +1,11 @@
-import React, {ChangeEvent, ChangeEventHandler} from 'react';
+import React, {ChangeEvent, ChangeEventHandler, FC} from 'react';
 import './Combobox.scss';
 
-interface IComboboxFieldProp {
+/**
+ * Компонент Combobox
+ */
+
+interface IComboboxFieldProps {
     changeHandler: (event: ChangeEvent<HTMLSelectElement>) => void,
     valueList: { statusId: string, statusText: string }[],
     value: string,
@@ -11,7 +15,14 @@ interface IComboboxFieldProp {
     isValidEmptyFieldCombobox?: boolean
 }
 
-const ComboboxField = ({changeHandler, valueList, value, disabled, name}: IComboboxFieldProp) => {
+const ComboboxField: FC<IComboboxFieldProps> = (
+    {
+        changeHandler,
+        valueList,
+        value,
+        disabled,
+        name
+    }) => {
     return (
         <select onChange={changeHandler} defaultValue={value} disabled={disabled} name={name}>
             <option value={""}>Выберите значение</option>

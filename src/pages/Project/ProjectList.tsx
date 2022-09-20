@@ -30,14 +30,17 @@ const ProjectList = () => {
 
     const listData: ListData<Project>[] = [
         {
+            name: "name",
             label: "Наименование:",
             getValueList: (project) => project.name
         },
         {
+            name: "description",
             label: "Описание:",
             getValueList: (project) => project.description
         },
         {
+            name: "actionBar",
             label: "",
             getValueList: (project) =>
 
