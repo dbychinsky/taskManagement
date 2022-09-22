@@ -7,7 +7,7 @@ import {Project} from "../../model/Project";
 import {getTaskStatusToString} from "../../support/util/taskStatusConvertToStr";
 import {ConvertDate} from "../../support/util/convertDate";
 
-export interface ITaskProps {
+type ITaskProps = {
     taskList: Task[],
     employees: Employee[],
     projects: Project[],
@@ -40,12 +40,13 @@ const TaskListView = ({taskList, projects, employees, remove, update}: ITaskProp
         {
             name: "startDate",
             label: "Дата начала:",
-            getValueList: (task) => ConvertDate.getStrFromDate(task.startDate)
+            // getValueList: (task) => ConvertDate.getStrFromDate(task.startDate)
+            getValueList: (task) => ConvertDate.getLocaleDateStr(ConvertDate.getStrFromDate(task.startDate))
         },
         {
             name: "endDate",
             label: "Дата окончания:",
-            getValueList: (task) => ConvertDate.getStrFromDate(task.endDate)
+            getValueList: (task) => ConvertDate.getLocaleDateStr(ConvertDate.getStrFromDate(task.endDate))
         },
         {
             name: "employee",

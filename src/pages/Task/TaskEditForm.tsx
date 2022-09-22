@@ -110,6 +110,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 value={taskFormData.startDate}
                 changeHandler={sendToStateTaskList}
                 name="startDate"
+                placeholder="YYYY.MM.DD"
                 maxLength={10}
                 required={true}
                 isValidDatePositive={true}
@@ -123,6 +124,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 value={taskFormData.endDate}
                 changeHandler={sendToStateTaskList}
                 name="endDate"
+                placeholder="YYYY.MM.DD"
                 maxLength={10}
                 required={true}
                 isValidDatePositive={true}

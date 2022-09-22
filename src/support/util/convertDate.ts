@@ -7,6 +7,7 @@ export class ConvertDate {
         if (date !== null) {
             if (!isNaN(date.getTime())) {
                 return date.toISOString().slice(0, 10);
+
             }
         }
         return '';
@@ -20,5 +21,9 @@ export class ConvertDate {
             }
         }
         return null;
+    }
+
+    static getLocaleDateStr = (dateString: string): string => {
+        return dateString.replace(/^(\d+)-(\d+)-(\d+)$/, `$3.$2.$1`);
     }
 }

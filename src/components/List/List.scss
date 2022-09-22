@@ -9,12 +9,15 @@
         display: table-row;
         font-weight: bold;
 
-
         > div {
             display: table-cell;
             padding: $indents-base;
 
             border-bottom: 1px solid $color-main;
+        }
+
+        .startDate, .endDate {
+            min-width: 100px;
         }
 
     }
@@ -25,14 +28,19 @@
         > div {
             display: table-cell;
             padding: $indents-base;
+
             border-bottom: 1px solid $color-grey;
+            border-left: 1px solid $color-grey;
 
-
+            &:first-child {
+                border-left: none;
+            }
         }
+
 
         &:last-child {
             > div {
-                border: none;
+                border-bottom: none;
             }
         }
     }
