@@ -1,0 +1,76 @@
+//style for body, App, index
+
+@import "parameters";
+@import "components/form/Form";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap');
+
+html {
+    height: 100vh;
+
+    body {
+        margin: 0;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 16px;
+        height: 100vh;
+
+        .root {
+            height: 100vh;
+        }
+
+        .app {
+            display: grid;
+            grid-template-columns: 1fr 5fr;
+            grid-template-rows: 1fr;
+            gap: 0px 0px;
+            grid-template-areas:". .";
+            height: 100vh;
+        }
+
+        .navigation {
+            height: 100vh;
+        }
+
+        .contentWrapper {
+            padding: ($indents-base);
+            height: 100vh;
+            box-sizing: border-box;
+
+            .content {
+                display: flex;
+                flex-direction: row;
+                align-items: flex-start;
+
+                form {
+                    width: 30%;
+                }
+
+                //TODO
+                .taskList {
+                    width: 100%;
+                    padding: $indents-base;
+                    border: 1px solid $color-grey;
+
+                    > .actionBar {
+                        margin-bottom: $indents-base;
+                        max-width: 100%;
+                    }
+                }
+            }
+
+            .listEmpty {
+                width: 100%;
+                padding: ($indents-base*10) 0;
+
+                font-size: $font-big;
+                text-align: center;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+

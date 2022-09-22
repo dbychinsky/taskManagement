@@ -1,0 +1,19 @@
+@import "../../parameters";
+
+form {
+    max-width: 300px;
+
+    .feedbackForm {
+        color: $color-red;
+        margin-bottom: $indents-base;
+    }
+
+    .formRow {
+        margin-bottom: ($indents-base * 3);
+
+        .feedback {
+            color: $color-red;
+            font-size: $font-small;
+        }
+    }
+}
