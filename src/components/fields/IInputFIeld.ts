@@ -4,7 +4,7 @@ import React from "react";
  * Общий интерфейс для работы с input
  */
 
-export interface IInputFieldProps {
+export type IInputFieldProps = {
     value?: string | number,
     changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void,
     name: string,

@@ -7,7 +7,7 @@ import {IInputFieldProps} from "../IInputFIeld";
  */
 
 
-interface IInputTextFieldProps extends IInputFieldProps {
+type IInputTextFieldProps = IInputFieldProps & {
     type: "text",
     isValidLetterPositive?: boolean,
 }

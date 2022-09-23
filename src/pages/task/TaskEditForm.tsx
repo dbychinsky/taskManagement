@@ -24,7 +24,7 @@ export type TaskFormData = {
 }
 
 
-interface ITaskFormProps {
+type ITaskFormProps = {
     task: Task,
     projectList: Project[],
     employeeList: Employee[],

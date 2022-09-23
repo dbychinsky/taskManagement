@@ -5,7 +5,7 @@ import InputTextField from "../inputTextField/InputTextField";
  * Компонент DateRange
  */
 
-interface IInputDateField {
+type IInputDateField = {
     valueStartDate: string,
     valueEndDate: string,
     changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void,

@@ -6,7 +6,7 @@ import {IInputFieldProps} from "../IInputFIeld";
  * Компонент Input(Number)
  */
 
-interface IInputNumberFieldProps extends IInputFieldProps {
+type IInputNumberFieldProps = IInputFieldProps & {
     type: "text",
     isValidNumberPositive?: boolean
 }

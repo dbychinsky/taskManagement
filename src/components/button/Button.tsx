@@ -5,7 +5,7 @@ import "./Button.scss"
  * Компонент Button
  */
 
-interface IButtonProps {
+type IButtonProps = {
     // Функция срабатывающая при клике на кнопку, если не указана, будет пустой функцией
     onClick: (e?: any) => void;
     text?: string;

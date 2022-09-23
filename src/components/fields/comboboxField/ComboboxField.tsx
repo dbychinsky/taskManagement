@@ -5,7 +5,7 @@ import './Combobox.scss';
  * Компонент Combobox
  */
 
-interface IComboboxFieldProps {
+type IComboboxFieldProps = {
     changeHandler: (event: ChangeEvent<HTMLSelectElement>) => void,
     valueList: { statusId: string, statusText: string }[],
     value: string,

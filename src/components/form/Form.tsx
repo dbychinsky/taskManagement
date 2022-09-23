@@ -12,7 +12,7 @@ export type FormFeedback = {
     errorMessage: string
 }
 
-interface IFormProps {
+type IFormProps = {
     fieldList: FieldList[],
     errorList: ErrorList[],
     feedBackForm: FormFeedback[],

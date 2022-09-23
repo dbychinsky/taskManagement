@@ -5,7 +5,7 @@ import "./Label.scss";
  * Компонент Label
  */
 
-interface ILabelProps {
+type ILabelProps = {
     text: string
 }
 

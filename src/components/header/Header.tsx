@@ -6,7 +6,7 @@ import Button from "../button/Button";
  * Компонент Header
  */
 
-interface IHeaderProps {
+type IHeaderProps = {
     title: string,
     onClick?: () => void,
     text?: string | null;

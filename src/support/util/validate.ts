@@ -6,7 +6,6 @@ import {FormFeedback} from "../../components/form/Form";
  * Валидация
  */
 
-
 // Допускаются только буквы
 const LETTER_RegEx = /^[а-яa-zА-ЯA-Z][а-яa-zA-ZА-Я\\s]*$/;
 // Допускаются только цифры
