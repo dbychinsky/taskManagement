@@ -6,12 +6,35 @@ import './Combobox.scss';
  */
 
 type IComboboxFieldProps = {
+    /**
+     * Метод, вызывающийся при изменении поля
+     *
+     * @param event выбранное значение
+     */
     changeHandler: (event: ChangeEvent<HTMLSelectElement>) => void,
+    /**
+     * Возможные значения
+     */
     valueList: { statusId: string, statusText: string }[],
+    /**
+     * Значение в поле ввода
+     */
     value: string,
+    /**
+     * Имя поля
+     */
     name: string,
+    /**
+     * Атрибут для определения доступности для выбора
+     */
     disabled?: boolean,
+    /**
+     * Определяет необходимость валидации поля
+     */
     required?: boolean
+    /**
+     * Определяет необходимость валидации поля на отсутствующее значение
+     */
     isValidEmptyFieldCombobox?: boolean
 }
 

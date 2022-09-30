@@ -6,6 +6,9 @@ import "./Label.scss";
  */
 
 type ILabelProps = {
+    /**
+     * Текст
+     */
     text: string
 }
 

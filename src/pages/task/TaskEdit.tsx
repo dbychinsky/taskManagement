@@ -6,22 +6,40 @@ import {Task} from "../../model/Task";
 import {Project} from "../../model/Project";
 import TaskEditForm from "./TaskEditForm";
 
-
+/**
+ * Страница обновления/добавления задачи
+ */
 const TaskEdit = () => {
     const navigate = useNavigate();
     const {id} = useParams();
 
+    /**
+     * Получение списков сотрудников, проектов для начальной
+     * инициализации
+     */
     const initialProjectList = server.getProjects();
     const initialEmployeeList = server.getEmployees();
 
-    // Получаем таску для редактирования
-    // const initialTask: task = requestTask(id);
 
+    /**
+     * Установка задачи для обновления
+     */
     const [task, setTasks] = useState(requestTask(id));
+    /**
+     * Установка списка проектов к которым принадлежит задача
+     */
     const [projectList, setProjectList] = useState<Project[]>(initialProjectList);
+    /**
+     * Установка списка сотрудников к которым принадлежит задача
+     */
     const [employeeList, setEmployeeList] = useState<Employee[]>(initialEmployeeList);
 
-    // Запрашиваем таску или создаем новую
+    /**
+     * Метод получения задачи по id, если идентификтор отсутствует -
+     * создаем новую
+     *
+     * @param id идентификатор задачи
+     */
     function requestTask(id: string): Task {
         const target = server.getTasks().find((tasks: Task) => tasks.id === id);
         if (target) {
@@ -29,11 +47,19 @@ const TaskEdit = () => {
         } else return new Task();
     }
 
+    /**
+     * Метод сохранения задачи
+     *
+     * @param id идентификатор задачи
+     */
     const save = (task: Task) => {
         server.saveTask(task);
         navigate(-1);
     };
 
+    /**
+     * Метод отмены
+     */
     const cancel = () => {
         navigate(-1);
     };

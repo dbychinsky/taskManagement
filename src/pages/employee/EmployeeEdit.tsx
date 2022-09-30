@@ -8,15 +8,32 @@ import Form, {FormFeedback} from "../../components/form/Form";
 import Header from "../../components/header/Header";
 import {validate} from "../../support/util/validate";
 
-const EmployeeEdit = () => {
+/**
+ * Страница обновления/добавления сотрудника
+ */
 
+const EmployeeEdit = () => {
     const navigate = useNavigate();
     const {id} = useParams();
-
+    /**
+     * Получение данных сотрудника в случае редактирования
+     */
     const initialEmployee = server.getEmployees().find((employee: Employee) => employee.id === id);
+    /**
+     * Список сотрудников
+     */
     const [employee, setEmployee] = useState<Employee>(initialEmployee ? initialEmployee : new Employee());
-
+    /**
+     * Максимально допустимая длинна для поля ввода
+     */
     const MAX_LENGTH: number = 50;
+
+    /**
+     * Список полей для обновления/добавления сотрудника:
+     * name: имя поля
+     * label: текстовое отображение имени поля
+     * field: поле
+     */
     const fieldList: FieldList[] = [
         {
             name: "lastName",
@@ -69,19 +86,28 @@ const EmployeeEdit = () => {
         }
     ];
 
-    // Формируем список ошибок на основе списка полей формы
+    /**
+     * Метод для формирования списка ошибок на основе полей формы
+     * и добавление их в состояние
+     */
     const [errorList, setErrorList] = useState<ErrorList[]>(
         fieldList.map(elem => {
             return {name: elem.field.props.name, isValid: true, errorMessage: ''}
         }));
 
+    /**
+     * Список информационных сообщений для всей формы (ошибок)
+     */
     const [feedBackFormList, setFeedBackFormList] = useState<FormFeedback[]>([{
         isValid: true,
         errorMessage: ''
     }]);
 
-    // Установка в состояние данных из полей формы страницы task
+    /**
+     * Метод для установки в состояние данных из полей формы
+     */
     function sendToStateEmployeeList(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void {
+        // Добавление id если отстутсвует
         if (!employee.id) {
             const id: string = Date.now().toString();
             employee.id = id
@@ -89,11 +115,17 @@ const EmployeeEdit = () => {
         setEmployee({...employee, [e.target.name]: e.target.value});
     };
 
-    // Отмена
+    /**
+     * Метод отмены
+     */
     const cancel = () => {
         navigate(-1);
     };
 
+    /**
+     * Метод для добавления сотрудника, вызываемый при нажатии кнопки "Сохранить",
+     * если все поля формы валидны, формируем ФИО и отправляем данные на сервер
+     */
     const save = () => {
         // Валидация полей формы
         const isValidFormField = validate.validateField(fieldList, errorList)
@@ -107,7 +139,6 @@ const EmployeeEdit = () => {
             }
             server.saveEmployee(newEmployees);
             navigate(-1);
-
         }
     }
 

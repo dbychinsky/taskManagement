@@ -7,9 +7,22 @@ import Button from "../button/Button";
  */
 
 type IHeaderProps = {
+    /**
+     * Текст заголовка страницы
+     */
     title: string,
+    /**
+     * Метод для добавления нового продукта
+     * (проект, задача, сотрудник)
+     */
     onClick?: () => void,
+    /**
+     * Текст кнопки
+     */
     text?: string | null;
+    /**
+     * Определяет необходимость отображения кнопки
+     */
     isShowButton: boolean;
 }
 

@@ -1,13 +1,24 @@
 import React, {FC} from "react";
-import "./InputNumberField.scss"
 import {IInputFieldProps} from "../IInputFIeld";
+import "./InputNumberField.scss"
 
 /**
- * Компонент Input(Number)
+ * Компонент Input(Для ввода числовых значений)
  */
 
+/**
+ * Интерфейс поля расширяется общим
+ * интерфейсом IInputFieldProps
+ */
 type IInputNumberFieldProps = IInputFieldProps & {
+    /**
+     * Тип поля ввода
+     */
     type: "text",
+    /**
+     * Определяет необходимость валидации поля на содержание
+     * только чисел
+     */
     isValidNumberPositive?: boolean
 }
 

@@ -3,12 +3,22 @@ import "./InputTextField.scss"
 import {IInputFieldProps} from "../IInputFIeld";
 
 /**
- * Компонент Input(String)
+ * Компонент Input(Для ввода строковых значений)
  */
 
-
+/**
+ * Интерфейс поля расширяется общим
+ * интерфейсом IInputFieldProps
+ */
 type IInputTextFieldProps = IInputFieldProps & {
+    /**
+     * Тип поля ввода
+     */
     type: "text",
+    /**
+     * Определяет необходимость валидации поля на содержание
+     * только букв
+     */
     isValidLetterPositive?: boolean,
 }
 

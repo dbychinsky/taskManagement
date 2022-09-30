@@ -1,5 +1,8 @@
 import React from 'react';
 
+/**
+ * Начальная страница.
+ */
 const MainPage = () => {
     return (
         <div>

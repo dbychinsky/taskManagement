@@ -7,15 +7,51 @@ import {Project} from "../../model/Project";
 import {getTaskStatusToString} from "../../support/util/taskStatusConvertToStr";
 import {ConvertDate} from "../../support/util/convertDate";
 
+/**
+ * Страница со списком задач, является общей для страниц
+ * задач и проектов(используется при отображении списка задач
+ * из страницы проектов).
+ */
+
 type ITaskProps = {
+    /**
+     * Список задач
+     */
     taskList: Task[],
-    employees: Employee[],
-    projects: Project[],
+
+    /**
+     * Список сотрудников
+     */
+    employeeList: Employee[],
+
+    /**
+     * Список проектов
+     */
+    projectList: Project[],
+
+    /**
+     * Метод удаления
+     *
+     * @param id идентификатор задачи
+     *
+     */
     remove: (id: string) => void,
+
+    /**
+     * Метод обновления
+     *
+     * @param id идентификатор задачи
+     */
     update: (id: string) => void
 }
 
-const TaskListView = ({taskList, projects, employees, remove, update}: ITaskProps) => {
+const TaskListView = ({taskList, projectList, employeeList, remove, update}: ITaskProps) => {
+    /**
+     * Список полей для отображения:
+     * name: имя поля
+     * label: тестовое отображение имени поля
+     * getValueList: метод получения данных для отображения в строке
+     */
     const listData: ListData<Task>[] = [
         {
             name: "status",
@@ -30,7 +66,7 @@ const TaskListView = ({taskList, projects, employees, remove, update}: ITaskProp
         {
             name: "project",
             label: "Наименование проекта:",
-            getValueList: (task) => projects.find(project => project.id === task.projectId)?.name || "Проект не выбран"
+            getValueList: (task) => projectList.find(project => project.id === task.projectId)?.name || "Проект не выбран"
         },
         {
             name: "executionTime",
@@ -51,7 +87,7 @@ const TaskListView = ({taskList, projects, employees, remove, update}: ITaskProp
         {
             name: "employee",
             label: "Исполнитель:",
-            getValueList: (task) => employees.find(employees => employees.id === task.employeeId)?.fullName || "Исполнитель не назначен"
+            getValueList: (task) => employeeList.find(employees => employees.id === task.employeeId)?.fullName || "Исполнитель не назначен"
         },
         {
             name: "actionBar",

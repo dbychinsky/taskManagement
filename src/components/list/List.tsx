@@ -2,24 +2,35 @@ import React, {ReactNode} from 'react';
 import "./List.scss";
 
 /**
- * Компонент List, принимает массив данных для рендера,
- * Мапит заголовок списка listHeader, далее мапит данные
- * в виде строк listItem.
+ * Компонент List, принимает массив данных для отображения,
+ * формирует заголовок для списка с именами полей (listHeader),
+ * формирует список данных в виде строк(listItem).
  */
 
 export type ListData<T> = {
-    // название поля
+    /**
+     * Имя поля
+     */
     name: string
-    // Название (Заголовок)
+    /**
+     * Имя поля для отображения на кирилице
+     */
     label: string,
-    // Метод для отображения данных в строке (Значение)
+    /**
+     * Метод для получения и отображения данных в строке
+     * @param value значение в ячейке
+     */
     getValueList: (value: T) => ReactNode
 }
 
 interface IListProps<T> {
-    // Массив данных
+    /**
+     * Массив строк
+     */
     listData: ListData<T>[],
-    // Их значения
+    /**
+     * Массив значений (данных)
+     */
     values: T[]
 }
 
@@ -55,6 +66,7 @@ const List = <T, >({listData, values}: IListProps<T>) => {
         <p className="listEmpty">Список пуст</p>
 
     return (
+        // Проверка: если значение отстутствует - выводим сообщение
         values.length ? listFill : listEmpty
     );
 };

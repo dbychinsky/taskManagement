@@ -13,23 +13,87 @@ import {ErrorList, FieldList} from "../../support/typeListForAllApp";
 import {Task, TaskStatus} from "../../model/Task";
 import {ConvertDate} from "../../support/util/convertDate";
 
+/**
+ * Страница обновления/добавления задачи, является общей для страниц
+ * задач и проектов(используется при создании Задачи из страницы проектов).
+ */
+
+/**
+ * Тип для сериализованной модели Задач
+ */
 export type TaskFormData = {
+    /**
+     * Статус задачи
+     */
     status: TaskStatus,
+
+    /**
+     * Имя задачи
+     */
     name: string,
+
+    /**
+     * Уникальный идентификатор проекта задачи
+     */
     projectId: string,
+
+    /**
+     * Количество часов
+     */
     executionTime: string,
+
+    /**
+     * Дата начала задачи
+     */
     startDate: string,
+
+    /**
+     * Дата окончания задачи
+     */
     endDate: string,
+
+    /**
+     * Уникальный идентификатор сотрудника задачи
+     */
     employeeId: string
 }
 
 
 type ITaskFormProps = {
+    /**
+     * Задача
+     */
     task: Task,
+
+    /**
+     * Список проектов
+     */
     projectList: Project[],
+
+    /**
+     * Список сотрудников
+     */
     employeeList: Employee[],
+
+    /**
+     * Метод вызываемый при сохранении формы
+     *
+     * @param task задача
+     */
     onPushStorage: (task: Task) => void,
+
+    /**
+     * Метод вызываемый при отмене для формы
+     *
+     * @param value определяет необходимсоть условного
+     * рендера
+     */
     onCancel: (value: boolean) => void,
+
+    /**
+     * Определяет редактируется ли задача, принадлежащая
+     * проекту
+     */
     sourceTaskForProject?: boolean
 }
 
@@ -46,6 +110,13 @@ const TaskEditForm = (props: ITaskFormProps) => {
     const MAX_LENGTH: number = 50;
 
     const [taskFormData, setTaskFormData] = useState(taskSerialize(task));
+
+    /**
+     * Список полей для обновления/добавления сотрудника:
+     * name: имя поля
+     * label: текстовое отображение имени поля
+     * field: поле
+     */
     const fieldList: FieldList[] = [
         {
             name: "status",
@@ -146,24 +217,34 @@ const TaskEditForm = (props: ITaskFormProps) => {
         }
     ];
 
-    // Установка в состояние данных из полей формы страницы task
+    /**
+     * Метод для установки в состояние данных из полей формы
+     */
     function sendToStateTaskList(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void {
         setTaskFormData({...taskFormData, [e.target.name]: e.target.value});
     };
 
-    // Формируем список ошибок на основе списка полей формы
+    /**
+     * Метод для формирования списка ошибок на основе полей формы
+     * и добавление их в состояние
+     */
     const [errorList, setErrorList] = useState<ErrorList[]>(
         fieldList.map(elem => {
             return {name: elem.field.props.name, isValid: true, errorMessage: ''}
         }));
 
+    /**
+     * Список информационных сообщений для всей формы (ошибок)
+     */
     const [feedBackFormList, setFeedBackFormList] = useState<FormFeedback[]>([{
         isValid: null,
         errorMessage: ''
     }]);
 
-
-    // Переводим данные с сервера нужное представление для работы в форме
+    /**
+     * Сериализация задач. Переводим данные с сервера в нужное
+     * представление для работы в форме
+     */
     function taskSerialize(task: Task): TaskFormData {
         return Object.assign({} as TaskFormData, task, {
             startDate: ConvertDate.getStrFromDate(task.startDate),
@@ -171,7 +252,10 @@ const TaskEditForm = (props: ITaskFormProps) => {
         });
     }
 
-    // Приводим данные к виду модели ля отправки на сервер (и добавляем id)
+    /**
+     * Десериализация задач. Приводим данные к виду модели
+     * для отправки на сервер (и добавляем id)
+     */
     function taskDeserialize(taskFormData: TaskFormData): Task {
         const targetId: string = task.id ? task.id : Date.now().toString();
 
@@ -182,6 +266,11 @@ const TaskEditForm = (props: ITaskFormProps) => {
         })
     }
 
+    /**
+     * Метод для добавления задачи, вызываемый при нажатии кнопки "Сохранить",
+     * если все поля формы валидны, валидируем поля дат (корректность промежутка),
+     * отправляем данные на сервер
+     */
     const submitForm = () => {
         // Валидация полей формы
 

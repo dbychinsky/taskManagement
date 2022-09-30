@@ -1,10 +1,28 @@
 import React, {FC, useState} from 'react';
 import Label from "../../label/Label";
 
-type FormRow = {
-    nameField:string,
+/**
+ * Компонент FormRow, обьединяет поля - отображение
+ * описания поля (Label), ввод данных, отображение
+ * сообщения к полю (ошибки).
+ */
+
+interface FormRow {
+    /**
+     * Имя поля
+     */
+    nameField: string,
+    /**
+     * Текст описания к полю
+     */
     labelText: string,
+    /**
+     * Поле формы
+     */
     children: JSX.Element,
+    /**
+     * Сообщение об ошибке
+     */
     errorMessage?: string
 };
 

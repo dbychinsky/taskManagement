@@ -4,19 +4,48 @@ import Button from "../button/Button";
 import {ErrorList, FieldList} from "../../support/typeListForAllApp";
 
 /**
- * Компонент Form, принимает label, field, errorMessage
+ * Компонент Form
  */
 
+/**
+ * Тип для обратных сообщений формы
+ */
 export type FormFeedback = {
+    /**
+     * Флаг валидности поля
+     */
     isValid: boolean,
+    /**
+     * Текстовое сообщение об ошибке
+     */
     errorMessage: string
 }
 
-type IFormProps = {
+/**
+ * Интерфейс работы с формой
+ */
+
+interface IFormProps {
+    /**
+     * Список полей для отображения
+     */
     fieldList: FieldList[],
+    /**
+     * Список ошибок
+     */
     errorList: ErrorList[],
+    /**
+     * Общее сообщение для формы (информационное или
+     * используемое для вывода ошибок всей формы)
+     */
     feedBackForm: FormFeedback[],
+    /**
+     * Отправка данных формы
+     */
     onSubmitForm: (value?: boolean) => void,
+    /**
+     * Отмена отправки
+     */
     onCancel: (value?: boolean) => void
 }
 

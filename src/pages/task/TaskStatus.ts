@@ -1,6 +1,8 @@
 import {TaskStatus} from "../../model/Task";
 
-
+/**
+ * Массив возможных значений статусов
+ */
 export const TaskStatuses = [
     {statusId: TaskStatus.COMPLETE, statusText: 'Завершена'},
     {statusId: TaskStatus.POSTPONED, statusText: 'Отложена'},
