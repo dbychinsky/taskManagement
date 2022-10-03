@@ -17,6 +17,7 @@ export interface IServer {
      * Интерфейс удаления проекта по его уникальному идентификатору
      *
      * @param {string} id уникальный идентификатор проекта
+     * @return void
      */
     deleteProject(id: string): void;
 
@@ -24,12 +25,13 @@ export interface IServer {
      * Интерфейс сохранения проекта
      *
      * @param {Project} project проект для сохранения
+     * @return void
      */
     saveProject(project: Project): void;
 
     /**
      * Интерфейс получения списка задач
-     * @return {Task} список задач
+     * @return {Task[]} список задач
      */
     getTasks(): Task[];
 
@@ -37,6 +39,7 @@ export interface IServer {
      * Интерфейс удаления задачи по ее уникальному идентификатору
      *
      * @param {string} id уникальный идентификатор задачи
+     * @return void
      */
     deleteTask(id: string): void;
 
@@ -44,12 +47,13 @@ export interface IServer {
      * Интерфейс сохранения задачи
      *
      * @param {Task} task задача для сохранения
+     * @return void
      */
     saveTask(task: Task): void;
 
     /**
      * Интерфейс получения списка сотрудников
-     * @return {Employee} список сотрудников
+     * @return {Employee[]} список сотрудников
      */
     getEmployees(): Employee[];
 
@@ -57,6 +61,7 @@ export interface IServer {
      * Интерфейс удаления сотрудника по его уникальному идентификатору
      *
      * @param {string} id уникальный идентификатор сотрудника
+     * @return void
      */
     deleteEmployee(id: string): void;
 
@@ -64,6 +69,7 @@ export interface IServer {
      * Интерфейс сохранения сотрудников
      *
      * @param {Employee} employee сотрудник для сохранения
+     * @return void
      */
     saveEmployee(employee: Employee): void;
 

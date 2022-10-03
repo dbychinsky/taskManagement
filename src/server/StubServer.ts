@@ -4,6 +4,10 @@ import {Employee} from "../model/Employee";
 import {Task} from "../model/Task";
 import {ConvertDate} from "../support/util/convertDate";
 
+/**
+ * Класс для работы с сервером
+ */
+
 export class StubServer implements IServer {
 
     /**
@@ -24,7 +28,7 @@ export class StubServer implements IServer {
     /**
      * Метод получения списка проектов
      *
-     * @return {Project} список сотрудников
+     * @return {Project[]} список сотрудников
      */
     getProjects(): Project[] {
         const result = this.load(this.PROJECT_LIST_KEY);
@@ -38,6 +42,7 @@ export class StubServer implements IServer {
      * Метод удаления проекта по его уникальному идентификатору
      *
      * @param {string} id уникальный идентификатор проекта
+     * @return void
      */
     deleteProject(id: string): void {
         const projectList = this.getProjects();
@@ -49,6 +54,7 @@ export class StubServer implements IServer {
      * Метод сохранения проекта
      *
      * @param {Project} project проект для сохранения
+     * @return void
      */
     saveProject(project: Project): void {
         let projectList: Project[] = this.getProjects();
@@ -64,7 +70,7 @@ export class StubServer implements IServer {
 
     /**
      * Метод получения списка задач
-     * @return {Task} список задач
+     * @return {Task[]} список задач
      */
     getTasks(): Task[] {
         const result = this.load(this.TASK_LIST_KEY);
@@ -86,6 +92,7 @@ export class StubServer implements IServer {
      * Метод удаления задачи по ее уникальному идентификатору
      *
      * @param {string} id уникальный идентификатор задачи
+     * @return void
      */
     deleteTask(id: string): void {
         const taskList = this.getTasks();
@@ -97,6 +104,7 @@ export class StubServer implements IServer {
      * Метод сохранения задачи
      *
      * @param {Task} task задача для сохранения
+     * @return void
      */
     saveTask(task: Task): void {
         let taskList: Task[] = this.getTasks();
@@ -112,7 +120,7 @@ export class StubServer implements IServer {
 
     /**
      * Метод получения списка сотрудников
-     * @return {Employee} список сотрудников
+     * @return {Employee[]} список сотрудников
      */
     getEmployees(): Employee[] {
         const result = this.load(this.EMPLOYEE_LIST_KEY);
@@ -128,6 +136,7 @@ export class StubServer implements IServer {
      * Метод удаления сотрудника по его уникальному идентификатору
      *
      * @param {string} id уникальный идентификатор сотрудника
+     * @return void
      */
     deleteEmployee(id: string): void {
         const employeeList = this.getEmployees();
@@ -136,9 +145,10 @@ export class StubServer implements IServer {
     }
 
     /**
-     * Интерфейс сохранения сотрудников
+     * Метод сохранения сотрудников
      *
      * @param {Employee} employee сотрудник для сохранения
+     * @return void
      */
     saveEmployee(employee: Employee): void {
         let employeeList: Employee[] = this.getEmployees();
@@ -156,6 +166,7 @@ export class StubServer implements IServer {
      * Метод для работы с localStorage - загрузка данных
      * из файла по ключу
      *
+     * @private
      * @param {string} key ключ для получения значения
      */
     private load(key: string) {
@@ -166,6 +177,7 @@ export class StubServer implements IServer {
      * Метод для работы с localStorage - сохранение данных
      * в файл по ключу
      *
+     * @private
      * @param {string} key  ключ для получения значения
      * @param {any} object данные для сохранения
      */
