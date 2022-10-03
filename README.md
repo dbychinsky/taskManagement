@@ -13,3 +13,5 @@
 === Инструменты
 
 React, Typescript
+
+deploy: https://dbychinsky.github.io/taskManagement/
