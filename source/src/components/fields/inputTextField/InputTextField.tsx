@@ -11,10 +11,12 @@ import {IInputFieldProps} from "../IInputFIeld";
  * интерфейсом IInputFieldProps
  */
 type IInputTextFieldProps = IInputFieldProps & {
+
     /**
      * Тип поля ввода
      */
     type: "text",
+
     /**
      * Определяет необходимость валидации поля на содержание
      * только букв

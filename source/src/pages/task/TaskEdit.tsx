@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Employee} from "../../model/Employee";
 import {useNavigate, useParams} from "react-router-dom";
 import {server} from "../../app";
@@ -10,51 +10,60 @@ import TaskEditForm from "./TaskEditForm";
  * Страница обновления/добавления задачи
  */
 const TaskEdit = () => {
+
     const navigate = useNavigate();
     const {id} = useParams();
 
     /**
-     * Получение списков сотрудников, проектов для начальной
-     * инициализации
+     * Получение и установка списка проектов к которым принадлежит задача
      */
-    const initialProjectList = server.getProjects();
-    const initialEmployeeList = server.getEmployees();
+    const [projectList, setProjectList] = useState<Project[]>([]);
+    useEffect(() => {
+        server.getProjects()
+            .then(response => setProjectList(response))
+            .catch(error => console.log(error))
+    }, []);
 
-
-    /**
-     * Установка задачи для обновления
-     */
-    const [task, setTasks] = useState(requestTask(id));
-    /**
-     * Установка списка проектов к которым принадлежит задача
-     */
-    const [projectList, setProjectList] = useState<Project[]>(initialProjectList);
     /**
      * Установка списка сотрудников к которым принадлежит задача
      */
-    const [employeeList, setEmployeeList] = useState<Employee[]>(initialEmployeeList);
+    const [employeeList, setEmployeeList] = useState<Employee[]>([]);
+    useEffect(() => {
+        server.getEmployees()
+            .then(response => setEmployeeList(response))
+            .catch(error => console.log(error))
+    }, []);
 
     /**
-     * Метод получения задачи по id, если идентификтор отсутствует -
-     * создаем новую
-     *
-     * @param id идентификатор задачи
+     * Установка задачи для обновления
+     * Запрашиваем список задач, ищем по ID редактируемую.
+     * Если есть, устанавливаем в состояние, если нет -
+     * устанавливаем новую.
      */
-    function requestTask(id: string): Task {
-        const target = server.getTasks().find((tasks: Task) => tasks.id === id);
-        if (target) {
-            return target
-        } else return new Task();
-    }
+    const [task, setTask] = useState<Task>();
+    useEffect(() => {
+        server.getTasks()
+            .then(response => {
+                const targetTask = response.find((tasks: Task) => tasks.id === id);
+                if (!targetTask) {
+                    setTask(new Task());
+                } else {
+                    setTask(targetTask);
+                }
+            })
+            .catch(error => console.log(error))
+    }, []);
 
     /**
      * Метод сохранения задачи
      *
-     * @param id идентификатор задачи
+     * @param {Task} task идентификатор задачи
      */
     const save = (task: Task) => {
-        server.saveTask(task);
-        navigate(-1);
+        server.saveTask(task).then();
+        server.getTasks().then(() => {
+            navigate(-1)
+        });
     };
 
     /**
@@ -64,13 +73,16 @@ const TaskEdit = () => {
         navigate(-1);
     };
 
-    return <TaskEditForm
+    /**
+     * Получаем необходимые данные и тогда рендерим форму
+     */
+    return task && employeeList && projectList ? <TaskEditForm
         task={task}
         employeeList={employeeList}
         projectList={projectList}
         onPushStorage={save}
         onCancel={cancel}
-    />
+    /> : <></>
 };
 
 export default TaskEdit;

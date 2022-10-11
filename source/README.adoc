@@ -7,9 +7,20 @@
 . Node.js, latest current version includes npm (https://nodejs.org/en/download/current/)
 
 == Инструкция по запуску:
-. `npm install` (для установки зависимостей)
-. `npm start`
+. `npm install` для установки зависимостей
+. `npm start` для запуска приложения
 
 === Инструменты
 
 React, Typescript
+
+=== Изменение типа хранилища.
+В файле configApp.json (src/configApp.json) доступно изменение типа хранилища.
+Доступные значения:
+
+. `StubServer` - для сохранения данных используется localStorage
+. `BackendServer` -  для сохранения данных используется backend сервер
+
+После установки значения может понадобиться перезапуск приложения.
+
+

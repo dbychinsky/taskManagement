@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom";
 import {Employee} from "../../model/Employee";
 import {server} from "../../app";
 import Header from "../../components/header/Header";
-import {EMPLOYEES_FORM_PATH} from "../../routersProject";
+import {EMPLOYEES_FORM_PATH} from "../../routerList";
 import List, {ListData} from "../../components/list/List";
 import Button from "../../components/button/Button";
 
@@ -11,18 +11,17 @@ import Button from "../../components/button/Button";
  * Страница со списком сотрудников
  */
 const EmployeeList = () => {
+
     const navigate = useNavigate();
+
     /**
      * Список сотрудников
      */
     const [employeeList, setEmployeeList] = useState<Employee[]>([]);
-
-    /**
-     * Метод для получения сотрудников и установки в state
-     */
     useEffect(() => {
-        setEmployeeList(server.getEmployees());
+        getEmployeeList();
     }, []);
+
 
     /**
      * Метод для добавления сотрудника, вызываемый при нажатии кнопки "Добавить",
@@ -38,13 +37,15 @@ const EmployeeList = () => {
      * @param id идентификатор сотрудника
      */
     const remove = (id: string) => {
-        server.deleteEmployee(id);
-        setEmployeeList(server.getEmployees());
+        server.deleteEmployee(id)
+            .then(() => getEmployeeList())
+            .catch(error => console.log(error))
     };
 
     /**
      * Метод для обновления сотрудника, вызываемый при нажатии кнопки "изменить",
      * переход к странице обновления/добавления
+     *
      * @param id идентификатор сотрудника
      */
     const update = (id: string) => {
@@ -52,7 +53,17 @@ const EmployeeList = () => {
     };
 
     /**
+     * Функция установки в состояние списка сотрудников
+     */
+    function getEmployeeList() {
+        server.getEmployees()
+            .then(response => setEmployeeList(response))
+            .catch(error => console.log(error))
+    }
+
+    /**
      * Список полей для отображения:
+     *
      * name: имя поля
      * label: тестовое отображение имени поля
      * getValueList: метод получения данных для отображения в строке

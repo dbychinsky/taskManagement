@@ -1,7 +1,7 @@
 import React from 'react';
 import Navigation from "./components/navigation/Navigation";
-import {StubServer} from "./server/StubServer";
-import RoutersProject from "./routersProject";
+import RoutersProject from "./routerList";
+import {connectToServer} from './server/connectToServer';
 
 function App() {
     return (
@@ -14,6 +14,9 @@ function App() {
     );
 }
 
-export const server = new StubServer();
+/**
+ * Подключение хранилища
+ */
+export const server = connectToServer();
 
 export default App;

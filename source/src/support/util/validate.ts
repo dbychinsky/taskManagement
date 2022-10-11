@@ -1,6 +1,5 @@
-import {ConvertDate} from "./convertDate";
-import {ErrorList, FieldList} from "../typeListForAllApp";
-import {FormFeedback} from "../../components/form/Form";
+import {DateFormatter} from "./DateFormatter";
+import {Error, Field, FeedbackForm} from "../../components/form/Form";
 
 /**
  * Валидация данных
@@ -25,7 +24,7 @@ const DATE_RegEx = /^\d{4}-\d{2}-\d{2}$/;
  * Тип возвращаемого значения для результата
  * валидации
  */
-type ResultValidation = {
+type ValidationResult = {
     errorMessage: string;
     isValid: boolean;
 }
@@ -35,13 +34,11 @@ type ResultValidation = {
  */
 const enum validationErrorsText {
     IS_VALID = "",
-    IS_VALID_EMPTY_FIELD_TEXT = "Поле должно быть заполнено",
-    IS_VALID_LETTER_POSITIVE_TEXT = "Допускаются только буквы",
-    IS_VALID_NUMBER_POSITIVE_TEXT = "Допускаются только целые (положительные) числа",
-    IS_VALID_DATE_TEXT = "Некорректная дата, формат должен быть YYYY-MM-DD",
-    IS_VALID_DATE_RANGE_TEXT = "Дата начала больше даты окончания",
+    INVALID_EMPTY_FIELD_TEXT = "Поле должно быть заполнено",
+    INVALID_NUMBER_POSITIVE_TEXT = "Допускаются только целые (положительные) числа",
+    INVALID_DATE_TEXT = "Некорректная дата, формат должен быть YYYY-MM-DD",
+    INVALID_DATE_RANGE_TEXT = "Дата начала больше даты окончания",
 }
-
 
 /**
  * Класс валидации
@@ -52,81 +49,109 @@ class Validate {
      * Метод проверки на заполненность поля
      *
      * @param {string} data входные данные
-     * @return {ResultValidation} результат проверки
+     * @return {ValidationResult} результат проверки
      * @private
      */
-    private isValidEmptyField = (data: string): ResultValidation => {
+    private isEmpty = (data: string): ValidationResult => {
         if (data === '' || data === undefined) {
-            return {isValid: false, errorMessage: validationErrorsText.IS_VALID_EMPTY_FIELD_TEXT}
+            return {isValid: false, errorMessage: validationErrorsText.INVALID_EMPTY_FIELD_TEXT}
         }
         return {isValid: true, errorMessage: validationErrorsText.IS_VALID}
     };
 
     /**
-     * Метод проверки поля на содержание только букв
-     *
-     * @param {string} data входные данные
-     * @return {ResultValidation} результат проверки
-     * @private
-     */
-    private isValidLetterPositive = (data: string): ResultValidation => {
-        if (data) {
-            if (data.match(LETTER_RegEx)) {
-                return {isValid: true, errorMessage: validationErrorsText.IS_VALID}
-            }
-            return {isValid: false, errorMessage: validationErrorsText.IS_VALID_LETTER_POSITIVE_TEXT}
-        }
-    };
-
-    /**
      * Метод проверки поля на содержание только
-     * положительных значений
+     * положительных значений.
+     * Заполняет данные ErrorList в случае ошибки.
      *
-     * @param {number} count входные данные
-     * @return {ResultValidation} результат проверки
+     * @param {Field} field проверяемое поле
+     * @param {Error} error
      * @private
      */
-    private isValidNumberPositive = (count: number): ResultValidation => {
-        if (count === null) {
-            return {isValid: false, errorMessage: validationErrorsText.IS_VALID_EMPTY_FIELD_TEXT}
-        } else {
-            if (String(count).match(NUMBER_RegEx)) {
-                return {isValid: true, errorMessage: validationErrorsText.IS_VALID}
+    private isNumberPositive = (field: Field, error: Error) => {
+        const IS_NUMBER = checkField(field.field.props.value);
+
+        /**
+         * Функция проверки поля.
+         *
+         * @param {number} count
+         * @return {ValidationResult} результат проверки
+         */
+        function checkField(count: number): ValidationResult {
+            if (count === null) {
+                return {isValid: false, errorMessage: validationErrorsText.INVALID_EMPTY_FIELD_TEXT}
+            } else {
+                if (String(count).match(NUMBER_RegEx)) {
+                    return {isValid: true, errorMessage: validationErrorsText.IS_VALID}
+                }
+                return {isValid: false, errorMessage: validationErrorsText.INVALID_NUMBER_POSITIVE_TEXT}
             }
-            return {isValid: false, errorMessage: validationErrorsText.IS_VALID_NUMBER_POSITIVE_TEXT}
+        }
+
+        if (field.field.props.isNumberPositive) {
+            if (IS_NUMBER.isValid) {
+                error.isValid = true;
+                error.errorMessage = '';
+            } else {
+                if (error) {
+                    error.isValid = false;
+                    error.errorMessage = IS_NUMBER.errorMessage;
+                }
+            }
         }
     };
 
     /**
-     * Метод проверки поля на корректную дату
+     * Метод проверки поля на соответствие даты шаблону YYYY-MM-DD.
+     * Заполняет данные ErrorList в случае ошибки.
      *
-     * @param {string} dateString входные данные
-     * @return {ResultValidation} результат проверки
+     * @param {Field} field проверяемое поле
+     * @param {Error} error
      * @private
      */
-    private isValidDate(dateString: string): ResultValidation {
-        if (dateString) {
-            const equalDate: Date | null = ConvertDate.getDateFromStr(dateString);
-            if (dateString === ConvertDate.getStrFromDate(equalDate) && !isNaN(equalDate.getTime())) {
-                return {isValid: true, errorMessage: validationErrorsText.IS_VALID}
+    private isCorrectDate(field: Field, error: Error) {
+        const IS_CORRECT_DATE = checkField(field.field.props.value);
+
+        /**
+         * Функция проверки поля.
+         *
+         * @param {string} dateString
+         * @return {ValidationResult} результат проверки
+         */
+        function checkField(dateString: string): ValidationResult {
+            if (dateString) {
+                const equalDate: Date | null = DateFormatter.getDateFromStr(dateString);
+                if (dateString === DateFormatter.getStrFromDate(equalDate) && !isNaN(equalDate.getTime())) {
+                    return {isValid: true, errorMessage: validationErrorsText.IS_VALID}
+                }
+            }
+            return {isValid: false, errorMessage: validationErrorsText.INVALID_DATE_TEXT}
+        }
+
+        if (field.field.props.isValidDatePositive) {
+            if (IS_CORRECT_DATE.isValid) {
+                error.isValid = true;
+                error.errorMessage = '';
+            } else {
+                if (error) {
+                    error.isValid = false;
+                    error.errorMessage = IS_CORRECT_DATE.errorMessage;
+                }
             }
         }
-        return {isValid: false, errorMessage: validationErrorsText.IS_VALID_DATE_TEXT}
     }
 
     /**
-     * Метод проверки полей на корректный промежуток дат
+     * Метод проверки полей на корректный промежуток дат,
+     * дата начала не должна быть позже даты окончания
      *
-     * @param {FieldList} fieldList список полей
-     * @param {FormFeedback} feedBackFormList список ошибок
-     * @return {ResultValidation} результат проверки
+     * @param {string} startDate дата начала периода
+     * @param {string} endDate дата окончания периода
+     * @param {FeedbackForm} feedBackFormList список ошибок
+     * @return {ValidationResult} результат проверки
      */
-    public validDateRange(fieldList: FieldList[], feedBackFormList: FormFeedback[]): FormFeedback[] {
-
-        const startDate = fieldList.find((elem) => elem.field.props.name === "startDate").field.props.value;
-        const endDate = fieldList.find((elem) => elem.field.props.name === "endDate").field.props.value;
-
-        if (ConvertDate.getDateFromStr(startDate).getTime() <= ConvertDate.getDateFromStr(endDate).getTime()) {
+    public isDateInRange(startDate: string, endDate: string, feedBackFormList: FeedbackForm[]): FeedbackForm[] {
+        if (DateFormatter.getDateFromStr(startDate).getTime() <= DateFormatter.getDateFromStr(endDate).getTime()) {
             feedBackFormList.map((elem) => {
                 elem.isValid = true;
                 elem.errorMessage = ''
@@ -134,107 +159,64 @@ class Validate {
         } else {
             feedBackFormList.map((elem) => {
                 elem.isValid = false;
-                elem.errorMessage = validationErrorsText.IS_VALID_DATE_RANGE_TEXT;
+                elem.errorMessage = validationErrorsText.INVALID_DATE_RANGE_TEXT;
             })
         }
         return feedBackFormList
-
     }
 
     /**
-     * Метод валидации формы.
-     *
-     * @param {ErrorList|FormFeedback} list список ошибок полей формы
-     * @return {boolean} результат проверки true/false
-     */
-    public isValidForm = (list: ErrorList[] | FormFeedback[]): boolean => {
-        return typeof (list.find(element => element.isValid === false)) === 'undefined'
-    }
-
-    /**
-     * Метод валидации.
+     * Метод валидации полей.
      * Принимает список полей и список ошибок. Вызывает по очереди
      * требуемые методы проверки и заполняет список ошибок.
+     * 1) isRequired - флаг необходимости валидации поля
+     * 2) disabled - проверяем имеет ли поле аттрибут disabled
+     * 2) isEmpty - Поле обязательно к проверке (проверяется на заполненность)
+     * 3) isLetterPositive - Метод проверки поля на содержание только букв
+     * 4) isNumberPositive -Метод проверки поля на содержание только
+     * положительных значений
+     * 5) isCorrectDate - Метод проверки поля на соответствие даты шаблону YYYY-MM-DD
      *
-     * @param {FieldList} fieldList список полей формы
-     * @param {ErrorList} errorList список ошибок
+     * @param {Field} fieldList список полей формы
+     * @param {Error} errorList список ошибок
+     * @return {Error} заполненный список ошибок
      */
-    public validateField = (fieldList: FieldList[], errorList: ErrorList[]): ErrorList[] => {
-        fieldList.map((fields) => {
+    public checkFieldList = (fieldList: Field[], errorList: Error[]): Error[] => {
+        fieldList.map((field) => {
+            const error = errorList.find(elem => elem.name === field.field.props.name);
 
-            /**
-             * Проверка на обязательность заполнения
-             */
-            if (fields.field.props.required) {
-                const target = errorList.find(elem => elem.name === fields.field.props.name);
+            if (field.field.props.isRequired) {
 
-                /**
-                 * Проверка доступно ли поле (disabled)
-                 */
-                if (!fields.field.props.disabled) {
-                    // Проверка на заполненность
-                    // Если поле не пустое - проводим проверки дальше
-                    const IS_VALID_EMPTY_FIELD = this.isValidEmptyField(fields.field.props.value);
+                if (!field.field.props.disabled) {
 
+                    if (this.isEmpty(field.field.props.value).isValid) {
+                        error.isValid = true;
+                        error.errorMessage = '';
 
-                    console.log(fields.field.props.value);
+                        this.isNumberPositive(field, error);
 
-                    if (IS_VALID_EMPTY_FIELD.isValid) {
-                        target.isValid = true;
-                        target.errorMessage = '';
-
-                        // Проверка на отсутствие любых символов кроме букв
-                        const IS_VALID_LETTER = this.isValidLetterPositive(fields.field.props.value);
-                        if (fields.field.props.isValidLetterPositive) {
-                            if (IS_VALID_LETTER.isValid) {
-                                target.isValid = true;
-                                target.errorMessage = '';
-                            } else {
-                                if (target) {
-                                    target.isValid = false;
-                                    target.errorMessage = IS_VALID_LETTER.errorMessage;
-                                }
-                            }
-                        }
-
-                        // Проверка на отсутствие любых символов кроме цифр
-                        const IS_VALID_NUMBER = this.isValidNumberPositive(fields.field.props.value);
-                        if (fields.field.props.isValidNumberPositive) {
-                            if (IS_VALID_NUMBER.isValid) {
-                                target.isValid = true;
-                                target.errorMessage = '';
-                            } else {
-                                if (target) {
-                                    target.isValid = false;
-                                    target.errorMessage = IS_VALID_NUMBER.errorMessage;
-                                }
-                            }
-                        }
-
-                        const IS_VALID_DATE = this.isValidDate(fields.field.props.value);
-                        if (fields.field.props.isValidDatePositive) {
-                            if (IS_VALID_DATE.isValid) {
-                                target.isValid = true;
-                                target.errorMessage = '';
-                            } else {
-                                if (target) {
-                                    target.isValid = false;
-                                    target.errorMessage = IS_VALID_DATE.errorMessage;
-                                }
-                            }
-                        }
-
+                        this.isCorrectDate(field, error);
 
                     } else {
-                        if (target) {
-                            target.isValid = false;
-                            target.errorMessage = IS_VALID_EMPTY_FIELD.errorMessage;
+                        if (error) {
+                            error.isValid = false;
+                            error.errorMessage = this.isEmpty(field.field.props.value).errorMessage;
                         }
                     }
                 }
             }
         });
         return errorList
+    }
+
+    /**
+     * Метод валидации формы.
+     *
+     * @param {Error|FeedbackForm} list список ошибок полей формы
+     * @return {boolean} результат проверки true/false
+     */
+    public isValidForm = (list: Error[] | FeedbackForm[]): boolean => {
+        return typeof (list.find(element => element.isValid === false)) === 'undefined'
     }
 }
 

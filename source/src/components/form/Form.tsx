@@ -1,7 +1,6 @@
-import React, {ChangeEvent, FC} from 'react';
+import React, {ChangeEvent, FC, ReactElement} from 'react';
 import FormRow from "./formRow/FormRow";
 import Button from "../button/Button";
-import {ErrorList, FieldList} from "../../support/typeListForAllApp";
 
 /**
  * Компонент Form
@@ -10,11 +9,13 @@ import {ErrorList, FieldList} from "../../support/typeListForAllApp";
 /**
  * Тип для обратных сообщений формы
  */
-export type FormFeedback = {
+export type FeedbackForm = {
+
     /**
      * Флаг валидности поля
      */
     isValid: boolean,
+
     /**
      * Текстовое сообщение об ошибке
      */
@@ -24,30 +25,77 @@ export type FormFeedback = {
 /**
  * Интерфейс работы с формой
  */
-
 interface IFormProps {
+
     /**
      * Список полей для отображения
      */
-    fieldList: FieldList[],
+    fieldList: Field[],
+
     /**
      * Список ошибок
      */
-    errorList: ErrorList[],
+    errorList: Error[],
+
     /**
      * Общее сообщение для формы (информационное или
      * используемое для вывода ошибок всей формы)
      */
-    feedBackForm: FormFeedback[],
+    feedBackForm: FeedbackForm[],
+
     /**
      * Отправка данных формы
      */
     onSubmitForm: (value?: boolean) => void,
+
     /**
      * Отмена отправки
      */
     onCancel: (value?: boolean) => void
 }
+
+/**
+ * Тип FieldList, список полей формы.
+ */
+export type Field = {
+
+    /**
+     * Имя поля
+     */
+    name?: string,
+
+    /**
+     * Текстовое отображение имени поля
+     */
+    label: string,
+
+    /**
+     * ReactElement
+     */
+    field: ReactElement
+}
+
+/**
+ * Тип ErrorList, список ошибок для формы
+ */
+export type Error =
+    {
+
+        /**
+         * Имя ошибки
+         */
+        name: string,
+
+        /**
+         * Флаг валидности
+         */
+        isValid: boolean,
+
+        /**
+         * Текстовое сообщение
+         */
+        errorMessage: string
+    }
 
 const Form: FC<IFormProps> = (
     {

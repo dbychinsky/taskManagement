@@ -4,8 +4,8 @@ import "./Label.scss";
 /**
  * Компонент Label
  */
-
 type ILabelProps = {
+
     /**
      * Текст
      */

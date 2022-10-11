@@ -4,16 +4,16 @@ import List, {ListData} from "../../components/list/List";
 import {Employee} from "../../model/Employee";
 import Button from "../../components/button/Button";
 import {Project} from "../../model/Project";
-import {getTaskStatusToString} from "../../support/util/taskStatusConvertToStr";
-import {ConvertDate} from "../../support/util/convertDate";
+import {getTaskStatusToString} from "./taskStatusString";
+import {DateFormatter} from "../../support/util/DateFormatter";
 
 /**
  * Страница со списком задач, является общей для страниц
  * задач и проектов(используется при отображении списка задач
  * из страницы проектов).
  */
-
 type ITaskProps = {
+
     /**
      * Список задач
      */
@@ -43,11 +43,13 @@ type ITaskProps = {
      * @param id идентификатор задачи
      */
     update: (id: string) => void
-}
+};
 
 const TaskListView = ({taskList, projectList, employeeList, remove, update}: ITaskProps) => {
+
     /**
      * Список полей для отображения:
+     *
      * name: имя поля
      * label: тестовое отображение имени поля
      * getValueList: метод получения данных для отображения в строке
@@ -76,13 +78,12 @@ const TaskListView = ({taskList, projectList, employeeList, remove, update}: ITa
         {
             name: "startDate",
             label: "Дата начала:",
-            // getValueList: (task) => ConvertDate.getStrFromDate(task.startDate)
-            getValueList: (task) => ConvertDate.getLocaleDateStr(ConvertDate.getStrFromDate(task.startDate))
+            getValueList: (task) => DateFormatter.getLocaleDateStr(DateFormatter.getStrFromDate(task.startDate))
         },
         {
-            name: "endDate",
+            name: "finishDate",
             label: "Дата окончания:",
-            getValueList: (task) => ConvertDate.getLocaleDateStr(ConvertDate.getStrFromDate(task.endDate))
+            getValueList: (task) => DateFormatter.getLocaleDateStr(DateFormatter.getStrFromDate(task.finishDate))
         },
         {
             name: "employee",
@@ -98,7 +99,8 @@ const TaskListView = ({taskList, projectList, employeeList, remove, update}: ITa
                     <Button onClick={() => remove(task.id)} text="Удалить"/>
                 </div>
         }
-    ]
+    ];
+
     return <List listData={listData} values={taskList}/>
 };
 

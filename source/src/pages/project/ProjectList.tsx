@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Project} from "../../model/Project";
 import {useNavigate} from "react-router-dom";
-import {PROJECT_FORM_PATH} from "../../routersProject";
+import {PROJECT_FORM_PATH} from "../../routerList";
 import {server} from "../../app";
 import Header from "../../components/header/Header";
 import List, {ListData} from "../../components/list/List";
@@ -11,18 +11,17 @@ import Button from "../../components/button/Button";
  * Страница со списком проектов
  */
 const ProjectList = () => {
+
     const navigate = useNavigate();
+
     /**
-     * Список проектов
+     * Список проектов, получение и установка в состояние
      */
     const [projectList, setProjectList] = useState<Project[]>([]);
 
-    /**
-     * Метод для получения сотрудников и установки в state
-     */
     useEffect(() => {
-        setProjectList(server.getProjects());
-    }, []);
+        getProjectList();
+    }, [])
 
     /**
      * Метод для добавления проекта, вызываемый при нажатии кнопки "Добавить",
@@ -38,13 +37,15 @@ const ProjectList = () => {
      * @param id идентификатор проекта
      */
     const remove = (id: string) => {
-        server.deleteProject(id);
-        setProjectList(server.getProjects());
+        server.deleteProject(id)
+            .then(() => getProjectList())
+            .catch(error => console.log(error))
     };
 
     /**
      * Метод для обновления проекта, вызываемый при нажатии кнопки "изменить",
      * переход к странице обновления/добавления
+     *
      * @param id идентификатор проекта
      */
     const update = (id: string) => {
@@ -52,7 +53,17 @@ const ProjectList = () => {
     };
 
     /**
+     * Функция установки в состояние списка проектов
+     */
+    function getProjectList() {
+        server.getProjects()
+            .then(response => setProjectList(response))
+            .catch(error => console.log(error))
+    };
+
+    /**
      * Список полей для отображения:
+     *
      * name: имя поля
      * label: тестовое отображение имени поля
      * getValueList: метод получения данных для отображения в строке

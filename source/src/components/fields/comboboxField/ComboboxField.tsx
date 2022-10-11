@@ -1,37 +1,43 @@
-import React, {ChangeEvent, ChangeEventHandler, FC} from 'react';
+import React, {ChangeEvent, FC} from 'react';
 import './Combobox.scss';
 
 /**
  * Компонент Combobox
  */
-
 type IComboboxFieldProps = {
+
     /**
      * Метод, вызывающийся при изменении поля
      *
      * @param event выбранное значение
      */
     changeHandler: (event: ChangeEvent<HTMLSelectElement>) => void,
+
     /**
      * Возможные значения
      */
     valueList: { statusId: string, statusText: string }[],
+
     /**
      * Значение в поле ввода
      */
     value: string,
+
     /**
      * Имя поля
      */
     name: string,
+
     /**
      * Атрибут для определения доступности для выбора
      */
     disabled?: boolean,
+
     /**
      * Определяет необходимость валидации поля
      */
-    required?: boolean
+    isRequired?: boolean
+
     /**
      * Определяет необходимость валидации поля на отсутствующее значение
      */

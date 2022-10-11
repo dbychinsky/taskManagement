@@ -2,18 +2,22 @@
  * Список возможных значений статуса
  */
 export enum TaskStatus {
+
     /**
      * Не начата
      */
     NOT_STARTED = "NOT_STARTED",
+
     /**
      * В процессе
      */
     IN_PROGRESS = "IN_PROGRESS",
+
     /**
      * Завершена
      */
-    COMPLETE = "COMPLETE",
+    COMPLETED = "COMPLETED",
+
     /**
      * Отложена
      */
@@ -21,38 +25,45 @@ export enum TaskStatus {
 }
 
 /**
- * Интерфейс, определяет поля объекта сотрудника
+ * Класс объекта Задачи
  */
-
 export class Task {
+
     /**
      * Уникальный идентификатор задачи
      */
     id: string;
+
     /**
      * Статус задачи
      */
     status: TaskStatus;
+
     /**
      * Имя задачи
      */
     name: string;
+
     /**
      * Уникальный идентификатор проекта задачи
      */
     projectId: string | null;
+
     /**
      * Количество часов
      */
     executionTime: number | null;
+
     /**
      * Дата начала задачи
      */
     startDate: Date | null;
+
     /**
      * Дата окончания задачи
      */
-    endDate: Date | null;
+    finishDate: Date | null;
+
     /**
      * Уникальный идентификатор сотрудника задачи
      */
@@ -65,7 +76,7 @@ export class Task {
         this.projectId = '';
         this.executionTime = null;
         this.startDate = null;
-        this.endDate = null;
+        this.finishDate = null;
         this.employeeId = '';
     }
 }

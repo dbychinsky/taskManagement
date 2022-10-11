@@ -6,28 +6,33 @@ import "./List.scss";
  * формирует заголовок для списка с именами полей (listHeader),
  * формирует список данных в виде строк(listItem).
  */
-
 export type ListData<T> = {
+
     /**
      * Имя поля
      */
     name: string
+
     /**
      * Имя поля для отображения на кирилице
      */
     label: string,
+
     /**
      * Метод для получения и отображения данных в строке
+     *
      * @param value значение в ячейке
      */
     getValueList: (value: T) => ReactNode
 }
 
 interface IListProps<T> {
+
     /**
      * Массив строк
      */
     listData: ListData<T>[],
+
     /**
      * Массив значений (данных)
      */
@@ -35,22 +40,26 @@ interface IListProps<T> {
 }
 
 const List = <T, >({listData, values}: IListProps<T>) => {
-    const listFill =
-        <div className="list">
-            {/*Заголовок списка*/}
-            <div className="listHeader">
-                {
-                    listData.map(({name, label}, index) =>
-                        <div key={index} className={name}>{label}</div>)
-                }
-            </div>
-            {/*Значения списка*/}
+
+    /**
+     * Заголовок списка
+     */
+    const ListHeader = <div className="listHeader">
+        {
+            listData.map(({name, label}, index) =>
+                <div key={index} className={name}>{label}</div>)
+        }
+    </div>
+
+    /**
+     * Тело списка
+     */
+    const ListBody =
+        <>
             {
                 values.map((value, index) =>
-                    // Каждый сотрудник
                     <div key={index} className="listItem">
                         {
-                            // Его значения
                             listData.map(({label, name, getValueList}, index) =>
                                 <div key={index} className={name}>
                                     <span className="value">{getValueList(value)}</span>
@@ -60,15 +69,27 @@ const List = <T, >({listData, values}: IListProps<T>) => {
                     </div>
                 )
             }
+        </>
+
+    /**
+     * Список
+     */
+    const listFill =
+        <div className="list">
+            {ListHeader}
+            {ListBody}
         </div>
 
+    /**
+     * Сообщение при отсутствии данных в списке
+     */
     const listEmpty =
         <p className="listEmpty">Список пуст</p>
 
     return (
-        // Проверка: если значение отстутствует - выводим сообщение
         values.length ? listFill : listEmpty
     );
 };
+
 
 export default List;

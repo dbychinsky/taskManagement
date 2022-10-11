@@ -6,45 +6,42 @@ import {Employee} from "../../model/Employee";
 import {Project} from "../../model/Project";
 import {server} from "../../app";
 import Header from "../../components/header/Header";
-import {TASK_FORM_PATH} from "../../routersProject";
+import {TASK_FORM_PATH} from "../../routerList";
+import "./TaskList.scss";
 
 /**
  * Страница со списком задач
  */
 const TaskList = () => {
+
     const navigate = useNavigate();
+
     /**
      * Список задач
      */
     const [taskList, setTaskList] = useState<Task[]>([]);
+    useEffect(() => {
+        getTaskList();
+    }, []);
+
     /**
      * Список сотрудников
      */
     const [employeeList, setEmployeeList] = useState<Employee[]>([]);
+    useEffect(() => {
+        server.getEmployees()
+            .then(response => setEmployeeList(response))
+            .catch(error => console.log(error))
+    }, []);
+
     /**
      * Список проектов
      */
     const [projectList, setProjectList] = useState<Project[]>([]);
-
-    /**
-     * Установка задач в состояние
-     */
     useEffect(() => {
-        setTaskList(server.getTasks());
-    }, []);
-
-    /**
-     * Установка сотрудников в состояние
-     */
-    useEffect(() => {
-        setEmployeeList(server.getEmployees());
-    }, []);
-
-    /**
-     * Установка проектов в состояние
-     */
-    useEffect(() => {
-        setProjectList(server.getProjects());
+        server.getProjects()
+            .then(response => setProjectList(response))
+            .catch(error => console.log(error))
     }, []);
 
     /**
@@ -58,20 +55,31 @@ const TaskList = () => {
     /**
      * Метод для удаления задачи, вызываемый при нажатии кнопки "удалить"
      *
-     * @param id идентификатор задачи
+     * @param {string} id идентификатор задачи
      */
     const remove = (id: string) => {
-        server.deleteTask(id);
-        setTaskList(server.getTasks());
+        server.deleteTask(id)
+            .then(() => getTaskList())
+            .catch(error => console.log(error))
     };
 
     /**
      * Метод для обновления задачи, вызываемый при нажатии кнопки "изменить",
      * переход к странице обновления/добавления
-     * @param id идентификатор задачи
+     *
+     * @param {string} id идентификатор задачи
      */
     const update = (id: string) => {
         navigate(id);
+    };
+
+    /**
+     * Функция установки в состояние списка задач
+     */
+    function getTaskList() {
+        server.getTasks()
+            .then(response => setTaskList(response))
+            .catch(error => console.log(error))
     };
 
     return (

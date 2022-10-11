@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Project} from "../../model/Project";
 import {useNavigate, useParams} from "react-router-dom";
 import {server} from "../../app";
@@ -6,12 +6,11 @@ import {Task} from "../../model/Task";
 import '../../components/list/List.scss';
 import TaskEditForm from "../task/TaskEditForm";
 import Header from "../../components/header/Header";
-import Form, {FormFeedback} from "../../components/form/Form";
+import Form, {Error, Field, FeedbackForm} from "../../components/form/Form";
 import Button from "../../components/button/Button";
 import TaskListView from "../task/TaskListView";
 import InputTextField from "../../components/fields/inputTextField/InputTextField";
-import {validate} from "../../support/util/validate";
-import {ErrorList, FieldList} from "../../support/typeListForAllApp";
+import {validate} from "../../support/util/Validate";
 
 /**
  * Страница обновления/добавления проекта
@@ -27,12 +26,38 @@ const ProjectEdit = () => {
     const MAX_LENGTH: number = 50;
 
     /**
-     * Получение списков сотрудников, проектов, задач для начальной
-     * инициализации
+     * Список сотрудников, инициализируется данным с сервера
      */
-    const initialEmployeeList = server.getEmployees();
-    const initialProjectList = server.getProjects();
-    const initialTaskList = server.getTasks();
+    const [employeeList, setEmployeeList] = useState([]);
+    useEffect(() => {
+        server.getEmployees()
+            .then(response => setEmployeeList(response))
+            .catch(error => console.log(error))
+    }, []);
+
+    /**
+     * Список проектов, инициализируется данными с сервера
+     */
+    const [projectList, setProjectList] = useState<Project[]>([]);
+    useEffect(() => {
+        server.getProjects()
+            .then(response => setProjectList(response))
+            .catch(error => console.log(error))
+    }, []);
+
+    /**
+     * Получение данных проектов в случае редактирования (из projectList),
+     * если в URL нет id - инициализируем пустым
+     */
+    const [newProject, setNewProject] = useState<Project>(new Project());
+    useEffect(() => {
+        const targetTask = projectList.find((project: Project) => project.id === id)
+        if (!targetTask) {
+            setNewProject(new Project());
+        } else {
+            setNewProject(targetTask);
+        }
+    }, [projectList]);
 
     /**
      * Состояние редактирования таски, используется для условного рендера:
@@ -41,117 +66,47 @@ const ProjectEdit = () => {
     const [isTaskEditForm, setTaskEditForm] = useState<boolean>(false);
 
     /**
-     * Получение данных проектов в случае редактирования, если в URL нет id -
-     * инициализируем пустым
+     * Получаем и устанавливаем задачи (принадлежащие проекту) в состояние
      */
-    const project: Project = initialProjectList.find((projects: Project) => projects.id === id);
-    const [newProject, setNewProject] = useState<Project>(project ? project : new Project());
+    const [taskList, setTaskList] = useState<Task[]>([]);
+    useEffect(() => {
+        server.getTasks()
+            .then(response => setTaskList(response
+                .filter((response) => response.projectId === id)))
+            .catch(error => console.log(error))
+    }, []);
 
     /**
-     * Получаем и устанавливаем задачи в состояние, если в URL нет id -
-     * инициализируем пустым
+     * Редактируемая задача
      */
-    const taskListProject: Task[] = initialTaskList.filter((taskListProject) => taskListProject.projectId === newProject.id);
-    const [taskList, setTaskList] = useState<Task[]>(taskListProject ? taskListProject : [new Task()]);
-
-    /**
-     * Задача для редактирования
-     */
-    const [task, setTasks] = useState(requestTask(id));
-
-    /**
-     * Редактируемая задача из страница Проекта, в ней хранятся данные из формы
-     */
-    const [taskForProject, setTaskForProject] = useState<Task>(requestTask(id));
-
-    /**
-     * Список проектов, инициализируется данным с сервера
-     */
-    const [projectList, setProjectList] = useState(initialProjectList);
-
-    /**
-     * Список сотрудников, инициализируется данным с сервера
-     */
-    const [employeeList, setEmployeeList] = useState(initialEmployeeList);
+    const [taskEdit, setTaskEdit] = useState<Task>(requestTask(id));
 
     /**
      * Список удаленных задач из страницы Проектов. Является временным
      * хранилищем перед отправкой данных сервер.
      */
-    const [deleteTaskList, setDeleteTaskList] = useState([]);
+    const [deleteTaskList, setDeleteTaskList] = useState<Task[]>([]);
 
     /**
-     * Список полей для обновления/добавления сотрудника:
-     * name: имя поля
-     * label: текстовое отображение имени поля
-     * field: поле
-     */
-    const fieldList: FieldList[] = [
-        {
-            name: "name",
-            label: "Наименование:",
-            field: <InputTextField
-                type="text"
-                value={newProject.name}
-                changeHandler={sendToStateProjectList}
-                name="name"
-                maxLength={MAX_LENGTH}
-                required={true}
-            />
-        },
-        {
-            name: "description",
-            label: "Описание:",
-            field: <InputTextField
-                type="text"
-                value={newProject.description}
-                changeHandler={sendToStateProjectList}
-                name={"description"}
-                maxLength={MAX_LENGTH}
-                required={true}
-            />
-        }
-    ];
-
-    /**
-     * Метод для формирования списка ошибок на основе полей формы
-     * и добавление их в состояние
-     */
-    const [errorList, setErrorList] = useState<ErrorList[]>(
-        fieldList.map(elem => {
-            return {name: elem.field.props.name, isValid: true, errorMessage: ''}
-        }));
-
-    /**
-     * Список информационных сообщений для всей формы (ошибок)
-     */
-    const [feedBackFormList, setFeedBackFormList] = useState<FormFeedback[]>([{
-        isValid: true,
-        errorMessage: ''
-    }]);
-
-    /**
-     * Метода получения задачи по id, если идентификтор отсутствует -
+     * Метод получения задачи по id, если идентификтор отсутствует -
      * создаем новую
      *
      * @param id идентификатор задачи
      */
     function requestTask(id: string): Task {
-        const target = server.getTasks().find((tasks: Task) => tasks.id === id);
+        const target = taskList.find((tasks: Task) => tasks.id === id)
         if (target) {
             return target
         } else return new Task();
-    }
+    };
 
     /**
-     * Метод для установки в состояние данных из полей формы
+     * Метод для установки в состояние данных из полей формы,
+     * добавляем id если отстутсвует
+     *
+     * @param e {React.ChangeEvent}
      */
     function sendToStateProjectList(e: React.ChangeEvent<HTMLInputElement>): void {
-        // Добавление id если отстутсвует
-        if (!newProject.id) {
-            const id: string = Date.now().toString();
-            newProject.id = id
-        }
         setNewProject({...newProject, [e.target.name]: e.target.value});
     };
 
@@ -159,18 +114,19 @@ const ProjectEdit = () => {
      * Метод для добавления данных в состояние тасок,
      * после их редактирования
      *
-     * @param task задача
+     * @param {Task} task задача
      */
     const sendToStateTaskList = (task: Task) => {
-        // находим индекс (findIndex если не находит, получаем -1) (splice работает с индексом)
+        const id: string = `tempID_${Date.now().toString()}`;
         const targetIndex = taskList.findIndex((el) => el.id === task.id);
-        // 0, -1 = false, все другое true
         if (targetIndex + 1) {
             taskList.splice(targetIndex, 1, task);
-        } else
+        } else {
+            task.id = id;
             taskList.push(task);
+        }
         setTaskEditForm(false);
-    }
+    };
 
     /**
      * Метод отмены
@@ -196,11 +152,10 @@ const ProjectEdit = () => {
      *
      * @param id идентификатор задачи
      */
-    const remove = (id: string) => {
-        // Добавляем элемент в массив "Удаленные элементы"
-        const remoteTask = taskList.find((task: Task) => task.id === id);
+    const removeTask = (id: string) => {
+        const remoteTask: Task = taskList.find((task: Task) => task.id === id);
         setDeleteTaskList([...deleteTaskList, remoteTask]);
-        // Удаляем из списка задач элемент для отображения на экране
+
         const taskListNew = taskList.filter((task: Task) => task.id !== remoteTask.id);
         setTaskList([...taskListNew]);
     };
@@ -211,25 +166,21 @@ const ProjectEdit = () => {
      *
      * @param id идентификатор задачи
      */
-    const update = (id: string) => {
-        // Устанавливаем редактируюемую таску
-        setTasks(requestTask(id));
-        // Переходим на страницу редактирования
+    const updateTask = (id: string) => {
+        setTaskEdit(requestTask(id));
         setTaskEditForm(true);
     };
 
     /**
-     * Метод создания задачаи из страницы реадтирования
-     * проекта
+     * Метод создания задачи из страницы редатирования проекта
      */
-    const add = () => {
-        // Устанавливаем новую таску в состояние
-        setTaskForProject(new Task());
+    const addTask = () => {
+        setTaskEdit(new Task());
         setTaskEditForm(true);
-    }
+    };
 
     /**
-     * Метод добавления к новым задачам идентификатора проета,
+     * Метод добавления к новым задачам идентификатора проекта,
      * которые были созданы из страницы проектов.
      *
      * @param newProjectId идентификатор проекта
@@ -238,7 +189,58 @@ const ProjectEdit = () => {
         taskList.forEach((task) => {
             task.projectId = newProjectId
         });
-    }
+    };
+
+    /**
+     * Список полей для обновления/добавления сотрудника:
+     *
+     * name: имя поля
+     * label: текстовое отображение имени поля
+     * field: поле
+     */
+    const fieldList: Field[] = [
+        {
+            name: "name",
+            label: "Наименование:",
+            field: <InputTextField
+                type="text"
+                value={newProject.name}
+                changeHandler={sendToStateProjectList}
+                name="name"
+                maxLength={MAX_LENGTH}
+                isRequired={true}
+            />
+        },
+        {
+            name: "description",
+            label: "Описание:",
+            field: <InputTextField
+                type="text"
+                value={newProject.description}
+                changeHandler={sendToStateProjectList}
+                name={"description"}
+                maxLength={MAX_LENGTH}
+                isRequired={true}
+            />
+        }
+    ];
+
+    /**
+     * Метод для формирования списка ошибок на основе полей формы
+     * и добавление их в состояние
+     */
+    const [errorList, setErrorList] = useState<Error[]>(
+        fieldList.map(elem => {
+            return {name: elem.field.props.name, isValid: true, errorMessage: ''}
+        }));
+
+    /**
+     * Список информационных сообщений для всей формы (ошибок)
+     */
+    const [feedBackFormList, setFeedBackFormList] = useState<FeedbackForm[]>([{
+        isValid: true,
+        errorMessage: ''
+    }]);
 
     /**
      * Метод для добавления проекта, вызываемый при нажатии кнопки "Сохранить",
@@ -246,28 +248,33 @@ const ProjectEdit = () => {
      * добавляем id проекта к задаче (созданной из проекта),
      * удаляем задачи с сервера (помеченные как удаленные),
      * сохраняем на сервере задачи созданные из страницы проекта
-     *
      */
     const save = () => {
-        const isValidFormField = validate.validateField(fieldList, errorList)
+        validate.checkFieldList(fieldList, errorList);
         setErrorList(isValidFormField => [...isValidFormField]);
 
         if (validate.isValidForm(errorList)) {
-            // Сохранили проект
-            server.saveProject(newProject);
-            // Добавляем ID-проекта к таске
-            addIdToTask(newProject.id);
-            // Удаляем таски, принадлежащие проекту и помеченные как "удаленные"
-            deleteTaskList.forEach(function (task) {
-                server.deleteTask(task.id);
-            });
-            // Сохраняем таски, созданные в проекте
-            taskList.forEach(function (task) {
-                server.saveTask(task);
-            });
-            navigate(-1);
+
+            server.saveProject(newProject)
+                .then(response => {
+                        addIdToTask(response.id)
+                    }
+                )
+                .then(() =>
+                    deleteTaskList.forEach(function (task) {
+                        server.deleteTask(task.id).then();
+                    }))
+                .then(() => {
+                    taskList.forEach(function (task: Task) {
+                        server.saveTask(task).then();
+                    })
+                })
+                .then(() => {
+                    navigate(-1)
+                })
+                .catch(error => console.log(error))
         }
-    }
+    };
 
     const projectFormEdit =
         <div className="projectForm">
@@ -280,19 +287,19 @@ const ProjectEdit = () => {
                       onCancel={cancel}/>
 
                 <div className="taskList">
-                    <Button onClick={add} text="Добавить задачу"/>
+                    <Button onClick={addTask} text="Добавить задачу"/>
                     <TaskListView taskList={taskList}
                                   employeeList={employeeList}
                                   projectList={projectList}
-                                  remove={remove}
-                                  update={update}/>
+                                  remove={removeTask}
+                                  update={updateTask}/>
                 </div>
             </div>
         </div>
 
     const taskEditFromProject =
         <TaskEditForm
-            task={task}
+            task={taskEdit}
             employeeList={employeeList}
             projectList={projectList}
             onPushStorage={sendToStateTaskList}

@@ -11,15 +11,17 @@ import "./InputNumberField.scss"
  * интерфейсом IInputFieldProps
  */
 type IInputNumberFieldProps = IInputFieldProps & {
+
     /**
      * Тип поля ввода
      */
     type: "text",
+
     /**
      * Определяет необходимость валидации поля на содержание
      * только чисел
      */
-    isValidNumberPositive?: boolean
+    isNumberPositive?: boolean
 }
 
 const InputNumberField: FC<IInputNumberFieldProps> = (
@@ -29,8 +31,8 @@ const InputNumberField: FC<IInputNumberFieldProps> = (
         changeHandler,
         name,
         placeholder = "Введите значение",
-        required,
-        isValidNumberPositive
+        isRequired,
+        isNumberPositive
     }) => {
     return (
         <input

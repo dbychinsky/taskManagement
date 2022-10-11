@@ -6,12 +6,11 @@ import {Employee} from "../../model/Employee";
 import '../../components/fields/comboboxField/Combobox.scss';
 import ComboboxField from "../../components/fields/comboboxField/ComboboxField";
 import Header from "../../components/header/Header";
-import Form, {FormFeedback} from "../../components/form/Form";
+import Form, {Error, Field, FeedbackForm} from "../../components/form/Form";
 import InputNumberField from "../../components/fields/inputNumberField/InputNumberField";
-import {validate} from "../../support/util/validate";
-import {ErrorList, FieldList} from "../../support/typeListForAllApp";
+import {validate} from "../../support/util/Validate";
 import {Task, TaskStatus} from "../../model/Task";
-import {ConvertDate} from "../../support/util/convertDate";
+import {DateFormatter} from "../../support/util/DateFormatter";
 
 /**
  * Страница обновления/добавления задачи, является общей для страниц
@@ -21,7 +20,8 @@ import {ConvertDate} from "../../support/util/convertDate";
 /**
  * Тип для сериализованной модели Задач
  */
-export type TaskFormData = {
+export type TaskForm = {
+
     /**
      * Статус задачи
      */
@@ -50,7 +50,7 @@ export type TaskFormData = {
     /**
      * Дата окончания задачи
      */
-    endDate: string,
+    finishDate: string,
 
     /**
      * Уникальный идентификатор сотрудника задачи
@@ -60,6 +60,7 @@ export type TaskFormData = {
 
 
 type ITaskFormProps = {
+
     /**
      * Задача
      */
@@ -109,15 +110,25 @@ const TaskEditForm = (props: ITaskFormProps) => {
 
     const MAX_LENGTH: number = 50;
 
-    const [taskFormData, setTaskFormData] = useState(taskSerialize(task));
+    /**
+     * Установка задач в состояние
+     */
+    const [taskFormData, setTaskFormData] = useState(createTaskForm(task));
+    function createTaskForm(task: Task): TaskForm {
+        return Object.assign({} as TaskForm, task, {
+            startDate: DateFormatter.getStrFromDate(task.startDate),
+            finishDate: DateFormatter.getStrFromDate(task.finishDate),
+        });
+    };
 
     /**
      * Список полей для обновления/добавления сотрудника:
+     *
      * name: имя поля
      * label: текстовое отображение имени поля
      * field: поле
      */
-    const fieldList: FieldList[] = [
+    const fieldList: Field[] = [
         {
             name: "status",
             label: "Статус:",
@@ -126,7 +137,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 valueList={TaskStatuses}
                 value={taskFormData.status}
                 name="status"
-                required={true}
+                isRequired={true}
             />
         },
         {
@@ -134,12 +145,11 @@ const TaskEditForm = (props: ITaskFormProps) => {
             label: "Наименование:",
             field: <InputTextField
                 type="text"
-                // value={task.name ? task.name : ''}
                 value={taskFormData.name}
                 changeHandler={sendToStateTaskList}
                 name="name"
                 maxLength={MAX_LENGTH}
-                required={true}
+                isRequired={true}
             />
         },
         {
@@ -155,7 +165,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 value={taskFormData.projectId}
                 name="projectId"
                 disabled={sourceTaskForProject ? true : false}
-                required={true}
+                isRequired={true}
             />
         },
         {
@@ -163,13 +173,12 @@ const TaskEditForm = (props: ITaskFormProps) => {
             label: "Работа:",
             field: <InputNumberField
                 type="text"
-                // value={task.executionTime ? task.executionTime : ''}
                 value={taskFormData.executionTime}
                 changeHandler={sendToStateTaskList}
                 name="executionTime"
                 maxLength={MAX_LENGTH}
-                required={true}
-                isValidNumberPositive={true}
+                isRequired={true}
+                isNumberPositive={true}
             />
         },
 
@@ -183,21 +192,21 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 name="startDate"
                 placeholder="YYYY.MM.DD"
                 maxLength={10}
-                required={true}
+                isRequired={true}
                 isValidDatePositive={true}
             />
         },
         {
-            name: "endDate",
+            name: "finishDate",
             label: "Дата окончания:",
             field: <InputTextField
                 type="text"
-                value={taskFormData.endDate}
+                value={taskFormData.finishDate}
                 changeHandler={sendToStateTaskList}
-                name="endDate"
+                name="finishDate"
                 placeholder="YYYY.MM.DD"
                 maxLength={10}
-                required={true}
+                isRequired={true}
                 isValidDatePositive={true}
             />
         },
@@ -213,6 +222,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 }
                 value={taskFormData.employeeId}
                 name="employeeId"
+                isRequired={false}
             />
         }
     ];
@@ -228,7 +238,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
      * Метод для формирования списка ошибок на основе полей формы
      * и добавление их в состояние
      */
-    const [errorList, setErrorList] = useState<ErrorList[]>(
+    const [errorList, setErrorList] = useState<Error[]>(
         fieldList.map(elem => {
             return {name: elem.field.props.name, isValid: true, errorMessage: ''}
         }));
@@ -236,35 +246,10 @@ const TaskEditForm = (props: ITaskFormProps) => {
     /**
      * Список информационных сообщений для всей формы (ошибок)
      */
-    const [feedBackFormList, setFeedBackFormList] = useState<FormFeedback[]>([{
+    const [feedBackFormList, setFeedBackFormList] = useState<FeedbackForm[]>([{
         isValid: null,
         errorMessage: ''
     }]);
-
-    /**
-     * Сериализация задач. Переводим данные с сервера в нужное
-     * представление для работы в форме
-     */
-    function taskSerialize(task: Task): TaskFormData {
-        return Object.assign({} as TaskFormData, task, {
-            startDate: ConvertDate.getStrFromDate(task.startDate),
-            endDate: ConvertDate.getStrFromDate(task.endDate),
-        });
-    }
-
-    /**
-     * Десериализация задач. Приводим данные к виду модели
-     * для отправки на сервер (и добавляем id)
-     */
-    function taskDeserialize(taskFormData: TaskFormData): Task {
-        const targetId: string = task.id ? task.id : Date.now().toString();
-
-        return Object.assign(new Task(), taskFormData, {
-            startDate: ConvertDate.getDateFromStr(taskFormData.startDate),
-            endDate: ConvertDate.getDateFromStr(taskFormData.endDate),
-            id: targetId
-        })
-    }
 
     /**
      * Метод для добавления задачи, вызываемый при нажатии кнопки "Сохранить",
@@ -272,22 +257,34 @@ const TaskEditForm = (props: ITaskFormProps) => {
      * отправляем данные на сервер
      */
     const submitForm = () => {
-        // Валидация полей формы
-
-        const isValidFormField = validate.validateField(fieldList, errorList)
+        const isValidFormField = validate.checkFieldList(fieldList, errorList)
         setErrorList(isValidFormField => [...isValidFormField]);
 
         if (validate.isValidForm(errorList)) {
-            // Если все поля валидны, проверям поля дат между собой
-            const isValidFeedBackFormList = validate.validDateRange(fieldList, feedBackFormList)
+            const startDate: string = fieldList.find((elem) => elem.field.props.name === "startDate").field.props.value;
+            const finishDate: string = fieldList.find((elem) => elem.field.props.name === "finishDate").field.props.value;
+            const isValidFeedBackFormList = validate.isDateInRange(startDate, finishDate, feedBackFormList);
+
             setFeedBackFormList(isValidFeedBackFormList => [...isValidFeedBackFormList]);
 
             if (feedBackFormList.find(element => element.isValid === true)) {
-                onPushStorage(taskDeserialize(taskFormData));
+                onPushStorage(createTaskServer(taskFormData));
             }
 
         } else console.log('Форма не валидна');
-    }
+    };
+
+    /**
+     * Метод подготовки задачи для отправки на сервер.
+     *
+     * @param {TaskForm} taskFormData задача
+     */
+    function createTaskServer(taskFormData: TaskForm): Task {
+        return Object.assign(new Task(), taskFormData, {
+            startDate: DateFormatter.getDateFromStr(taskFormData.startDate),
+            finishDate: DateFormatter.getDateFromStr(taskFormData.finishDate)
+        });
+    };
 
     return (
         <div className="taskForm">
