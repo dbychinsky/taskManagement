@@ -59,10 +59,10 @@ export class StubServer implements IServer {
      * @return {Project} Promise проекта
      */
     async saveProject(project: Project): Promise<Project> {
-        let projectList: Project[] = await this.getProjects();
-        const id: string = Date.now().toString();
+        let projectList: Project[] = await this.load(this.PROJECT_LIST_KEY);
+
         if (!project.id) {
-            project.id = id
+            project.id = this.getId(projectList)
             projectList.push(project);
         } else {
             const targetIndex = projectList.findIndex((el) => el.id === project.id);
@@ -110,15 +110,15 @@ export class StubServer implements IServer {
      */
     async saveTask(task: Task): Promise<void> {
         let taskList: Task[] = this.load(this.TASK_LIST_KEY);
-        const id: string = Date.now().toString();
 
         if (taskList === null) {
             taskList = []
         }
-        if (task.id.includes("tempID")) {
-            task.id = id
+
+        if (task.id.includes("tempID") || task.id === '') {
+            task.id = this.getId(taskList);
             taskList.push(task);
-            console.log(taskList)
+
         } else {
             const targetIndex = taskList.findIndex((el) => el.id === task.id);
             taskList.splice(targetIndex, 1, task);
@@ -158,9 +158,9 @@ export class StubServer implements IServer {
      */
     async saveEmployee(employee: Employee): Promise<void> {
         let employeeList: Employee[] = await this.getEmployees();
-        const id: string = Date.now().toString();
+
         if (!employee.id) {
-            employee.id = id
+            employee.id = this.getId(employeeList);
             employeeList.push(employee)
         } else {
             const targetIndex = employeeList.findIndex((el) => el.id === employee.id);
@@ -192,6 +192,17 @@ export class StubServer implements IServer {
      */
     private save(key: string, object: any) {
         localStorage.setItem(key, JSON.stringify(object));
+    }
+
+    /**
+     * Метод получения id для продукта
+     */
+    private getId<T extends { id: string }>(list: T[]): string {
+        if (list.length) {
+            return (Number(list[list.length - 1].id) + 1).toString()
+        } else {
+            return '0'
+        }
     }
 
     /**

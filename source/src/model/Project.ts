@@ -6,7 +6,7 @@ export class Project {
     /**
      * Уникальный идентификатор проекты
      */
-    id?: string;
+    id: string;
 
     /**
      * Имя проекта

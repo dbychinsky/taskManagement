@@ -68,7 +68,7 @@ const TaskListView = ({taskList, projectList, employeeList, remove, update}: ITa
         {
             name: "project",
             label: "Наименование проекта:",
-            getValueList: (task) => projectList.find(project => project.id === task.projectId)?.name || "Проект не выбран"
+            getValueList: (task) => projectList.find(project => project.id === task.projectId)?.name || "Текущий проект"
         },
         {
             name: "executionTime",

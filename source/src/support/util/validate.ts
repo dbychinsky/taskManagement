@@ -16,7 +16,7 @@ const LETTER_RegEx = /^[а-яa-zА-ЯA-Z][а-яa-zA-ZА-Я\\s]*$/;
 const NUMBER_RegEx = /^[1-9]\d*$/;
 
 /**
- * Регулярное выражение. Дата YYYY.MM.DD
+ * Регулярное выражение. Дата ГГГГ-ММ-ДД
  */
 const DATE_RegEx = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -36,7 +36,7 @@ const enum validationErrorsText {
     IS_VALID = "",
     INVALID_EMPTY_FIELD_TEXT = "Поле должно быть заполнено",
     INVALID_NUMBER_POSITIVE_TEXT = "Допускаются только целые (положительные) числа",
-    INVALID_DATE_TEXT = "Некорректная дата, формат должен быть YYYY-MM-DD",
+    INVALID_DATE_TEXT = "Некорректная дата, формат должен быть ГГГГ-ММ-ДД",
     INVALID_DATE_RANGE_TEXT = "Дата начала больше даты окончания",
 }
 

@@ -36,12 +36,14 @@ type IComboboxFieldProps = {
     /**
      * Определяет необходимость валидации поля
      */
-    isRequired?: boolean
+    isRequired?: boolean,
 
     /**
      * Определяет необходимость валидации поля на отсутствующее значение
      */
-    isValidEmptyFieldCombobox?: boolean
+    isValidEmptyFieldCombobox?: boolean,
+
+    optionDefaultValue?: string
 }
 
 const ComboboxField: FC<IComboboxFieldProps> = (
@@ -50,11 +52,15 @@ const ComboboxField: FC<IComboboxFieldProps> = (
         valueList,
         value,
         disabled,
-        name
+        name,
+        optionDefaultValue
     }) => {
     return (
-        <select onChange={changeHandler} defaultValue={value} disabled={disabled} name={name}>
-            <option value={""}>Выберите значение</option>
+        <select onChange={changeHandler}
+                defaultValue={value}
+                disabled={disabled}
+                name={name}>
+            <option value={""}>{optionDefaultValue ? optionDefaultValue : 'Выберите значение'}</option>
             {
                 valueList.map((elem, index) => {
                     return <option key={index} value={elem.statusId}>{elem.statusText}</option>

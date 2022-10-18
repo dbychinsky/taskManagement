@@ -6,6 +6,7 @@ import {server} from "../../app";
 import Header from "../../components/header/Header";
 import List, {ListData} from "../../components/list/List";
 import Button from "../../components/button/Button";
+import {Task} from "../../model/Task";
 
 /**
  * Страница со списком проектов
@@ -18,9 +19,15 @@ const ProjectList = () => {
      * Список проектов, получение и установка в состояние
      */
     const [projectList, setProjectList] = useState<Project[]>([]);
+    const [taskList, setTaskList] = useState<Task[]>([]);
 
     useEffect(() => {
         getProjectList();
+    }, [taskList])
+
+    useEffect(() => {
+        server.getTasks()
+            .then((taskList) => setTaskList(taskList));
     }, [])
 
     /**
@@ -33,13 +40,20 @@ const ProjectList = () => {
 
     /**
      * Метод для удаления проекта, вызываемый при нажатии кнопки "удалить"
+     * Удаляет проект и принадлежащие ему задачи
      *
      * @param id идентификатор проекта
      */
     const remove = (id: string) => {
-        server.deleteProject(id)
+        server.deleteProject(id).then()
             .then(() => getProjectList())
-            .catch(error => console.log(error))
+            .then(() => {
+                taskList.forEach((task) => {
+                    if (task.projectId === id) {
+                        server.deleteTask(task.id).then();
+                    }
+                });
+            })
     };
 
     /**

@@ -114,6 +114,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
      * Установка задач в состояние
      */
     const [taskFormData, setTaskFormData] = useState(createTaskForm(task));
+
     function createTaskForm(task: Task): TaskForm {
         return Object.assign({} as TaskForm, task, {
             startDate: DateFormatter.getStrFromDate(task.startDate),
@@ -166,6 +167,8 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 name="projectId"
                 disabled={sourceTaskForProject ? true : false}
                 isRequired={true}
+                optionDefaultValue={sourceTaskForProject ? 'Текущий проект' : ''}
+
             />
         },
         {
@@ -190,7 +193,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 value={taskFormData.startDate}
                 changeHandler={sendToStateTaskList}
                 name="startDate"
-                placeholder="YYYY.MM.DD"
+                placeholder="ГГГГ-ММ-ДД"
                 maxLength={10}
                 isRequired={true}
                 isValidDatePositive={true}
@@ -204,7 +207,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 value={taskFormData.finishDate}
                 changeHandler={sendToStateTaskList}
                 name="finishDate"
-                placeholder="YYYY.MM.DD"
+                placeholder="ГГГГ-ММ-ДД"
                 maxLength={10}
                 isRequired={true}
                 isValidDatePositive={true}
