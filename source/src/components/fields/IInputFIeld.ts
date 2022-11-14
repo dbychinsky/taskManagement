@@ -36,10 +36,23 @@ export type IInputFieldProps = {
      * Определяет необходимость валидации на корректную дату,
      * используется только для полей даты
      */
-    isValidDatePositive?: boolean,
+    isHasCorrectDate?: boolean,
 
     /**
      * Определяет максимальное количество символов для ввода
      */
-    maxLength: number
+    maxLength: number,
+
+    /**
+     * Определяет необходимость валидации поля на содержание
+     * только чисел
+     */
+    isHasOnlyNumberPositive?: boolean
+
+    /**
+     * Определяет необходимость валидации поля на содержание значения
+     */
+    isHasValue?: boolean
+
+    validation?: any
 }

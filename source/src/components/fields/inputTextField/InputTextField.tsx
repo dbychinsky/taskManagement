@@ -15,13 +15,7 @@ type IInputTextFieldProps = IInputFieldProps & {
     /**
      * Тип поля ввода
      */
-    type: "text",
-
-    /**
-     * Определяет необходимость валидации поля на содержание
-     * только букв
-     */
-    isValidLetterPositive?: boolean,
+    type: "text"
 }
 
 const InputTextField: FC<IInputTextFieldProps> = (
@@ -38,7 +32,8 @@ const InputTextField: FC<IInputTextFieldProps> = (
             className="inputTextField"
             type={type}
             defaultValue={value}
-            onChange={changeHandler}
+            // onChange={changeHandler}
+            onInput={changeHandler}
             name={name}
             placeholder={placeholder}
             maxLength={maxLength}

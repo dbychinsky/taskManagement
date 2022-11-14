@@ -215,7 +215,7 @@ export class StubServer implements IServer {
     private taskSerialize(taskFormData: TaskForm): Task {
         return Object.assign(new Task(), taskFormData, {
             startDate: DateFormatter.getDateFromStr(taskFormData.startDate),
-            finishDate: DateFormatter.getDateFromStr(taskFormData.finishDate),
+            endDate: DateFormatter.getDateFromStr(taskFormData.endDate),
         });
     }
 }

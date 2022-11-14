@@ -81,9 +81,9 @@ const TaskListView = ({taskList, projectList, employeeList, remove, update}: ITa
             getValueList: (task) => DateFormatter.getLocaleDateStr(DateFormatter.getStrFromDate(task.startDate))
         },
         {
-            name: "finishDate",
+            name: "endDate",
             label: "Дата окончания:",
-            getValueList: (task) => DateFormatter.getLocaleDateStr(DateFormatter.getStrFromDate(task.finishDate))
+            getValueList: (task) => DateFormatter.getLocaleDateStr(DateFormatter.getStrFromDate(task.endDate))
         },
         {
             name: "employee",

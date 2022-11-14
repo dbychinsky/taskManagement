@@ -24,11 +24,12 @@ export class DateFormatter {
      * @param {string} dateString дата формата String
      * @return {date|null} дата формата Date
      */
-    static getDateFromStr = (dateString: string): Date | null => {
+    static getDateFromStr = (dateString: string | number): Date | null => {
         if (dateString) {
-            if (dateString.length >= 10) {
-                return new Date(dateString)
-            }
+            if (typeof dateString === "string")
+                if (dateString.length >= 10) {
+                    return new Date(dateString)
+                }
         }
         return null;
     }

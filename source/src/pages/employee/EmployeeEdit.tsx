@@ -3,10 +3,9 @@ import {useNavigate, useParams} from "react-router-dom";
 import {server} from "../../app";
 import {Employee} from "../../model/Employee";
 import InputTextField from "../../components/fields/inputTextField/InputTextField";
-import Form, {Error, Field, FeedbackForm} from "../../components/form/Form";
+import Form, {Field} from "../../components/form/Form";
 import Header from "../../components/header/Header";
 import {validate} from "../../support/util/Validate";
-import {Task} from "../../model/Task";
 
 /**
  * Страница обновления/добавления сотрудника
@@ -24,18 +23,18 @@ const EmployeeEdit = () => {
      * Получение данных сотрудника в случае редактирования
      */
     const [employeeEdit, setEmployeeEdit] = useState<Employee>(new Employee());
+
     useEffect(() => {
         server.getEmployees()
             .then(response => {
-                const targetTask = response.find((empoloyee: Employee) => empoloyee.id === id)
-                if (!targetTask) {
-                    setEmployeeEdit(new Employee());
-                } else {
+                const targetTask = response.find((employee: Employee) => employee.id === id)
+                if (targetTask) {
                     setEmployeeEdit(targetTask);
                 }
             })
             .catch(error => console.log(error))
     }, []);
+
 
     /**
      * Список полей для обновления/добавления сотрудника:
@@ -54,8 +53,8 @@ const EmployeeEdit = () => {
                 changeHandler={sendToStateEmployeeList}
                 name={"lastName"}
                 maxLength={MAX_LENGTH}
-                isRequired={true}
-            />
+            />,
+            validationList: [validate.emptyValidator]
         },
         {
             name: "firstName",
@@ -66,9 +65,8 @@ const EmployeeEdit = () => {
                 changeHandler={sendToStateEmployeeList}
                 name={"firstName"}
                 maxLength={MAX_LENGTH}
-                isRequired={true}
-            />
-
+            />,
+            validationList: [validate.emptyValidator]
         },
         {
             name: "middleName",
@@ -79,8 +77,8 @@ const EmployeeEdit = () => {
                 changeHandler={sendToStateEmployeeList}
                 name={"middleName"}
                 maxLength={MAX_LENGTH}
-                isRequired={true}
-            />
+            />,
+            validationList: [validate.emptyValidator]
         },
         {
             name: "position",
@@ -91,27 +89,10 @@ const EmployeeEdit = () => {
                 changeHandler={sendToStateEmployeeList}
                 name={"position"}
                 maxLength={MAX_LENGTH}
-                isRequired={true}
-            />
+            />,
+            validationList: [validate.emptyValidator]
         }
     ];
-
-    /**
-     * Метод для формирования списка ошибок на основе полей формы
-     * и добавление их в состояние
-     */
-    const [errorList, setErrorList] = useState<Error[]>(
-        fieldList.map(elem => {
-            return {name: elem.field.props.name, isValid: true, errorMessage: ''}
-        }));
-
-    /**
-     * Список информационных сообщений для всей формы (ошибок)
-     */
-    const [feedBackFormList, setFeedBackFormList] = useState<FeedbackForm[]>([{
-        isValid: true,
-        errorMessage: ''
-    }]);
 
     /**
      * Метод для установки в состояние данных из полей формы
@@ -128,21 +109,17 @@ const EmployeeEdit = () => {
     };
 
     /**
-     * Метод для добавления сотрудника, вызываемый при нажатии кнопки "Сохранить",
+     * Метод для добавления сотрудника, вызываемый при нажатии кнопки "Сохранить"
      * если все поля формы валидны, формируем ФИО и отправляем данные на сервер
      */
     const save = () => {
-        const isValidFormField = validate.checkFieldList(fieldList, errorList)
-        setErrorList(isValidFormField => [...isValidFormField]);
-        if (validate.isValidForm(errorList)) {
-            const newEmployees: Employee = {
-                ...employeeEdit,
-                fullName: `${employeeEdit.lastName} ${employeeEdit.firstName} ${employeeEdit.middleName}`
-            }
-            server.saveEmployee(newEmployees).then(() => {
-                navigate(-1)
-            })
+        const newEmployees: Employee = {
+            ...employeeEdit,
+            fullName: `${employeeEdit.lastName} ${employeeEdit.firstName} ${employeeEdit.middleName}`
         }
+        server.saveEmployee(newEmployees).then(() => {
+            navigate(-1)
+        })
     };
 
     return (
@@ -150,8 +127,6 @@ const EmployeeEdit = () => {
             <Header title="Сотрудник" isShowButton={false}/>
             <div className="content">
                 <Form fieldList={fieldList}
-                      feedBackForm={feedBackFormList}
-                      errorList={errorList}
                       onSubmitForm={save}
                       onCancel={cancel}/>
             </div>

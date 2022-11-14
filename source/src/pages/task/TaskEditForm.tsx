@@ -6,7 +6,7 @@ import {Employee} from "../../model/Employee";
 import '../../components/fields/comboboxField/Combobox.scss';
 import ComboboxField from "../../components/fields/comboboxField/ComboboxField";
 import Header from "../../components/header/Header";
-import Form, {Error, Field, FeedbackForm} from "../../components/form/Form";
+import Form, {Field} from "../../components/form/Form";
 import InputNumberField from "../../components/fields/inputNumberField/InputNumberField";
 import {validate} from "../../support/util/Validate";
 import {Task, TaskStatus} from "../../model/Task";
@@ -50,7 +50,7 @@ export type TaskForm = {
     /**
      * Дата окончания задачи
      */
-    finishDate: string,
+    endDate: string,
 
     /**
      * Уникальный идентификатор сотрудника задачи
@@ -118,9 +118,18 @@ const TaskEditForm = (props: ITaskFormProps) => {
     function createTaskForm(task: Task): TaskForm {
         return Object.assign({} as TaskForm, task, {
             startDate: DateFormatter.getStrFromDate(task.startDate),
-            finishDate: DateFormatter.getStrFromDate(task.finishDate),
+            endDate: DateFormatter.getStrFromDate(task.endDate),
         });
     };
+
+    /**
+     * Метод получения значения формы
+     *
+     * @param key ключ
+     */
+    const getFieldValue = (fieldList: Field[], key: string): string => {
+        return fieldList.find((elem) => elem.name === key).field.props.value
+    }
 
     /**
      * Список полей для обновления/добавления сотрудника:
@@ -138,8 +147,8 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 valueList={TaskStatuses}
                 value={taskFormData.status}
                 name="status"
-                isRequired={true}
-            />
+            />,
+            validationList: [validate.emptyValidator]
         },
         {
             name: "name",
@@ -150,11 +159,11 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 changeHandler={sendToStateTaskList}
                 name="name"
                 maxLength={MAX_LENGTH}
-                isRequired={true}
-            />
+            />,
+            validationList: [validate.emptyValidator]
         },
         {
-            name: "project",
+            name: "projectId",
             label: "Наименование проекта:",
             field: <ComboboxField
                 changeHandler={sendToStateTaskList}
@@ -163,13 +172,12 @@ const TaskEditForm = (props: ITaskFormProps) => {
                         return {statusId: project.id, statusText: project.name}
                     })
                 }
-                value={taskFormData.projectId}
+                value={sourceTaskForProject ? 's' : taskFormData.projectId}
                 name="projectId"
                 disabled={sourceTaskForProject ? true : false}
-                isRequired={true}
                 optionDefaultValue={sourceTaskForProject ? 'Текущий проект' : ''}
-
-            />
+            />,
+            validationList: [validate.emptyValidator]
         },
         {
             name: "executionTime",
@@ -180,9 +188,10 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 changeHandler={sendToStateTaskList}
                 name="executionTime"
                 maxLength={MAX_LENGTH}
-                isRequired={true}
-                isNumberPositive={true}
-            />
+            />,
+            validationList: [
+                validate.emptyValidator,
+                validate.numberValidator]
         },
 
         {
@@ -195,23 +204,26 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 name="startDate"
                 placeholder="ГГГГ-ММ-ДД"
                 maxLength={10}
-                isRequired={true}
-                isValidDatePositive={true}
-            />
+            />,
+            validationList: [
+                validate.emptyValidator,
+                validate.dateFormatValidator]
         },
         {
-            name: "finishDate",
+            name: "endDate",
             label: "Дата окончания:",
             field: <InputTextField
                 type="text"
-                value={taskFormData.finishDate}
+                value={taskFormData.endDate}
                 changeHandler={sendToStateTaskList}
-                name="finishDate"
+                name="endDate"
                 placeholder="ГГГГ-ММ-ДД"
                 maxLength={10}
-                isRequired={true}
-                isValidDatePositive={true}
-            />
+            />,
+            validationList: [
+                validate.emptyValidator,
+                validate.dateFormatValidator,
+                (field) => validate.dateRangeValidator(taskFormData.startDate, field)]
         },
         {
             name: "employee",
@@ -225,10 +237,11 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 }
                 value={taskFormData.employeeId}
                 name="employeeId"
-                isRequired={false}
-            />
+            />,
+            validationList: []
         }
     ];
+
 
     /**
      * Метод для установки в состояние данных из полей формы
@@ -238,43 +251,12 @@ const TaskEditForm = (props: ITaskFormProps) => {
     };
 
     /**
-     * Метод для формирования списка ошибок на основе полей формы
-     * и добавление их в состояние
-     */
-    const [errorList, setErrorList] = useState<Error[]>(
-        fieldList.map(elem => {
-            return {name: elem.field.props.name, isValid: true, errorMessage: ''}
-        }));
-
-    /**
-     * Список информационных сообщений для всей формы (ошибок)
-     */
-    const [feedBackFormList, setFeedBackFormList] = useState<FeedbackForm[]>([{
-        isValid: null,
-        errorMessage: ''
-    }]);
-
-    /**
      * Метод для добавления задачи, вызываемый при нажатии кнопки "Сохранить",
      * если все поля формы валидны, валидируем поля дат (корректность промежутка),
      * отправляем данные на сервер
      */
     const submitForm = () => {
-        const isValidFormField = validate.checkFieldList(fieldList, errorList)
-        setErrorList(isValidFormField => [...isValidFormField]);
-
-        if (validate.isValidForm(errorList)) {
-            const startDate: string = fieldList.find((elem) => elem.field.props.name === "startDate").field.props.value;
-            const finishDate: string = fieldList.find((elem) => elem.field.props.name === "finishDate").field.props.value;
-            const isValidFeedBackFormList = validate.isDateInRange(startDate, finishDate, feedBackFormList);
-
-            setFeedBackFormList(isValidFeedBackFormList => [...isValidFeedBackFormList]);
-
-            if (feedBackFormList.find(element => element.isValid === true)) {
-                onPushStorage(createTaskServer(taskFormData));
-            }
-
-        } else console.log('Форма не валидна');
+        onPushStorage(createTaskServer(taskFormData));
     };
 
     /**
@@ -285,7 +267,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
     function createTaskServer(taskFormData: TaskForm): Task {
         return Object.assign(new Task(), taskFormData, {
             startDate: DateFormatter.getDateFromStr(taskFormData.startDate),
-            finishDate: DateFormatter.getDateFromStr(taskFormData.finishDate)
+            endDate: DateFormatter.getDateFromStr(taskFormData.endDate)
         });
     };
 
@@ -294,8 +276,6 @@ const TaskEditForm = (props: ITaskFormProps) => {
             <Header title="Задача" isShowButton={false}/>
             <div className="content">
                 <Form fieldList={fieldList}
-                      feedBackForm={feedBackFormList}
-                      errorList={errorList}
                       onSubmitForm={submitForm}
                       onCancel={onCancel}/>
             </div>

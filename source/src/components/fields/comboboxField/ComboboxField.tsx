@@ -36,7 +36,7 @@ type IComboboxFieldProps = {
     /**
      * Определяет необходимость валидации поля
      */
-    isRequired?: boolean,
+    isHasValue?: boolean,
 
     /**
      * Определяет необходимость валидации поля на отсутствующее значение

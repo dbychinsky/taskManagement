@@ -62,7 +62,7 @@ export class Task {
     /**
      * Дата окончания задачи
      */
-    finishDate: Date | null;
+    endDate: Date | null;
 
     /**
      * Уникальный идентификатор сотрудника задачи
@@ -76,7 +76,7 @@ export class Task {
         this.projectId = '';
         this.executionTime = null;
         this.startDate = null;
-        this.finishDate = null;
+        this.endDate = null;
         this.employeeId = '';
     }
 }

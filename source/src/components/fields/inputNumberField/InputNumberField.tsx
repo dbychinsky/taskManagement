@@ -16,12 +16,6 @@ type IInputNumberFieldProps = IInputFieldProps & {
      * Тип поля ввода
      */
     type: "text",
-
-    /**
-     * Определяет необходимость валидации поля на содержание
-     * только чисел
-     */
-    isNumberPositive?: boolean
 }
 
 const InputNumberField: FC<IInputNumberFieldProps> = (
@@ -30,9 +24,7 @@ const InputNumberField: FC<IInputNumberFieldProps> = (
         value,
         changeHandler,
         name,
-        placeholder = "Введите значение",
-        isRequired,
-        isNumberPositive
+        placeholder = "Введите значение"
     }) => {
     return (
         <input

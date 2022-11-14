@@ -6,7 +6,7 @@ import {Task} from "../../model/Task";
 import '../../components/list/List.scss';
 import TaskEditForm from "../task/TaskEditForm";
 import Header from "../../components/header/Header";
-import Form, {Error, Field, FeedbackForm} from "../../components/form/Form";
+import Form, {Field, ErrorMessage} from "../../components/form/Form";
 import Button from "../../components/button/Button";
 import TaskListView from "../task/TaskListView";
 import InputTextField from "../../components/fields/inputTextField/InputTextField";
@@ -208,8 +208,8 @@ const ProjectEdit = () => {
                 changeHandler={sendToStateProjectList}
                 name="name"
                 maxLength={MAX_LENGTH}
-                isRequired={true}
-            />
+            />,
+            validationList: [validate.emptyValidator]
         },
         {
             name: "description",
@@ -220,8 +220,8 @@ const ProjectEdit = () => {
                 changeHandler={sendToStateProjectList}
                 name={"description"}
                 maxLength={MAX_LENGTH}
-                isRequired={true}
-            />
+            />,
+            validationList: [validate.emptyValidator]
         }
     ];
 
@@ -229,18 +229,10 @@ const ProjectEdit = () => {
      * Метод для формирования списка ошибок на основе полей формы
      * и добавление их в состояние
      */
-    const [errorList, setErrorList] = useState<Error[]>(
+    const [errorListState, setErrorListState] = useState<ErrorMessage[]>(
         fieldList.map(elem => {
-            return {name: elem.field.props.name, isValid: true, errorMessage: ''}
+            return {name: elem.field.props.name, errorMessage: ''}
         }));
-
-    /**
-     * Список информационных сообщений для всей формы (ошибок)
-     */
-    const [feedBackFormList, setFeedBackFormList] = useState<FeedbackForm[]>([{
-        isValid: true,
-        errorMessage: ''
-    }]);
 
     /**
      * Метод для добавления проекта, вызываемый при нажатии кнопки "Сохранить",
@@ -250,30 +242,24 @@ const ProjectEdit = () => {
      * сохраняем на сервере задачи созданные из страницы проекта
      */
     const save = () => {
-        validate.checkFieldList(fieldList, errorList);
-        setErrorList(isValidFormField => [...isValidFormField]);
-
-        if (validate.isValidForm(errorList)) {
-
-            server.saveProject(newProject)
-                .then(response => {
-                        addIdToTask(response.id)
-                    }
-                )
-                .then(() =>
-                    deleteTaskList.forEach(function (task) {
-                        server.deleteTask(task.id).then();
-                    }))
-                .then(() => {
-                    taskList.forEach(function (task: Task) {
-                        server.saveTask(task).then();
-                    })
+        server.saveProject(newProject)
+            .then(response => {
+                    addIdToTask(response.id)
+                }
+            )
+            .then(() =>
+                deleteTaskList.forEach(function (task) {
+                    server.deleteTask(task.id).then();
+                }))
+            .then(() => {
+                taskList.forEach(function (task: Task) {
+                    server.saveTask(task).then();
                 })
-                .then(() => {
-                    navigate(-1)
-                })
-                .catch(error => console.log(error))
-        }
+            })
+            .then(() => {
+                navigate(-1)
+            })
+            .catch(error => console.log(error))
     };
 
     const projectFormEdit =
@@ -281,8 +267,6 @@ const ProjectEdit = () => {
             <Header title="Проект" isShowButton={false}/>
             <div className="content">
                 <Form fieldList={fieldList}
-                      feedBackForm={feedBackFormList}
-                      errorList={errorList}
                       onSubmitForm={save}
                       onCancel={cancel}/>
 
