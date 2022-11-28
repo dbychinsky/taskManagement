@@ -1,7 +1,9 @@
 @import "../../parameters";
 
 .button {
+    font-family: 'Montserrat', sans-serif;
     background: $color-grey;
+    color: $color-grey-black;
     border: 1px solid $color-grey;
     cursor: pointer;
 
@@ -9,6 +11,7 @@
     padding: 10px;
     margin: 0 $indents-base 0 0;
     border-radius: $border-radius-base;
+    box-shadow: 0 2px 4px 0 rgba(206, 209, 224, .3);
 
     &:hover {
         box-shadow: 4px 4px 8px 0px rgba(206, 206, 206, 0.2);

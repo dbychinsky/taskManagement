@@ -7,38 +7,43 @@ export class DateFormatter {
      * Метод получения строки из даты
      *
      * @param {Date} date дата формата Date
-     * @return {string} дата формата String
+     * @return дата формата String
      */
     static getStrFromDate = (date?: Date): string => {
+        let result = ''
+
         if (date !== null) {
             if (!isNaN(date.getTime())) {
-                return date.toISOString().slice(0, 10);
+                result = date.toISOString().slice(0, 10);
             }
         }
-        return '';
+
+        return result
     }
 
     /**
      * Метод получения даты из строки
      *
      * @param {string} dateString дата формата String
-     * @return {date|null} дата формата Date
+     * @return дата формата Date
+     * @return возвращает null
      */
-    static getDateFromStr = (dateString: string | number): Date | null => {
-        if (dateString) {
-            if (typeof dateString === "string")
-                if (dateString.length >= 10) {
-                    return new Date(dateString)
-                }
+    static getDateFromStr = (dateString: string): Date | null => {
+        let result = null
+
+        if (dateString.length >= 10) {
+            if (new Date(dateString))
+                result = new Date(dateString)
         }
-        return null;
+
+        return result;
     }
 
     /**
      * Метод отображения даты в локальном виде DD.MM.YYYY
      *
      * @param {string} dateString дата формата String
-     * @return {string} дата в формате DD.MM.YYYY
+     * @return дата в формате DD.MM.YYYY
      */
     static getLocaleDateStr = (dateString: string): string => {
         return dateString.replace(/^(\d+)-(\d+)-(\d+)$/, `$3.$2.$1`);

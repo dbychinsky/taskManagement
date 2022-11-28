@@ -26,7 +26,7 @@ interface FormRow {
     /**
      * Сообщение об ошибке
      */
-    errorMessage?: string
+    message?: string
 };
 
 const FormRow: FC<FormRow> = (
@@ -34,13 +34,13 @@ const FormRow: FC<FormRow> = (
         nameField,
         labelText,
         children,
-        errorMessage
+        message
     }) => {
     return (
-        <div className={`formRow ${nameField}`}>
+        <div className={message? `formRow invalid ${nameField}` : `formRow ${nameField}`}>
             <Label text={labelText}/>
             {children}
-            <div className='feedback'>{errorMessage}</div>
+            <div className='feedback'>{message}</div>
         </div>
     );
 }

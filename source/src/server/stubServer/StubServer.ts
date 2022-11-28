@@ -30,14 +30,10 @@ export class StubServer implements IServer {
      * Проверка на наличие файла в localStorage, если файла localstorage
      * не существует - создать пустой
      *
-     * @return {Project[]} список сотрудников
+     * @return {Project[]} список проектов
      */
     async getProjects(): Promise<Project[]> {
-        const result = await this.load(this.PROJECT_LIST_KEY);
-        if (result === null) {
-            return []
-        }
-        return await result;
+        return this.load(this.PROJECT_LIST_KEY);
     }
 
     /**
@@ -59,7 +55,7 @@ export class StubServer implements IServer {
      * @return {Project} Promise проекта
      */
     async saveProject(project: Project): Promise<Project> {
-        let projectList: Project[] = await this.load(this.PROJECT_LIST_KEY);
+        let projectList: Project[] = this.load(this.PROJECT_LIST_KEY);
 
         if (!project.id) {
             project.id = this.getId(projectList)
@@ -81,10 +77,7 @@ export class StubServer implements IServer {
      * @return {Task[]} список задач
      */
     async getTasks(): Promise<Task[]> {
-        const result: [] = await this.load(this.TASK_LIST_KEY);
-        if (result === null) {
-            return []
-        }
+        const result: [] = this.load(this.TASK_LIST_KEY);
         return result.map((elem: any) =>
             this.taskSerialize(elem)
         );
@@ -111,10 +104,6 @@ export class StubServer implements IServer {
     async saveTask(task: Task): Promise<void> {
         let taskList: Task[] = this.load(this.TASK_LIST_KEY);
 
-        if (taskList === null) {
-            taskList = []
-        }
-
         if (task.id.includes("tempID") || task.id === '') {
             task.id = this.getId(taskList);
             taskList.push(task);
@@ -131,11 +120,7 @@ export class StubServer implements IServer {
      * @return {Employee[]} список сотрудников
      */
     async getEmployees(): Promise<Employee[]> {
-        const result = await this.load(this.EMPLOYEE_LIST_KEY);
-        if (result === null) {
-            return []
-        }
-        return await result;
+        return this.load(this.EMPLOYEE_LIST_KEY);
     }
 
     /**
@@ -177,9 +162,14 @@ export class StubServer implements IServer {
      *
      * @private
      * @param {string} key ключ для получения значения
+     * @return список данных, либо пустой список
      */
-    private load(key: string) {
-        return JSON.parse(localStorage.getItem(key)!);
+    private load(key: string): [] {
+        let value: [] = JSON.parse(localStorage.getItem(key)!);
+        if (!value) {
+            return [];
+        }
+        return value
     }
 
     /**

@@ -1,9 +1,6 @@
 @import "../../../parameters";
+@import "../inputTextField/InputTextField";
 
 .inputNumberField {
-    box-sizing: border-box;
-    display: block;
-    padding: 5px;
-
-    min-width: $width-field-base;
+    @extend .inputTextField;
 }

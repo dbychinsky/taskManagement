@@ -6,9 +6,9 @@ import {Employee} from "../../model/Employee";
 import '../../components/fields/comboboxField/Combobox.scss';
 import ComboboxField from "../../components/fields/comboboxField/ComboboxField";
 import Header from "../../components/header/Header";
-import Form, {Field} from "../../components/form/Form";
+import Form, {Field, FieldError, FormError} from "../../components/form/Form";
 import InputNumberField from "../../components/fields/inputNumberField/InputNumberField";
-import {validate} from "../../support/util/Validate";
+import {validator} from "../../support/util/Validator";
 import {Task, TaskStatus} from "../../model/Task";
 import {DateFormatter} from "../../support/util/DateFormatter";
 
@@ -127,9 +127,9 @@ const TaskEditForm = (props: ITaskFormProps) => {
      *
      * @param key ключ
      */
-    const getFieldValue = (fieldList: Field[], key: string): string => {
-        return fieldList.find((elem) => elem.name === key).field.props.value
-    }
+    // const getFieldValue = (fieldList: Field[], key: string): string => {
+    //     return fieldList.find((elem) => elem.name === key).field.props.value
+    // }
 
     /**
      * Список полей для обновления/добавления сотрудника:
@@ -148,7 +148,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 value={taskFormData.status}
                 name="status"
             />,
-            validationList: [validate.emptyValidator]
+            validationList: [validator.emptyValidator]
         },
         {
             name: "name",
@@ -160,7 +160,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 name="name"
                 maxLength={MAX_LENGTH}
             />,
-            validationList: [validate.emptyValidator]
+            validationList: [validator.emptyValidator]
         },
         {
             name: "projectId",
@@ -177,7 +177,7 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 disabled={sourceTaskForProject ? true : false}
                 optionDefaultValue={sourceTaskForProject ? 'Текущий проект' : ''}
             />,
-            validationList: [validate.emptyValidator]
+            validationList: [validator.emptyValidator]
         },
         {
             name: "executionTime",
@@ -190,8 +190,8 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 maxLength={MAX_LENGTH}
             />,
             validationList: [
-                validate.emptyValidator,
-                validate.numberValidator]
+                validator.emptyValidator,
+                validator.numberValidator]
         },
 
         {
@@ -206,8 +206,9 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 maxLength={10}
             />,
             validationList: [
-                validate.emptyValidator,
-                validate.dateFormatValidator]
+                validator.emptyValidator,
+                validator.dateFormatValidator
+            ]
         },
         {
             name: "endDate",
@@ -221,9 +222,9 @@ const TaskEditForm = (props: ITaskFormProps) => {
                 maxLength={10}
             />,
             validationList: [
-                validate.emptyValidator,
-                validate.dateFormatValidator,
-                (field) => validate.dateRangeValidator(taskFormData.startDate, field)]
+                validator.emptyValidator,
+                validator.dateFormatValidator]
+
         },
         {
             name: "employee",
@@ -242,7 +243,6 @@ const TaskEditForm = (props: ITaskFormProps) => {
         }
     ];
 
-
     /**
      * Метод для установки в состояние данных из полей формы
      */
@@ -251,12 +251,36 @@ const TaskEditForm = (props: ITaskFormProps) => {
     };
 
     /**
+     * Формирование списка ошибок на основе полей формы
+     * и добавление их в состояние
+     */
+    const [fieldErrorList, setFieldErrorList] = useState<FieldError[]>(
+        fieldList.map(elem => {
+            return {field: elem.field.props.name, message: ''}
+        }));
+
+    /**
+     * Сообщение об ошибке к форме
+     */
+    const [formError, setFormError] = useState<FormError[]>();
+
+    /**
      * Метод для добавления задачи, вызываемый при нажатии кнопки "Сохранить",
      * если все поля формы валидны, валидируем поля дат (корректность промежутка),
      * отправляем данные на сервер
      */
     const submitForm = () => {
-        onPushStorage(createTaskServer(taskFormData));
+        const errorList = validator.validateFields(fieldList);
+        setFieldErrorList(errorList);
+
+        if (!errorList.length) {
+            const error = validator.lessOrEqualValidator(taskFormData.startDate, taskFormData.endDate);
+            setFormError(error);
+
+            if (!error.length) {
+                onPushStorage(createTaskServer(taskFormData));
+            }
+        }
     };
 
     /**
@@ -276,6 +300,8 @@ const TaskEditForm = (props: ITaskFormProps) => {
             <Header title="Задача" isShowButton={false}/>
             <div className="content">
                 <Form fieldList={fieldList}
+                      fieldErrorList={fieldErrorList}
+                      formError={formError}
                       onSubmitForm={submitForm}
                       onCancel={onCancel}/>
             </div>

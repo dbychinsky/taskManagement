@@ -1,7 +1,6 @@
-import React, {ChangeEvent, FC, ReactElement, useState} from 'react';
+import React, {FC, ReactElement} from 'react';
 import FormRow from "./formRow/FormRow";
 import Button from "../button/Button";
-import {validate} from "../../support/util/Validate";
 
 /**
  * Интерфейс работы с формой
@@ -12,6 +11,16 @@ interface IFormProps {
      * Список полей для отображения
      */
     fieldList: Field[],
+
+    /**
+     * Список ошибок к полю
+     */
+    fieldErrorList: FieldError[],
+
+    /**
+     * Список ошибок к форме
+     */
+    formError?: FormError[],
 
     /**
      * Отправка данных формы
@@ -47,23 +56,34 @@ export type Field = {
     /**
      * Валидация
      */
-    validationList?: ((field: Field) => ErrorMessage)[]
+    validationList?: ((field: Field) => FieldError)[]
 }
 
 /**
  * Тип ошибки к полю
  */
-export type ErrorMessage = {
+export type FieldError = {
 
     /**
-     * Имя ошибки
+     * Имя поля
      */
-    name: string,
+    field: string,
 
     /**
      * Текстовое сообщение
      */
-    errorMessage: string
+    message: string
+}
+
+/**
+ * Тип ошибки к Форме
+ */
+export type FormError = {
+
+    /**
+     * Текстовое сообщение
+     */
+    message: string
 }
 
 /**
@@ -72,47 +92,28 @@ export type ErrorMessage = {
 const Form: FC<IFormProps> = (
     {
         fieldList,
+        fieldErrorList,
+        formError,
         onSubmitForm,
         onCancel
     }) => {
 
-
-    /**
-     * Метод для формирования списка ошибок на основе полей формы
-     * и добавление их в состояние
-     */
-    const [errorListState, setErrorListState] = useState<ErrorMessage[]>(
-        fieldList.map(elem => {
-            return {name: elem.field.props.name, errorMessage: ''}
-        }));
-
-    /**
-     * Отправка формы
-     */
-    const onSubmit = () => {
-
-        const errorList = validate.formValidator(fieldList);
-
-        setErrorListState(errorList);
-
-        if (!errorList.length) {
-            onSubmitForm();
-        }
-    }
-
     return (
-        <form>
-            {
-                fieldList.map(({name, label, field,}, index) =>
-                    <FormRow nameField={name}
-                             labelText={label}
-                             children={field}
-                             errorMessage={errorListState.find(elem => elem.name === field.props.name)?.errorMessage}
-                             key={index}/>
-                )
-            }
+        <form className={formError ? `form invalidForm` : `form`}>
+            <div className="feedbackForm">{formError?.map((elem) => elem.message)}</div>
+            <div className="fieldset">
+                {
+                    fieldList.map(({name, label, field,}, index) =>
+                        <FormRow nameField={name}
+                                 labelText={label}
+                                 children={field}
+                                 message={fieldErrorList.find(elem => elem.field === field.props.name)?.message}
+                                 key={index}/>
+                    )
+                }
+            </div>
             <div className="actionBar">
-                <Button onClick={onSubmit} text="Сохранить"/>
+                <Button onClick={onSubmitForm} text="Сохранить"/>
                 <Button onClick={onCancel} text="Отмена"/>
             </div>
         </form>

@@ -1,19 +1,40 @@
 @import "../../parameters";
 
-form {
-    max-width: 300px;
+.form {
 
     .feedbackForm {
         color: $color-red;
         margin-bottom: $indents-base;
     }
 
+    &.invalidForm {
+        .startDate, .endDate {
+            input {
+                border: 1px solid $color-red;
+                box-shadow: inset 0 2px 4px 0 rgba(206, 209, 224, .3),
+                1px 1px 4px 0px rgba(255, 0, 0, 0.2);
+            }
+        }
+    }
+
+    .fieldset {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        max-width: 490px;
+        justify-content: space-between;
+    }
+
     .formRow {
-        margin-bottom: ($indents-base * 3);
+        display: inline-block;
+        min-height: 99px;
+        width: 210px;
 
         .feedback {
             color: $color-red;
             font-size: $font-small;
+
+            margin: 5px 0;
         }
     }
 }

@@ -3,9 +3,9 @@ import {useNavigate, useParams} from "react-router-dom";
 import {server} from "../../app";
 import {Employee} from "../../model/Employee";
 import InputTextField from "../../components/fields/inputTextField/InputTextField";
-import Form, {Field} from "../../components/form/Form";
+import Form, {Field, FieldError} from "../../components/form/Form";
 import Header from "../../components/header/Header";
-import {validate} from "../../support/util/Validate";
+import {validator} from "../../support/util/Validator";
 
 /**
  * Страница обновления/добавления сотрудника
@@ -54,7 +54,7 @@ const EmployeeEdit = () => {
                 name={"lastName"}
                 maxLength={MAX_LENGTH}
             />,
-            validationList: [validate.emptyValidator]
+            validationList: [validator.emptyValidator]
         },
         {
             name: "firstName",
@@ -66,7 +66,7 @@ const EmployeeEdit = () => {
                 name={"firstName"}
                 maxLength={MAX_LENGTH}
             />,
-            validationList: [validate.emptyValidator]
+            validationList: [validator.emptyValidator]
         },
         {
             name: "middleName",
@@ -78,7 +78,7 @@ const EmployeeEdit = () => {
                 name={"middleName"}
                 maxLength={MAX_LENGTH}
             />,
-            validationList: [validate.emptyValidator]
+            validationList: [validator.emptyValidator]
         },
         {
             name: "position",
@@ -90,7 +90,7 @@ const EmployeeEdit = () => {
                 name={"position"}
                 maxLength={MAX_LENGTH}
             />,
-            validationList: [validate.emptyValidator]
+            validationList: [validator.emptyValidator]
         }
     ];
 
@@ -109,17 +109,30 @@ const EmployeeEdit = () => {
     };
 
     /**
+     * Формирование списка ошибок на основе полей формы
+     * и добавление их в состояние
+     */
+    const [fieldErrorList, setFieldErrorList] = useState<FieldError[]>(
+        fieldList.map(elem => {
+            return {field: elem.field.props.name, message: ''}
+        }));
+
+    /**
      * Метод для добавления сотрудника, вызываемый при нажатии кнопки "Сохранить"
      * если все поля формы валидны, формируем ФИО и отправляем данные на сервер
      */
     const save = () => {
-        const newEmployees: Employee = {
-            ...employeeEdit,
-            fullName: `${employeeEdit.lastName} ${employeeEdit.firstName} ${employeeEdit.middleName}`
+        const errorList = validator.validateFields(fieldList);
+        setFieldErrorList(errorList);
+        if (!errorList.length) {
+            const newEmployees: Employee = {
+                ...employeeEdit,
+                fullName: `${employeeEdit.lastName} ${employeeEdit.firstName} ${employeeEdit.middleName}`
+            }
+            server.saveEmployee(newEmployees).then(() => {
+                navigate(-1)
+            })
         }
-        server.saveEmployee(newEmployees).then(() => {
-            navigate(-1)
-        })
     };
 
     return (
@@ -127,6 +140,7 @@ const EmployeeEdit = () => {
             <Header title="Сотрудник" isShowButton={false}/>
             <div className="content">
                 <Form fieldList={fieldList}
+                      fieldErrorList={fieldErrorList}
                       onSubmitForm={save}
                       onCancel={cancel}/>
             </div>
