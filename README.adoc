@@ -23,4 +23,4 @@ React, Typescript
 
 После установки значения может понадобиться перезапуск приложения.
 
-deploy: https://dbychinsky.github.io/taskManagement/
+

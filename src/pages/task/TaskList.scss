@@ -1,0 +1,16 @@
+@import "./src/parameters";
+
+.taskList {
+    width: 100%;
+    padding: $indents-base;
+    border: 1px solid $color-grey;
+
+    h1 {
+        font-size: $font-base;
+    }
+
+    > .actionBar {
+        margin-bottom: $indents-base;
+        max-width: 100%;
+    }
+}
